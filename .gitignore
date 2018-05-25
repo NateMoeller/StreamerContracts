@@ -5,3 +5,6 @@ gradlew.bat
 api/out/
 web/out/
 *.iml
+node_modules
+web/package-lock.json
+web/target
