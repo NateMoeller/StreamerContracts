@@ -14,7 +14,7 @@ class Greeting extends React.Component {
         return (
             <div>
                 <p>Hello From React!</p>
-                <a onClick={this.handleClick}>Click me to make a request to /api... if you get an alert, nginx routing is working</a>
+                <a onClick={this.handleClick}>Click me to make a request to /api... if you get an alert, nginx routing + API are working</a>
             </div>
         );
     }

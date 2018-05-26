@@ -9,6 +9,10 @@ Parameters:
     Type: String
     Description: The EC2 tags that are already applied to EC2 instances that you want to include in the deployment group.
     Default: StreamerContracts
+  StreamerContractsWebDomain:
+    Type: String
+    Description: The DomainName that StreamerContracts runs on.
+    Default: streamercontracts.co.uk
 
 Resources:
   StreamerContractsVPC:
@@ -188,8 +192,41 @@ Resources:
           sudo yum -y install java-1.8.0
           sudo wget http://nginx.org/keys/nginx_signing.key
           sudo yum -y install nginx
-          echo export WEB_PORT=8060 >> /etc/profile
-          echo export WEB_HOST=${StreamerContractsWebEc2Instance.PublicDnsName} >> /etc/profile
-          echo export API_PORT=8070 >> /etc/profile
-          echo export API_HOST=${StreamerContractsApiEc2Instance.PublicDnsName} >> /etc/profile
-      # saving host and port like this will go away once we have a registered domain name
+
+  # You must update your DNS provider to use the nameservers associated with this HostedZone
+  StreamerContractsRoute53:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      HostedZoneConfig:
+        Comment: HostedZone for StreamerContracts
+      Name: !Ref StreamerContractsWebDomain
+
+  StreamerContractsWebServerRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref StreamerContractsRoute53
+      Name: !Ref StreamerContractsWebDomain
+      ResourceRecords:
+        - !GetAtt StreamerContractsWebServerEc2Instance.PublicIp
+      TTL: 300
+      Type: A
+
+  StreamerContractsWebRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref StreamerContractsRoute53
+      Name: !Sub web.${StreamerContractsWebDomain}
+      ResourceRecords:
+        - !GetAtt StreamerContractsWebEc2Instance.PublicIp
+      TTL: 300
+      Type: A
+
+  StreamerContractsApiRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref StreamerContractsRoute53
+      Name: !Sub api.${StreamerContractsWebDomain}
+      ResourceRecords:
+        - !GetAtt StreamerContractsApiEc2Instance.PublicIp
+      TTL: 300
+      Type: A

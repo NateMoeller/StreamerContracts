@@ -1,4 +1,4 @@
-rootProject.name = 'springhelloworld'
+rootProject.name = 'streamercontracts'
 include 'web'
 include 'api'
 
