@@ -14,7 +14,7 @@ dependencies {
     testCompile("junit:junit")
 }
 
-task buildAssets(type: NpmTask) {
+task buildAssets(type: NpmTask, dependsOn: [npmInstall]) {
     args = ['run', 'build']
 }
 
