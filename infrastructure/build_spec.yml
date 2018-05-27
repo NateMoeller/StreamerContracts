@@ -11,6 +11,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
+      - bash ./gradlew web:buildAssets
       - bash ./gradlew build
   post_build:
     commands:

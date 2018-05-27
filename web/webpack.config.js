@@ -4,7 +4,7 @@ const merge = require('webpack-merge');
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     source: path.join(__dirname, 'src', 'main', 'app'),
-    output: path.join(__dirname, 'target', 'classes', 'static')
+    output: path.join(__dirname, 'src', 'main', 'resources', 'static', 'js')
 };
 
 const common = {
