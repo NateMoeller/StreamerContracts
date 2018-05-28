@@ -45,7 +45,16 @@ Resources:
   StreamerContractsSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: 10.0.0.0/16
+      AvailabilityZone: us-east-1e
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref StreamerContractsVPC
+
+  StreamerContractsSubnetTwo:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.2.0/24
       MapPublicIpOnLaunch: true
       VpcId: !Ref StreamerContractsVPC
 
@@ -230,3 +239,47 @@ Resources:
         - !GetAtt StreamerContractsApiEc2Instance.PublicIp
       TTL: 300
       Type: A
+
+  StreamerContractsDBClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: DB Cluster for StreamerContracts
+      Family: aurora-postgresql9.6
+      Parameters:
+        client_encoding: UTF-8
+
+  StreamerContractsDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: DB Subnet for StreamerContracts
+      # DBSubnetGroupName is stored as lower case string
+      DBSubnetGroupName: streamercontractsdbsubnetgroup
+      SubnetIds:
+        - !Ref StreamerContractsSubnet
+        - !Ref StreamerContractsSubnetTwo
+
+  StreamerContractsDBCluster:
+    Type: AWS::RDS::DBCluster
+    #Since we cant Ref for StreamerContractsDBSubnetGroup.DBSubnetGroupName, we need this DependsOn clause
+    DependsOn: StreamerContractsDBSubnetGroup
+    Properties:
+      DatabaseName: StreamerContractsDB
+      DBClusterIdentifier: streamer-contracts-db
+      DBClusterParameterGroupName: !Ref StreamerContractsDBClusterParameterGroup
+      # needs to match StreamerContractsDBSubnetGroup.DBSubnetGroupName
+      DBSubnetGroupName: streamercontractsdbsubnetgroup
+      Engine: aurora-postgresql
+      EngineVersion: 9.6
+      MasterUsername: StreamerContractsAdmin
+      MasterUserPassword: ChangeMe
+      Port: 5432
+      VpcSecurityGroupIds:
+        - !Ref StreamerContractsSecurityGroup
+
+  StreamerContractsDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBClusterIdentifier: !Ref StreamerContractsDBCluster
+      DBInstanceClass: db.r4.large
+      Engine: aurora-postgresql
+      PubliclyAccessible: true
