@@ -8,8 +8,8 @@ then
     echo "Stopping nginx"
     service nginx stop
     sudo cp /var/www/streamercontracts/nginx.conf /etc/nginx/nginx.conf
-    echo "Starting nginx StreamerContracts-WebServer. Service wont work until you ssh onto this instance and update nginx.conf."
-    sudo service nginx start & exit $?
+    echo "Starting nginx StreamerContracts-WebServer."
+    sudo service nginx start
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Web" ]]
 then
     echo "Starting StreamerContracts-Web SpringBoot Application"
