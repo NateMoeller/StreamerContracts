@@ -12,6 +12,6 @@ task buildAssets(type: NpmTask, dependsOn: [npmInstall]) {
     args = ['run', 'build']
 }
 
-task watchAssetsDevServer(type: NpmTask) {
+task runDevServer(type: NpmTask) {
     args = ['run', 'start']
 }
