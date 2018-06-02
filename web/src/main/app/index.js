@@ -5,7 +5,8 @@ import ReactDOM from 'react-dom'
 class Greeting extends React.Component {
 
     handleClick() {
-        axios.get('api').then(response => {
+//    Hard coded uuid: 92950a04-6606-11e8-adc0-fa7ae01bbebc that is set during DB initialization
+        axios.get('api/92950a04-6606-11e8-adc0-fa7ae01bbebc').then(response => {
             alert('/api response: ' + response.data);
         })
     }

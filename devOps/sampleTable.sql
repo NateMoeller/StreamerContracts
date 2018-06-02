@@ -1,11 +1,11 @@
 BEGIN;
 
-CREATE TABLE sampleTable (
-    sampleId int,
-    sampleValue varchar(255)
+CREATE TABLE example_table (
+    example_id uuid,
+    example_value varchar(255)
 );
 
-INSERT INTO sampleTable (sampleId, sampleValue)
-VALUES (1, 'AWS-RDS stored value');
+INSERT INTO example_table (example_id, example_value)
+VALUES ('92950a04-6606-11e8-adc0-fa7ae01bbebc', 'AWS-RDS stored value');
 
 COMMIT;
