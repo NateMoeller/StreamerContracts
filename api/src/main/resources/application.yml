@@ -1,0 +1,31 @@
+server:
+  port: 8070
+
+spring:
+  datasource:
+    url: jdbc:postgresql://streamer-contracts-db.cluster-c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
+    username: StreamerContractsAdmin
+    password: ChangeMe
+    driver-class-name: org.postgresql.Driver
+    validation-query: SELECT 1
+    initSQL: SET NAMES 'utf8mb4'
+  jpa:
+    properties:
+      hibernate:
+        temp:
+          # Workaround. see: https://stackoverflow.com/questions/49683434/spring-boot-app-fails-method-org-postgresql-jdbc4-jdbc4connection-createclob-i
+          use_jdbc_metadata_defaults: false
+
+security:
+  oauth2:
+    client:
+      clientId: fal8zh2u859tgnqg4w0tgoqwq8m7ef
+      clientSecret: f2ztb24if89as9e1npk2hw0p8e2p7e
+      accessTokenUri: https://api.twitch.tv/api/oauth2/token
+      userAuthorizationUri: https://id.twitch.tv/oauth2/authorize
+      clientAuthenticationScheme: form
+      scope:
+        - openid
+    resource:
+      userInfoUri: https://api.twitch.tv/helix/users
+      preferTokenInfo: true

@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -13,8 +14,23 @@ public class ExampleApiController {
 
     @NonNull private final ExampleService exampleService;
 
+    @RequestMapping(path = "user", method = RequestMethod.GET)
+    public Principal user(Principal principal) {
+        return principal;
+    }
+
+    @RequestMapping(path = "restricted", method = RequestMethod.GET)
+    public String getRestrictedAPI() {
+        return "wow! you hit a restricted endpoint. good job!";
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String getExample() {
+        return exampleService.getExampleValue(UUID.randomUUID());
+    }
+
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
-    public String getExampleAPI(@PathVariable("id") @NonNull final UUID uuid) {
+    public String getExampleById(@PathVariable("id") @NonNull final UUID uuid) {
         return exampleService.getExampleValue(uuid);
     }
 
