@@ -13,7 +13,7 @@ phases:
       - echo Build started on `date`
       - bash ./gradlew clean
       - bash ./gradlew web:buildAssets
-      - bash ./gradlew build
+      - bash ./gradlew api:build
   post_build:
     commands:
       - echo Entered the post_build phase...
