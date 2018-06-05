@@ -22,7 +22,7 @@ artifacts:
   files:
     - web/build/libs/web-1.0-SNAPSHOT.jar
     - api/build/libs/api-1.0-SNAPSHOT.jar
-    - infrastructure/nginx/nginx.conf
+    - infrastructure/nginx/nginx-beta.conf
     - infrastructure/code_deploy/appspec.yml
     - infrastructure/code_deploy/start.sh
     - infrastructure/code_deploy/before_install.sh

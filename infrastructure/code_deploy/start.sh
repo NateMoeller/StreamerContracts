@@ -13,7 +13,7 @@ then
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Web" ]]
 then
     echo "Starting StreamerContracts-Web SpringBoot Application"
-    java -jar /var/www/streamercontracts/web-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
+    java -jar /var/www/streamercontracts/web-1.0-SNAPSHOT.jar -Dspring.profiles.active=beta > /dev/null 2>&1 &
     exit $?
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
