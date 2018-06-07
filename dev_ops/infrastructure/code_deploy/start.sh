@@ -7,7 +7,7 @@ if [[ ${DEPLOYMENT_GROUP_NAME} =~ "WebServer" ]]
 then
     echo "Stopping nginx"
     service nginx stop
-    sudo cp /var/www/streamercontracts/nginx.conf /etc/nginx/nginx.conf
+    sudo cp /var/www/streamercontracts/nginx.conf /etc/nginx/nginx-beta.conf
     echo "Starting nginx StreamerContracts-WebServer."
     sudo service nginx start
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
