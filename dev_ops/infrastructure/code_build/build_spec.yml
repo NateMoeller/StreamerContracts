@@ -20,8 +20,8 @@ phases:
 artifacts:
   files:
     - api/build/libs/api-1.0-SNAPSHOT.jar
-    - devOps/infrastructure/nginx/nginx-beta.conf
-    - devOps/infrastructure/code_deploy/appspec.yml
-    - devOps/infrastructure/code_deploy/start.sh
-    - devOps/infrastructure/code_deploy/before_install.sh
+    - dev_ops/infrastructure/nginx/nginx-beta.conf
+    - dev_ops/infrastructure/code_deploy/appspec.yml
+    - dev_ops/infrastructure/code_deploy/start.sh
+    - dev_ops/infrastructure/code_deploy/before_install.sh
   discard-paths: yes

@@ -3,11 +3,11 @@ Description: Infarstructure for StreamerContracts App
 Parameters:
   GitHubRepoOwner:
     Type: String
-    Description: ex - nckackerman
+    Description: ex - NateMoeller
     Default: nckackerman
   GitHubRepoName:
     Type: String
-    Description: ex - spring-hello-world
+    Description: ex - StreamerContracts
     Default: spring-hello-world
   GitHubRepoBranch:
     Type: String
@@ -49,6 +49,10 @@ Resources:
               - s3:GetObject
               - s3:GetObjectVersion
               Resource: "*"
+              Effect: Allow
+            - Action:
+              - s3:Delete
+              Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}
               Effect: Allow
             - Action:
               - ssm:GetParameters
@@ -210,6 +214,19 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: error.html
       BucketName: streamer-contracts-web-host
+
+  StreamerContractsWebHostBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StreamerContractsWebHostBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Action:
+          - s3:GetObject
+          Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}/*
+          Principal: "*"
+          Effect: Allow
 
   CodePipelineServiceRole:
     Type: AWS::IAM::Role
