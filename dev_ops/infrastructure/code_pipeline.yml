@@ -69,7 +69,24 @@ Resources:
       ServiceRole: !Ref CodeBuildServiceRole
       Source:
         Type: CODEPIPELINE
-        BuildSpec: infrastructure/build_spec.yml
+        BuildSpec: dev_ops/infrastructure/code_build/build_spec.yml
+      TimeoutInMinutes: 10
+
+  StreamerContractsWebCodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Description: StreamerContracts CodeBuild
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/java:openjdk-8
+        Type: LINUX_CONTAINER
+      Name: StreamerContractsWebCodeBuild
+      ServiceRole: !Ref CodeBuildServiceRole
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: dev_ops/infrastructure/code_build/build_spec_web.yml
       TimeoutInMinutes: 10
 
   CodeDeployServiceRole:
@@ -136,12 +153,6 @@ Resources:
       ApplicationName: StreamerContractsCodeDeploy-WebServer
       ComputePlatform: Server
 
-  StreamerContractsCodeDeployWebApplication:
-    Type: AWS::CodeDeploy::Application
-    Properties:
-      ApplicationName: StreamerContractsCodeDeploy-Web
-      ComputePlatform: Server
-
   StreamerContractsCodeDeployApiApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
@@ -162,20 +173,6 @@ Resources:
           Value: !Sub ${StreamerContractsEc2InstanceTags}-WebServer
       ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
 
-  StreamerContractsCodeDeployWebDeploymentGroup:
-    Type: AWS::CodeDeploy::DeploymentGroup
-    Properties:
-      ApplicationName: !Ref StreamerContractsCodeDeployWebApplication
-      DeploymentConfigName: CodeDeployDefault.AllAtOnce
-      DeploymentGroupName: StreamerContractsFleet-Web
-      DeploymentStyle:
-        DeploymentOption: WITHOUT_TRAFFIC_CONTROL
-        DeploymentType: IN_PLACE
-      Ec2TagFilters:
-        - Type: VALUE_ONLY
-          Value: !Sub ${StreamerContractsEc2InstanceTags}-Web
-      ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
-
   StreamerContractsCodeDeployApiDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
@@ -192,6 +189,7 @@ Resources:
 
   ArtifactStoreS3Location:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
     Properties:
       AccessControl: Private
       # S3 bucket where codepipeline artifacts are stored. Must be lower case and unique across all S3 buckets.
@@ -202,6 +200,16 @@ Resources:
             Status: Enabled
       VersioningConfiguration:
         Status: Enabled
+
+  StreamerContractsWebHostBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      BucketName: streamer-contracts-web-host
 
   CodePipelineServiceRole:
     Type: AWS::IAM::Role
@@ -305,7 +313,7 @@ Resources:
                 Owner: AWS
                 Version: 1
               Configuration:
-                ProjectName: !Ref StreamerContractsCodeBuild
+                ProjectName: !Ref StreamerContractsWebCodeBuild
               OutputArtifacts:
                 - Name: BuildOutput-Web
             - Name: BuildAction-Api
@@ -335,18 +343,6 @@ Resources:
               Configuration:
                 ApplicationName: !Ref StreamerContractsCodeDeployWebServerApplication
                 DeploymentGroupName: !Ref StreamerContractsCodeDeployWebServerDeploymentGroup
-            - Name: BetaDeployAction-Web
-              RunOrder: 3
-              InputArtifacts:
-                - Name: BuildOutput-Web
-              ActionTypeId:
-                Category: Deploy
-                Provider: CodeDeploy
-                Owner: AWS
-                Version: 1
-              Configuration:
-                ApplicationName: !Ref StreamerContractsCodeDeployWebApplication
-                DeploymentGroupName: !Ref StreamerContractsCodeDeployWebDeploymentGroup
             - Name: BetaDeployAction-Api
               RunOrder: 3
               InputArtifacts:
@@ -373,18 +369,6 @@ Resources:
               Configuration:
                 ApplicationName: !Ref StreamerContractsCodeDeployWebServerApplication
                 DeploymentGroupName: !Ref StreamerContractsCodeDeployWebServerDeploymentGroup
-            - Name: ProdDeployAction-Web
-              RunOrder: 4
-              InputArtifacts:
-                - Name: BuildOutput-Web
-              ActionTypeId:
-                Category: Deploy
-                Provider: CodeDeploy
-                Owner: AWS
-                Version: 1
-              Configuration:
-                ApplicationName: !Ref StreamerContractsCodeDeployWebApplication
-                DeploymentGroupName: !Ref StreamerContractsCodeDeployWebDeploymentGroup
             - Name: ProdDeployAction-Api
               RunOrder: 4
               InputArtifacts:

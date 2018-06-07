@@ -12,7 +12,6 @@ phases:
       - echo Entered the build phase...
       - echo Build started on `date`
       - bash ./gradlew clean
-      - bash ./gradlew web:buildAssets
       - bash ./gradlew api:build
   post_build:
     commands:
@@ -20,10 +19,9 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - web/build/libs/web-1.0-SNAPSHOT.jar
     - api/build/libs/api-1.0-SNAPSHOT.jar
-    - infrastructure/nginx/nginx-beta.conf
-    - infrastructure/code_deploy/appspec.yml
-    - infrastructure/code_deploy/start.sh
-    - infrastructure/code_deploy/before_install.sh
+    - devOps/infrastructure/nginx/nginx-beta.conf
+    - devOps/infrastructure/code_deploy/appspec.yml
+    - devOps/infrastructure/code_deploy/start.sh
+    - devOps/infrastructure/code_deploy/before_install.sh
   discard-paths: yes

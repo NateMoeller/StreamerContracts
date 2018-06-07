@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - bash ./gradlew clean
+      - bash ./gradlew web:buildAssets
+      # Must match the bucket name created during code_pipeline.yml
+      - aws s3 sync --delete ./web/build "s3://streamer-contracts-web-host"
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`

@@ -10,11 +10,6 @@ then
     sudo cp /var/www/streamercontracts/nginx.conf /etc/nginx/nginx.conf
     echo "Starting nginx StreamerContracts-WebServer."
     sudo service nginx start
-elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Web" ]]
-then
-    echo "Starting StreamerContracts-Web SpringBoot Application"
-    java -jar /var/www/streamercontracts/web-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
-    exit $?
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     echo "Starting StreamerContracts-Api SpringBoot Application"
