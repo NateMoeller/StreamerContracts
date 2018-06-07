@@ -16,7 +16,7 @@ const fetchApi = () => {
 
       // can post process the data here
 
-        dispatch(receiveApi(responseData));
+      dispatch(receiveApi(responseData));
     });
   }
 };
