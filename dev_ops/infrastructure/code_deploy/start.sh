@@ -13,6 +13,9 @@ then
 elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     echo "Starting StreamerContracts-Api SpringBoot Application"
+    sudo cp /var/www/streamercontracts/awslogs.conf /etc/awslogs/awslogs.conf
+    sudo service awslogs start
+    sudo chkconfig awslogs on
     java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
     exit $?
 else
