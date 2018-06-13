@@ -29,6 +29,7 @@ public class ExampleApiController {
     @RequestMapping(method = RequestMethod.GET)
     public String getExample() {
         log.info("Sample log message to test logging. Check cloudwatch logs to verify this works, {}", System.nanoTime());
+        System.out.println("test syso output " + System.nanoTime());
         return exampleService.getExampleValue(UUID.randomUUID());
     }
 
