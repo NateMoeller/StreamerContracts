@@ -24,5 +24,6 @@ artifacts:
     - dev_ops/infrastructure/code_deploy/appspec.yml
     - dev_ops/infrastructure/code_deploy/start.sh
     - dev_ops/infrastructure/code_deploy/before_install.sh
-    - dev_ops/infrastructure/cloud_watch/awslogs.conf
+    - dev_ops/infrastructure/cloud_watch/awslogs_api.conf
+    - dev_ops/infrastructure/cloud_watch/awslogs_nginx.conf
   discard-paths: yes

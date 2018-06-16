@@ -52,7 +52,7 @@ Resources:
               Effect: Allow
             - Action:
               - s3:Delete
-              Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}
+              Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}/*
               Effect: Allow
             - Action:
               - ssm:GetParameters
