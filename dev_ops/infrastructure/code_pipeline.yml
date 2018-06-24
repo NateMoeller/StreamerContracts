@@ -51,7 +51,7 @@ Resources:
               Resource: "*"
               Effect: Allow
             - Action:
-              - s3:Delete
+              - s3:DeleteObject
               Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}/*
               Effect: Allow
             - Action:
