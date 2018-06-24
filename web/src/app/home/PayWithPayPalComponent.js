@@ -37,6 +37,11 @@ class PayWithPayPalComponent extends Component {
                 }
               ],
               intent: "authorize"
+            },
+            experience: {
+              input_fields: {
+                no_shipping: 1
+              }
             }
           });
         },
