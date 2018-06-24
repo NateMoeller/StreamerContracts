@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import HomeComponent from './HomeComponent';
+import PayWithPayPalComponent from './PayWithPayPalComponent';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,10 +11,13 @@ class HomeContainer extends Component {
     const { fetchApi } = this.props; // get the fetchApi function from operations
 
     return (
-      <HomeComponent
-        fetchApi={fetchApi}
-        showSpinner={this.props.home.showSpinner}
-      />
+      <div>
+        <HomeComponent
+          fetchApi={fetchApi}
+          showSpinner={this.props.home.showSpinner}
+        />
+        <PayWithPayPalComponent/>
+      </div>
     );
   }
 }

@@ -4,6 +4,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
 
+    compile("com.paypal.sdk:rest-api-sdk:+")
     compile("org.projectlombok:lombok:1.16.20")
     compile("org.postgresql:postgresql:9.3-1100-jdbc4")
 
