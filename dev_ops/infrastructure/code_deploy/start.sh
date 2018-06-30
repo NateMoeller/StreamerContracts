@@ -20,8 +20,9 @@ then
     sudo cp /var/www/streamercontracts/awslogs_api.conf /etc/awslogs/awslogs.conf
     sudo chkconfig awslogs on
     currentDate=`date '+%Y_%m_%d_%H_%M'`;
-    java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts.log.$currentDate 2>&1
+    sudo touch /var/log/streamer-contracts.log.$currentDate
     sudo service awslogs restart
+    java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts.log.$currentDate 2>&1 &
     exit $?
 else
     echo "Invalid deployment group name '${DEPLOYMENT_GROUP_NAME}', no role found " 2>&1 &
