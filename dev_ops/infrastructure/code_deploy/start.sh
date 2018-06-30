@@ -6,8 +6,7 @@ killall -9 java
 if [[ ${DEPLOYMENT_GROUP_NAME} =~ "WebServer" ]]
 then
     sudo cp /var/www/streamercontracts/awslogs_nginx.conf /etc/awslogs/awslogs.conf
-    sudo service awslogs stop
-    sudo service awslogs start
+    sudo service awslogs restart
     sudo chkconfig awslogs on
     echo "Stopping nginx"
     service nginx stop
@@ -19,10 +18,9 @@ elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     echo "Starting StreamerContracts-Api SpringBoot Application"
     sudo cp /var/www/streamercontracts/awslogs_api.conf /etc/awslogs/awslogs.conf
-    sudo service awslogs stop
-    sudo service awslogs start
+    sudo service awslogs restart
     sudo chkconfig awslogs on
-    currentDate=`date '+%Y_%m_%d_%H'`;
+    currentDate=`date '+%Y_%m_%d_%H_%M'`;
     java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts.log.$currentDate 2>&1 &
     exit $?
 else
