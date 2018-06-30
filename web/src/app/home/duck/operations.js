@@ -11,7 +11,7 @@ const fetchApi = () => {
 
     dispatch(requestApi());
 
-    return axios.get('/api/login').then((response) => {
+    return axios.get('/api').then((response) => {
       const responseData = response.data;
 
       // can post process the data here
