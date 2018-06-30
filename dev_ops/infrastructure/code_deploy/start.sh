@@ -20,7 +20,7 @@ then
     sudo cp /var/www/streamercontracts/awslogs_api.conf /etc/awslogs/awslogs.conf
     sudo chkconfig awslogs on
     currentDate=`date '+%Y_%m_%d_%H'`;
-    sudo mkdir streamer-contracts
+    sudo mkdir /var/log/streamer-contracts
     echo $currentDate | sudo tee -a /var/log/streamer-contracts/streamer-contracts.log.$currentDate > /dev/null
     sudo service awslogs restart
     java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts/streamer-contracts.log.$currentDate 2>&1 &
