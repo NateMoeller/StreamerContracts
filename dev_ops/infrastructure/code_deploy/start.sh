@@ -6,6 +6,7 @@ killall -9 java
 if [[ ${DEPLOYMENT_GROUP_NAME} =~ "WebServer" ]]
 then
     sudo cp /var/www/streamercontracts/awslogs_nginx.conf /etc/awslogs/awslogs.conf
+    sudo service awslogs stop
     sudo service awslogs start
     sudo chkconfig awslogs on
     echo "Stopping nginx"
