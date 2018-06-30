@@ -21,7 +21,7 @@ then
     sudo service awslogs start
     sudo chkconfig awslogs on
     currentDate=`date '+%Y_%m_%d_%H'`;
-    java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts.$currentDate.txt 2>&1 &
+    java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts.log.$currentDate 2>&1 &
     exit $?
 else
     echo "Invalid deployment group name '${DEPLOYMENT_GROUP_NAME}', no role found " 2>&1 &
