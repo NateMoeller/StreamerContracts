@@ -19,6 +19,7 @@ elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     echo "Starting StreamerContracts-Api SpringBoot Application"
     sudo cp /var/www/streamercontracts/awslogs_api.conf /etc/awslogs/awslogs.conf
+    sudo service awslogs stop
     sudo service awslogs start
     sudo chkconfig awslogs on
     currentDate=`date '+%Y_%m_%d_%H'`;
