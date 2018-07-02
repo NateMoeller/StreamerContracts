@@ -1,15 +1,15 @@
 import types from './types.js';
 
 const requestApi = () => ({
-    type: types.REQUEST_API
-    // more stuff can go here
+  type: types.REQUEST_API
+  // more stuff can go here
 });
-const receiveApi = (json) => ({
-    type: types.RECEIVE_API,
-    response: json
+const receiveApi = json => ({
+  type: types.RECEIVE_API,
+  response: json
 });
 
 export default {
-    requestApi,
-    receiveApi
+  requestApi,
+  receiveApi
 };
