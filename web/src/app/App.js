@@ -5,7 +5,7 @@ import HomeContainer from '../app/home/HomeContainer';
 import LoginContainer from '../app/login/LoginContainer';
 import NavBar from '../app/common/navbar/NavbarComponent';
 import ProfileContainer from '../app/profile/ProfileContainer';
-import PublicRoute from '../app/common/publicRoute/PublicRoute';
+import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
 
 class App extends Component {
   render() {
@@ -16,7 +16,7 @@ class App extends Component {
           <Route exact path="/" component={HomeContainer} />
           <Route path="/home" component={HomeContainer} />
           <Route path="/about" component={AboutContainer} />
-          <PublicRoute path="/login" component={LoginContainer} />
+          <ProtectedRoute path="/login" component={LoginContainer} />
           <Route path="/profile" component={ProfileContainer} />
         </div>
       </Router>

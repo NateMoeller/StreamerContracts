@@ -8,14 +8,6 @@ import { profileOperations } from './duck';
 
 /* global sessionStorage */
 class ProfileContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      logout: false
-    };
-
-    this.logout = this.logout.bind(this);
-  }
   componentWillMount() {
     const { getUser } = this.props;
     if (!sessionStorage.getItem('user')) {
@@ -23,24 +15,23 @@ class ProfileContainer extends Component {
     }
   }
 
-  logout() {
-    // TODO: call backend to logout user
-    sessionStorage.removeItem('user');
-    this.setState({
-      logout: true
-    });
-  }
-
   render() {
-    if (this.props.profile.redirect || this.state.logout) {
+    if (this.props.profile.redirect) {
       return (
         <Redirect to={{ pathname: '/login', state: { from: this.props.location } }} />
       );
     }
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    if (!user) {
+      // TODO: show a nice spinner here
+      return 'Loading...';
+    }
 
     return (
       <ProfileComponent
-        logout={this.logout}
+        twitchUserName={user.display_name}
+        imageUrl={user.profile_image_url}
       />
     );
   }
