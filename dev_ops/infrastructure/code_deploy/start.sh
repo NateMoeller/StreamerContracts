@@ -23,7 +23,8 @@ then
     sudo mkdir /var/log/streamer-contracts
     sudo touch /var/log/streamer-contracts/streamer-contracts.log.$currentDate
     sudo service awslogs restart
-    java -Dspring.profiles.active=beta -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts/streamer-contracts.log.$currentDate 2>&1 &
+    sudo aws s3 cp s3://streamer-contracts-application-configurations/application-secrets.yml /var/www/streamercontracts/application-secrets.yml
+    java -Dspring.profiles.active=beta -Dspring.config.additional-location=/var/www/streamercontracts/application-secrets.yml -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts/streamer-contracts.log.$currentDate 2>&1 &
     exit $?
 else
     echo "Invalid deployment group name '${DEPLOYMENT_GROUP_NAME}', no role found " 2>&1 &
