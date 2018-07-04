@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://streamer-contracts-db.cluster-c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
+    url: jdbc:postgresql://streamer-contracts-db.c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
     username: StreamerContractsAdmin
     password: ChangeMe
     driver-class-name: org.postgresql.Driver
