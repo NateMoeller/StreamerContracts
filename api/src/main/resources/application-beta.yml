@@ -2,4 +2,3 @@ security:
   oauth2:
     client:
       clientId: fal8zh2u859tgnqg4w0tgoqwq8m7ef
-      clientSecret: f2ztb24if89as9e1npk2hw0p8e2p7e
