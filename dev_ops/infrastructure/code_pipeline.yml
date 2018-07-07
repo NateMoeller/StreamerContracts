@@ -213,7 +213,7 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-      BucketName: streamer-contracts-web-host
+      BucketName: web.streamercontracts.co.uk
 
   StreamerContractsWebHostBucketPolicy:
     Type: AWS::S3::BucketPolicy
