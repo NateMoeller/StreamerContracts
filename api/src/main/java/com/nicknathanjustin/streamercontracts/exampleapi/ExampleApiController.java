@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -28,14 +30,14 @@ public class ExampleApiController {
         return "wow! you hit a restricted endpoint. good job!";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String getExample() {
-        return exampleService.getExampleValue(UUID.randomUUID());
-    }
-
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
     public String getExampleById(@PathVariable("id") @NonNull final UUID uuid) {
         return exampleService.getExampleValue(uuid);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public void redirect(HttpServletResponse response) throws IOException {
+        response.sendRedirect("http://localhost:3000/profile");
     }
 
     @RequestMapping(method = RequestMethod.POST)
