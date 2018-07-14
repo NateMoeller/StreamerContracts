@@ -6,18 +6,22 @@ import LoginContainer from '../app/login/LoginContainer';
 import NavBar from '../app/common/navbar/NavbarComponent';
 import ProfileContainer from '../app/profile/ProfileContainer';
 import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
+import cx from 'classnames';
+import styles from '../index.scss';
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <div className="App container">
+        <div>
           <NavBar />
-          <Route exact path="/" component={HomeContainer} />
-          <Route path="/home" component={HomeContainer} />
-          <Route path="/about" component={AboutContainer} />
-          <ProtectedRoute path="/login" component={LoginContainer} />
-          <Route path="/profile" component={ProfileContainer} />
+          <div className={cx([styles.App, 'container'])}>
+            <Route exact path="/" component={HomeContainer} />
+            <Route path="/home" component={HomeContainer} />
+            <Route path="/about" component={AboutContainer} />
+            <ProtectedRoute path="/login" component={LoginContainer} />
+            <Route path="/profile" component={ProfileContainer} />
+          </div>
         </div>
       </Router>
     );

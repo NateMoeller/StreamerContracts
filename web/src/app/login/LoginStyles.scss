@@ -1,0 +1,50 @@
+.loginContent {
+  text-align: center;
+  height: 600px;
+}
+
+.btnTwitch {
+  color: #FFFFFF;
+  background-color: #6441A5;
+  border-color: #2F1F4E;
+}
+
+.btnTwitch:hover,
+.btnTwitch:focus,
+.btnTwitch:active,
+.btnTwitch.active,
+.open .dropdown-toggle.btnTwitch {
+  color: #FFFFFF;
+  background-color: #472e75;
+  border-color: #2F1F4E;
+}
+
+.btnTwitch:active,
+.btnTwitch.active,
+.open .dropdown-toggle.btnTwitch {
+  background-image: none;
+}
+
+.btnTwitch.disabled,
+.btnTwitch[disabled],
+fieldset[disabled] .btnTwitch,
+.btnTwitch.disabled:hover,
+.btnTwitch[disabled]:hover,
+fieldset[disabled] .btnTwitch:hover,
+.btnTwitch.disabled:focus,
+.btnTwitch[disabled]:focus,
+fieldset[disabled] .btnTwitch:focus,
+.btnTwitch.disabled:active,
+.btnTwitch[disabled]:active,
+fieldset[disabled] .btnTwitch:active,
+.btnTwitch.disabled.active,
+.btnTwitch[disabled].active,
+fieldset[disabled] .btnTwitch.active {
+  background-color: #6441A5;
+  border-color: #2F1F4E;
+}
+
+.btn-twitch .badge {
+  color: #6441A5;
+  background-color: #FFFFFF;
+}

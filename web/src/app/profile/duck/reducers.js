@@ -2,7 +2,8 @@ import { RECEIVE_USER_INFO_FAILURE, RECEIVE_USER_INFO_SUCCESS, REQUEST_USER_INFO
 
 const INITIAL_STATE = {
   showSpinner: false,
-  redirect: false
+  redirect: false,
+  isLoggedIn: false
 };
 
 /* global sessionStorage */
@@ -28,7 +29,8 @@ const profileReducer = (state = INITIAL_STATE, action) => {
 
     return {
       ...state,
-      showSpinner: false
+      showSpinner: false,
+      isLoggedIn: true
     };
   }
   default: {
