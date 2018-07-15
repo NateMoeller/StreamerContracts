@@ -1,12 +1,14 @@
+@import '../../colors.scss';
+
 .loginContent {
   text-align: center;
   height: 600px;
 }
 
 .btnTwitch {
-  color: #FFFFFF;
-  background-color: #6441A5;
-  border-color: #2F1F4E;
+  color: $true-white;
+  background-color: $twitch-purple;
+  border-color: $twitch-dark-purple;
 }
 
 .btnTwitch:hover,
@@ -14,9 +16,9 @@
 .btnTwitch:active,
 .btnTwitch.active,
 .open .dropdown-toggle.btnTwitch {
-  color: #FFFFFF;
-  background-color: #472e75;
-  border-color: #2F1F4E;
+  color: $true-white;
+  background-color: $twitch-purple2;
+  border-color: $twitch-dark-purple;
 }
 
 .btnTwitch:active,
@@ -40,11 +42,11 @@ fieldset[disabled] .btnTwitch:active,
 .btnTwitch.disabled.active,
 .btnTwitch[disabled].active,
 fieldset[disabled] .btnTwitch.active {
-  background-color: #6441A5;
-  border-color: #2F1F4E;
+  background-color: $twitch-purple;
+  border-color: $twitch-dark-purple;
 }
 
 .btn-twitch .badge {
-  color: #6441A5;
-  background-color: #FFFFFF;
+  color: $twitch-purple;
+  background-color: $true-white;
 }
