@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 
 class LoginComponent extends Component {
   render() {
-    const link = 'api/login';
+    const link = process.env.REACT_APP_API_HOST + 'login';
     return (
       <div>
         <Button href={link} className="btn btn-twitch">

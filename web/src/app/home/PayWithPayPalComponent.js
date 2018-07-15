@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import paypal from 'paypal-checkout';
 
+axios.defaults.withCredentials = true;
+
 class PayWithPayPalComponent extends Component {
   componentDidMount() {
     paypal.Button.render({
@@ -53,7 +55,7 @@ class PayWithPayPalComponent extends Component {
           // Make a call to the REST api to execute the payment. Unfortunatly 'paypal-checkout' service has a bug
           // that prevents executing payments when payee isnt the client's paypal account.
           // So we must do that on our backend. See this bug: https://github.com/paypal/paypal-checkout/issues/464
-          return axios.get('api/donations/execute/' + paymentId).then((response) => {
+          return axios.get(process.env.REACT_APP_API_HOST + 'donations/execute/' + paymentId).then((response) => {
             console.log(response)
             window.alert('Payment Complete!');
           });

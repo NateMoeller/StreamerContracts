@@ -29,3 +29,5 @@ security:
     resource:
       userInfoUri: https://api.twitch.tv/helix/users
       preferTokenInfo: true
+
+frontEndUrl: http://localhost:3000
