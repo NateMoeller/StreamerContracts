@@ -20,7 +20,6 @@ phases:
 artifacts:
   files:
     - api/build/libs/api-1.0-SNAPSHOT.jar
-    - dev_ops/infrastructure/nginx/nginx-beta.conf
     - dev_ops/infrastructure/code_deploy/appspec.yml
     - dev_ops/infrastructure/code_deploy/start.sh
     - dev_ops/infrastructure/code_deploy/before_install.sh

@@ -3,18 +3,7 @@
 # Ensure all java instances are dead
 killall -9 java
 
-if [[ ${DEPLOYMENT_GROUP_NAME} =~ "WebServer" ]]
-then
-    sudo cp /var/www/streamercontracts/awslogs_nginx.conf /etc/awslogs/awslogs.conf
-    sudo chkconfig awslogs on
-    echo "Stopping nginx"
-    service nginx stop
-    sudo cp /var/www/streamercontracts/nginx-beta.conf /etc/nginx/nginx.conf
-    echo "Starting nginx StreamerContracts-WebServer."
-    sudo service nginx start
-    sudo service awslogs restart
-
-elif [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
+if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     echo "Starting StreamerContracts-Api SpringBoot Application"
     sudo cp /var/www/streamercontracts/awslogs_api.conf /etc/awslogs/awslogs.conf
