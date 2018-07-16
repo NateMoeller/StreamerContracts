@@ -160,15 +160,14 @@ Resources:
   StreamerContractsCodeDeployApiDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
+      AutoScalingGroups:
+        - ApiAutoScalingGroup
       ApplicationName: !Ref StreamerContractsCodeDeployApiApplication
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
       DeploymentGroupName: StreamerContractsFleet-Api
       DeploymentStyle:
         DeploymentOption: WITHOUT_TRAFFIC_CONTROL
         DeploymentType: IN_PLACE
-      Ec2TagFilters:
-        - Type: VALUE_ONLY
-          Value: !Sub ${StreamerContractsEc2InstanceTags}-Api
       ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
 
   ArtifactStoreS3Location:
