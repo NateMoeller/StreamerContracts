@@ -1,4 +1,3 @@
-import './index.css';
 import { applyMiddleware, createStore } from 'redux';
 import App from './app/App';
 import { Provider } from 'react-redux';

@@ -1,0 +1,52 @@
+@import '../../colors.scss';
+
+.loginContent {
+  text-align: center;
+  height: 600px;
+}
+
+.btnTwitch {
+  color: $true-white;
+  background-color: $twitch-purple;
+  border-color: $twitch-dark-purple;
+}
+
+.btnTwitch:hover,
+.btnTwitch:focus,
+.btnTwitch:active,
+.btnTwitch.active,
+.open .dropdown-toggle.btnTwitch {
+  color: $true-white;
+  background-color: $twitch-purple2;
+  border-color: $twitch-dark-purple;
+}
+
+.btnTwitch:active,
+.btnTwitch.active,
+.open .dropdown-toggle.btnTwitch {
+  background-image: none;
+}
+
+.btnTwitch.disabled,
+.btnTwitch[disabled],
+fieldset[disabled] .btnTwitch,
+.btnTwitch.disabled:hover,
+.btnTwitch[disabled]:hover,
+fieldset[disabled] .btnTwitch:hover,
+.btnTwitch.disabled:focus,
+.btnTwitch[disabled]:focus,
+fieldset[disabled] .btnTwitch:focus,
+.btnTwitch.disabled:active,
+.btnTwitch[disabled]:active,
+fieldset[disabled] .btnTwitch:active,
+.btnTwitch.disabled.active,
+.btnTwitch[disabled].active,
+fieldset[disabled] .btnTwitch.active {
+  background-color: $twitch-purple;
+  border-color: $twitch-dark-purple;
+}
+
+.btn-twitch .badge {
+  color: $twitch-purple;
+  background-color: $true-white;
+}

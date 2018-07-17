@@ -1,0 +1,52 @@
+@import '../../../colors.scss';
+
+.navbarBrand {
+  color: $primary-white !important;
+}
+
+.navBar {
+  background-color: $primary-blue;
+  margin-bottom: 5px;
+}
+
+.tab {
+  margin-right: 10px;
+
+  a {
+    transition: all 0.25s ease;
+    background-color: $primary-blue !important;
+    border-bottom: 2px solid $primary-blue;
+    color: $primary-white !important;
+
+    &:hover {
+      color: $secondary-blue !important;
+    }
+  }
+}
+
+.activeTab {
+  a {
+    border-bottom: 2px solid $secondary-blue;
+    color: $secondary-blue !important;
+  }
+}
+
+.dropdownMenu {
+  a {
+    background-color: $primary-blue !important;
+    color: $primary-white !important;
+    transition:all 0.25s ease;
+
+    &:hover {
+      color: $secondary-blue !important;
+    }
+  }
+  ul {
+    background-color: $primary-blue !important;
+  }
+  img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+  }
+}
