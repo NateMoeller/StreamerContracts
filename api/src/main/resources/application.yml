@@ -3,18 +3,19 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://streamer-contracts-db.c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
-    username: StreamerContractsAdmin
-    password: ChangeMe
-    driver-class-name: org.postgresql.Driver
-    validation-query: SELECT 1
-    initSQL: SET NAMES 'utf8mb4'
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/streamercontractsdb
+    username: postgres
+    password: changeme
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
     properties:
       hibernate:
         temp:
           # Workaround. see: https://stackoverflow.com/questions/49683434/spring-boot-app-fails-method-org-postgresql-jdbc4-jdbc4connection-createclob-i
           use_jdbc_metadata_defaults: false
+        ddl-auto: validate
 
 security:
   oauth2:
@@ -31,3 +32,12 @@ security:
       preferTokenInfo: true
 
 frontEndUrl: http://localhost:3000
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
