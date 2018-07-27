@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 import AboutContainer from '../app/about/AboutContainer';
-import AlertComponent from '../app/alert/AlertComponent';
 import HomeContainer from '../app/home/HomeContainer';
 import LoginContainer from '../app/login/LoginContainer';
 import NavBar from '../app/common/navbar/NavbarComponent';
