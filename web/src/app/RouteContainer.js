@@ -6,9 +6,13 @@ class RouteContainer extends Component {
     super(props);
 
     this.props.history.listen((location, action) => {
-      const path = (/#!(\/.*)$/.exec(location.hash) || [])[1];
-      if (path) {
-          this.props.history.replace(path);
+      const pathHash = (/#!(\/.*)$/.exec(location.hash) || [])[1];
+      const pathName = (/#!(\/.*)$/.exec(location.pathname) || [])[1];
+      if (pathHash) {
+          this.props.history.replace(pathHash);
+       }
+       if (pathName) {
+         this.props.history.replace(pathName);
        }
     });
   }
