@@ -6,7 +6,7 @@ dependencies {
 
     compile("com.paypal.sdk:rest-api-sdk:+")
     compile("org.projectlombok:lombok:1.16.20")
-    compile("org.postgresql:postgresql:9.3-1100-jdbc4")
+    compile("org.postgresql:postgresql:42.1.4")
 
     testCompile("junit:junit")
 }
