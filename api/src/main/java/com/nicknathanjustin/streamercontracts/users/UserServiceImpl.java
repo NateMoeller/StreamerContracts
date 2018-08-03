@@ -12,11 +12,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel createUser(@NonNull String twitchUsername) {
-        Timestamp creationTimestamp = new Timestamp(System.currentTimeMillis());
+        final Timestamp creationTimestamp = new Timestamp(System.currentTimeMillis());
         return userModelRepository.save(UserModel.builder()
                 .twitchUsername(twitchUsername)
                 .totalLogins(1)
-                .createTimestamp(creationTimestamp)
+                .createdAt(creationTimestamp)
                 .lastLogin(creationTimestamp)
                 .build());
     }

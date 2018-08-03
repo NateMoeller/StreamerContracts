@@ -1,11 +1,19 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Setter;
+import lombok.Getter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -17,14 +25,14 @@ import java.sql.Timestamp;
 public class UserModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String twitchUsername;
 
-    private Timestamp createTimestamp;
+    private Timestamp createdAt;
 
     private Timestamp lastLogin;
 
-    private Integer totalLogins;
+    private int totalLogins;
 }

@@ -1,5 +1,7 @@
 CREATE TABLE featured_contracts (
-    id BIGSERIAL PRIMARY KEY,
-	contract_id BIGINT REFERENCES contracts (id),
-	hype_text TEXT NOT NULL
+    id UUID PRIMARY KEY,
+	contract_id UUID REFERENCES contracts (id),
+	hype_text TEXT NOT NULL,
+	created_at TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP NOT NULL
 );
