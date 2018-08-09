@@ -41,6 +41,7 @@ class NavbarComponent extends Component {
     const profileClassname = this.state.activeItem === 'profile' ? cx([styles.tab, styles.activeTab]) : styles.tab;
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userTitle = this.getUserTitle(user);
+    const logoutLink = process.env.REACT_APP_API_HOST + 'logout';
 
     return (
       <Navbar fluid collapseOnSelect className={styles.navBar}>
@@ -70,7 +71,7 @@ class NavbarComponent extends Component {
                   <MenuItem eventKey={3.2}>Another action</MenuItem>
                   <MenuItem eventKey={3.3}>Something else here</MenuItem>
                   <MenuItem divider />
-                  <MenuItem eventKey={3.4}>Logout</MenuItem>
+                  <MenuItem eventKey={3.4} href={logoutLink} onClick={() => sessionStorage.removeItem('user')}>Logout</MenuItem>
                 </NavDropdown>}
             </Nav>
           </Navbar.Collapse>

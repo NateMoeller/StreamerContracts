@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,12 +15,15 @@ import org.springframework.security.web.firewall.DefaultHttpFirewall;
 @EnableOAuth2Sso
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Value("${frontEndUrl}")
+    private String frontEndUrl;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/login**").permitAll()
                 .antMatchers(HttpMethod.GET, "/restricted").authenticated()
-                .and().logout().logoutSuccessUrl("/").permitAll();
+                .and().logout().logoutSuccessUrl(frontEndUrl).permitAll();
     }
 
     @Override
