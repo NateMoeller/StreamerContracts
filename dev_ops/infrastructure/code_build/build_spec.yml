@@ -3,20 +3,20 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Entered the install phase...
+      - echo Entered the api install phase...
   pre_build:
     commands:
-      - echo Entered the pre_build phase...
+      - echo Entered the api pre_build phase...
   build:
     commands:
-      - echo Entered the build phase...
+      - echo Entered the api build phase...
       - echo Build started on `date`
-      - bash ./gradlew clean
+      - bash ./gradlew api:clean
       - bash ./gradlew api:build
   post_build:
     commands:
-      - echo Entered the post_build phase...
-      - echo Build completed on `date`
+      - echo Entered the api post_build phase...
+      - echo api Build completed on `date`
 artifacts:
   files:
     - api/build/libs/api-1.0-SNAPSHOT.jar
