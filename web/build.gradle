@@ -8,7 +8,11 @@ node {
     download = true
 }
 
-task buildAssets(type: NpmTask, dependsOn: [npmInstall]) {
+task deleteNodeModules(type: Delete) {
+    delete "node_modules"
+}
+
+task buildAssets(type: NpmTask, dependsOn: [deleteNodeModules, npmInstall]) {
     args = ['run', 'build']
 }
 
