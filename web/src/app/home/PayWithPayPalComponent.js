@@ -55,10 +55,8 @@ class PayWithPayPalComponent extends Component {
           // that prevents executing payments when payee isnt the client's paypal account.
           // So we must do that on our backend. See this bug: https://github.com/paypal/paypal-checkout/issues/464
           return RestClient.GET('donations/execute/' + paymentId).then((response) => {
-            console.log(response);
             window.alert('Payment Complete!');
           }, (error) => {
-            console.log(error);
             window.alert('Something went wrong');
           })
         }
