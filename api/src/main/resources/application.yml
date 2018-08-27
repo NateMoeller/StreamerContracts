@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://streamer-contracts-db.c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
+    url: jdbc:postgresql://sslhoq9gpiri1r.c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
     username: StreamerContractsAdmin
     password: ChangeMe
     validation-query: SELECT 1
