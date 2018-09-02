@@ -2,6 +2,7 @@ package com.nicknathanjustin.streamercontracts.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
@@ -33,5 +35,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         super.configure(web);
         final DefaultHttpFirewall firewall = new DefaultHttpFirewall();
         web.httpFirewall(firewall);
+    }
+
+    //Workaround for this bug: https://github.com/spring-projects/spring-session/issues/124
+    @Bean
+    public static ConfigureRedisAction configureRedisAction() {
+        return ConfigureRedisAction.NO_OP;
     }
 }
