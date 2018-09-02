@@ -17,9 +17,7 @@ class ProfileContainer extends Component {
   }
   componentWillMount() {
     const { getUser } = this.props;
-    // TODO: Temporarily always hit API to retrieve user information to test Oauth interacting with a load balancer. Remove this line when testing is complete
-    // if (!sessionStorage.getItem('user')) {
-    if (true) {
+    if (!sessionStorage.getItem('user')) {
       getUser();
     }
   }
