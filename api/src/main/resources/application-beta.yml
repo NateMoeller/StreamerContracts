@@ -4,3 +4,7 @@ security:
       clientId: fal8zh2u859tgnqg4w0tgoqwq8m7ef
 
 frontEndUrl: http://web.streamercontracts.co.uk
+
+spring:
+  redis:
+    host: str-st-16hm31lpmuqoc.e1fohh.0001.use1.cache.amazonaws.com
