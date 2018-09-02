@@ -2,7 +2,6 @@ package com.nicknathanjustin.streamercontracts.exampleapi;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +17,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-@Slf4j
 public class ExampleApiController {
 
     @Value("${frontEndUrl}")
@@ -28,7 +26,6 @@ public class ExampleApiController {
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
     public Principal user(Principal principal) {
-        log.info("returning user object for user: ", principal.toString());
         return principal;
     }
 
