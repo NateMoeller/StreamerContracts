@@ -1,34 +1,26 @@
 @import '../../colors.scss';
 
-.carousel {
-  margin-bottom: 10px;
-
-  .carouselItem {
-    height: 500px;
-
-    .content1 {
-      margin:auto;
-      width: 75%;
-    }
-  }
+.content {
+  margin-bottom: 50px;
 }
 
 
 .header {
   font-size: 68px;
+  color: $primary-blue;
 }
 
 .caption {
   font-size: 18px;
+  margin-bottom: 20px;
 }
 
 .highlight {
   color: $secondary-blue !important;
 }
 
-:global {
-  .carousel-control {
-    width: 10px;
-    background-image: none !important;
+.tabs {
+  .tabContent {
+    margin-top: 10px;
   }
 }

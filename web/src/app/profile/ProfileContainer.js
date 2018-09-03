@@ -8,13 +8,6 @@ import { profileOperations } from './duck';
 
 /* global sessionStorage */
 class ProfileContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activeTab: 'account'
-    };
-  }
   componentWillMount() {
     const { getUser } = this.props;
     if (!sessionStorage.getItem('user')) {
@@ -39,7 +32,7 @@ class ProfileContainer extends Component {
       <ProfileComponent
         twitchUserName={user.display_name}
         imageUrl={user.profile_image_url}
-        activeTab={this.state.activeTab}
+        testAlert={this.props.testAlert}
       />
     );
   }

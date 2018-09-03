@@ -1,4 +1,4 @@
-import { receiveUserInfoFailure, receiveUserInfoSuccess, requestUserInfo } from './actions';
+import { requestTestAlert, receiveTestAlert, receiveUserInfoFailure, receiveUserInfoSuccess, requestUserInfo } from './actions';
 import RestClient from '../../RestClient';
 
 const getUser = () => (dispatch) => {
@@ -13,6 +13,17 @@ const getUser = () => (dispatch) => {
   });
 };
 
+const testAlert = () => (dispatch) => {
+  dispatch(requestTestAlert());
+
+  RestClient.POST('/alert', null, (response) => {
+    dispatch(receiveTestAlert(true));
+  }, (error) => {
+    dispatch(receiveTestAlert(false));
+  });
+};
+
 export default {
-  getUser
+  getUser,
+  testAlert
 };

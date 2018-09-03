@@ -7,6 +7,7 @@ server:
     key-alias: tomcat
 
 spring:
+  environment: development
 #  Redis session config
   session:
     store-type: redis
@@ -51,6 +52,7 @@ security:
       preferTokenInfo: true
 
 frontEndUrl: https://localhost:3000
+alertUrl: http://localhost:8080
 
 logging:
   level:
