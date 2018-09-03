@@ -8,3 +8,13 @@ web/out/
 node_modules
 web/package-lock.json
 web/src/main/resources/static/
+.project
+.settings/
+api/.classpath
+api/.project
+api/.settings/
+api/bin/
+web/.classpath
+web/.project
+web/.settings/
+web/bin/
