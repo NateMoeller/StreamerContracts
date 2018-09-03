@@ -24,7 +24,7 @@ public class UsersApiController {
     @NonNull private final UserService userService;
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
-    public Principal user(@NonNull final Principal principal) {
+    public Principal user(@Nullable final Principal principal) {
         return principal;
     }
 
@@ -41,11 +41,6 @@ public class UsersApiController {
             }
         }
 
-        response.sendRedirect(frontEndUrl + "/profile");
-    }
-
-    @RequestMapping(path = "logout", method = RequestMethod.GET)
-    public void logoutRedirect(@NonNull final HttpServletResponse response) throws IOException {
         response.sendRedirect(frontEndUrl + "/profile");
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -33,11 +32,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/restricted").authenticated()
                 .and()
             .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+                //TODO: uncomment when CSRF and CORS is working
+                //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .disable()
             .logout()
                 .invalidateHttpSession(true)
-                .logoutSuccessUrl("/logout")
+                .logoutSuccessUrl(frontEndUrl)
                 .permitAll();
     }
 
