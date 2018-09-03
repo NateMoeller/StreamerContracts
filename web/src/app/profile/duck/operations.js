@@ -16,7 +16,7 @@ const getUser = () => (dispatch) => {
 const testAlert = () => (dispatch) => {
   dispatch(requestTestAlert());
 
-  RestClient.POST('/alert', null, (response) => {
+  RestClient.POST('alert', null, (response) => {
     dispatch(receiveTestAlert(true));
   }, (error) => {
     dispatch(receiveTestAlert(false));
