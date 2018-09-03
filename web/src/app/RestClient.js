@@ -13,9 +13,14 @@ function GET(url, successCallback, failureCallback) {
 
 function POST(url, payload, successCallback, failureCallback) {
   axios.post(BASE_URL + url, payload).then((response) => {
-    successCallback(response);
+    if(successCallback) {
+      successCallback(response);
+    }
   }).catch((error) => {
-    failureCallback(error);
+    console.error(error);
+    if(failureCallback) {
+      failureCallback(error);
+    }
   });
 }
 

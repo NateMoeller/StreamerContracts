@@ -9,9 +9,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableRedisHttpSession
@@ -27,7 +31,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/login**").permitAll()
                 .antMatchers(HttpMethod.GET, "/restricted").authenticated()
-                .and().logout().logoutSuccessUrl(frontEndUrl).permitAll();
+                .and()
+            .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and()
+            .logout()
+                .invalidateHttpSession(true)
+                .logoutSuccessUrl("/logout")
+                .permitAll();
     }
 
     @Override
@@ -35,6 +46,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         super.configure(web);
         final DefaultHttpFirewall firewall = new DefaultHttpFirewall();
         web.httpFirewall(firewall);
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin(frontEndUrl);
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.setAllowCredentials(true);
+
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsFilter(source);
     }
 
     //Workaround for this bug: https://github.com/spring-projects/spring-session/issues/124

@@ -71,9 +71,9 @@ class NavbarComponent extends Component {
                   <MenuItem eventKey={3.2}>Another action</MenuItem>
                   <MenuItem eventKey={3.3}>Something else here</MenuItem>
                   <MenuItem divider />
-                  <MenuItem eventKey={3.4} href="/" onClick={() => {
+                  <MenuItem eventKey={3.4} onClick={() => {
                     sessionStorage.removeItem('user');
-                    RestClient.POST('logout');
+                    RestClient.POST('logout', {}, (data) => window.location = '/');
                   }}>Logout</MenuItem>
                 </NavDropdown>}
             </Nav>

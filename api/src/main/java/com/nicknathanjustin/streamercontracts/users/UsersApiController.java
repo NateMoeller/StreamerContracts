@@ -40,4 +40,9 @@ public class UsersApiController {
 
         response.sendRedirect(frontEndUrl + "/profile");
     }
+
+    @RequestMapping(path = "logout", method = RequestMethod.GET)
+    public void logoutRedirect(@NonNull final HttpServletResponse response) throws IOException {
+        response.sendRedirect(frontEndUrl + "/profile");
+    }
 }
