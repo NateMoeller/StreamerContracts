@@ -27,7 +27,8 @@ public class UserServiceImpl implements UserService {
     public UserModel getUser(@NonNull final String twitchUsername) {
         List<UserModel> users = userModelRepository.findByTwitchUsername(twitchUsername);
         Assert.isTrue(users.size() <= 1, "Error. There are multiple users in the database with the same twitch username.");
-        return users.get(0);
+        UserModel user = users.size() == 1 ? users.get(0) : null;
+        return user;
     }
 
     @Override
