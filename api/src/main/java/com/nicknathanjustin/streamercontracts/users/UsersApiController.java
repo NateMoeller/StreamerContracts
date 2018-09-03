@@ -1,6 +1,5 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import com.nicknathanjustin.streamercontracts.helpers.AuthenticationHelper;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,19 +23,21 @@ public class UsersApiController {
     @NonNull private final UserService userService;
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
-    public Principal user(Principal principal) {
+    public Principal user(@NonNull final Principal principal) {
         return principal;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public void registerUserIfNotExists(HttpServletResponse response, OAuth2Authentication auth) throws IOException {
-        final String displayName = AuthenticationHelper.getUserName(auth);
-        if (userService.userExists(displayName)) {
-            userService.login(displayName);
+    public void registerUserIfNotExists(@NonNull final HttpServletResponse response, @NonNull final OAuth2Authentication auth) throws IOException {
+        final TwitchUser twitchUser = TwitchUser.createTwitchUser(auth);
+        final UserModel user = userService.getUser(twitchUser.getDisplayName());
+        if (user != null) {
+            userService.login(user);
         }
         else {
-            userService.createUser(displayName);
+            userService.createUser(twitchUser.getDisplayName());
         }
+
         response.sendRedirect(frontEndUrl + "/profile");
     }
 }
