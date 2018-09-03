@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import styles from './NavBarStyles.scss';
+import RestClient from '../../RestClient';
 
 class NavbarComponent extends Component {
   constructor(props) {
@@ -41,7 +42,6 @@ class NavbarComponent extends Component {
     const profileClassname = this.state.activeItem === 'profile' ? cx([styles.tab, styles.activeTab]) : styles.tab;
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userTitle = this.getUserTitle(user);
-    const logoutLink = process.env.REACT_APP_API_HOST + 'logout';
 
     return (
       <Navbar fluid collapseOnSelect className={styles.navBar}>
@@ -71,7 +71,10 @@ class NavbarComponent extends Component {
                   <MenuItem eventKey={3.2}>Another action</MenuItem>
                   <MenuItem eventKey={3.3}>Something else here</MenuItem>
                   <MenuItem divider />
-                  <MenuItem eventKey={3.4} href={logoutLink} onClick={() => sessionStorage.removeItem('user')}>Logout</MenuItem>
+                  <MenuItem eventKey={3.4} href="/" onClick={() => {
+                    sessionStorage.removeItem('user');
+                    RestClient.POST('logout');
+                  }}>Logout</MenuItem>
                 </NavDropdown>}
             </Nav>
           </Navbar.Collapse>
