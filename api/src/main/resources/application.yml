@@ -1,5 +1,5 @@
 server:
-  port: 8443
+  port: 8070
   ssl:
     key-store: ${STREAMER_CONTRACTS_KEY_STORE_URL}
     key-store-password: password
