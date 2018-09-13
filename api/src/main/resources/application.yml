@@ -7,7 +7,6 @@ server:
     key-alias: tomcat
 
 spring:
-  environment: development
 #  Redis session config
   session:
     store-type: redis
