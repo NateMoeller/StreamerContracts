@@ -25,6 +25,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${frontEndUrl}")
     private String frontEndUrl;
 
+    @Value("${alertUrl}")
+    private String alertUrl;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -52,6 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         final CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontEndUrl);
+        config.addAllowedOrigin(alertUrl);
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
@@ -59,6 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
 
         return new CorsFilter(source);
     }

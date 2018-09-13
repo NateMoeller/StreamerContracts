@@ -7,6 +7,9 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
+    const alertUrl = process.env.NODE_ENV === 'development' ?
+    'https://localhost:8080/?id=' + this.props.alertKey : process.env.PUBLIC_URL + '?id=' + this.props.alertKey;
+
     return (
       <div>
         <div className={styles.message}>
@@ -21,16 +24,16 @@ class AlertComponent extends Component {
               <FormControl
                 type="text"
                 readOnly
-                value={this.props.alertUrl}
+                value={alertUrl}
               />
             </div>
             <div className={styles.copyButton}>
-              <CopyToClipboard text={this.props.alertUrl}>
+              <CopyToClipboard text={alertUrl}>
                 <Button>Copy Link</Button>
               </CopyToClipboard>
             </div>
             <div className={styles.openButton}>
-              <Button onClick={()=> window.open(this.props.alertUrl, "_blank")}>Open Alert</Button>
+              <Button onClick={()=> window.open(alertUrl, "_blank")}>Open Alert</Button>
             </div>
           </FormGroup>
           </Form>
@@ -38,7 +41,9 @@ class AlertComponent extends Component {
             Use the button below to test the alert
           </div>
           <div>
-            <Button onClick={this.props.testAlert}>Test Alert</Button>
+            <Button onClick={() => {
+              this.props.testAlert(this.props.alertKey);
+            }}>Test Alert</Button>
           </div>
       </div>
     );
@@ -46,7 +51,7 @@ class AlertComponent extends Component {
 }
 
 AlertComponent.propTypes = {
-  alertUrl: PropTypes.string.isRequired,
+  alertKey: PropTypes.string.isRequired,
   testAlert: PropTypes.func.isRequired
 }
 

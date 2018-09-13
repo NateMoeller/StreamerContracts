@@ -10,6 +10,7 @@ dependencies {
     compile("com.paypal.sdk:rest-api-sdk:+")
     compile("org.projectlombok:lombok:1.16.20")
     compile("org.postgresql:postgresql:42.1.4")
+    compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
 
     testCompile("junit:junit")
 }

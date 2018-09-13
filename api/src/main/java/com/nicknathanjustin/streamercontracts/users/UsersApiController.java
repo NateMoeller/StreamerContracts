@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/")
@@ -24,8 +23,12 @@ public class UsersApiController {
     @NonNull private final UserService userService;
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
-    public Principal user(@Nullable final Principal principal) {
-        return principal;
+    public User user(@NonNull final OAuth2Authentication auth) {
+        final TwitchUser twitchUser = TwitchUser.createTwitchUser(auth);
+        final UserModel userModel = userService.getUser(twitchUser.getDisplayName());
+        User user = new User(twitchUser, userModel);
+
+        return user;
     }
 
     @RequestMapping(method = RequestMethod.GET)

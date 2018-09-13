@@ -30,9 +30,10 @@ class ProfileContainer extends Component {
 
     return (
       <ProfileComponent
-        twitchUserName={user.display_name}
-        imageUrl={user.profile_image_url}
+        twitchUserName={user.displayName}
+        imageUrl={user.profileImageUrl}
         testAlert={this.props.testAlert}
+        alertKey={user.alertKey}
       />
     );
   }

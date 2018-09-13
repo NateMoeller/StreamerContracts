@@ -26,10 +26,10 @@ class NavbarComponent extends Component {
       return (
         <div className="pull-left">
             <img className="thumbnail-image"
-                src={user.profile_image_url}
+                src={user.profileImageUrl}
                 alt="profileImage"
             />
-            {user.display_name}
+            {user.displayName}
         </div>
       );
     }

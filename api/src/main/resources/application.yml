@@ -52,7 +52,7 @@ security:
       preferTokenInfo: true
 
 frontEndUrl: https://localhost:3000
-alertUrl: http://localhost:8080
+alertUrl: https://localhost:8080
 
 logging:
   level:

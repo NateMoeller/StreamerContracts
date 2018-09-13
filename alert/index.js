@@ -1,16 +1,19 @@
+var stompClient = null;
+var id = null;
 
 $(document).ready(function(){
     connect();
+
+    var urlParams = new URLSearchParams(window.location.search);
+    id = urlParams.get('id');
 });
 
-var stompClient = null;
-
 function connect() {
-  var socket = new SockJS('http://localhost:8070/alert-websocket');
+  var socket = new SockJS('https://localhost:8070/alert-websocket');
   stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/alert/test', receivedAlert);
+        stompClient.subscribe('/alert/' + id, receivedAlert);
     });
 }
 

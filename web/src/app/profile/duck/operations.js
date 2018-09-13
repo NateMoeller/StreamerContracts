@@ -6,17 +6,15 @@ const getUser = () => (dispatch) => {
 
   RestClient.GET('user', (response) => {
     const responseData = response.data;
-    const userData = responseData.userAuthentication.details.data[0];
-    dispatch(receiveUserInfoSuccess(userData));
+    dispatch(receiveUserInfoSuccess(responseData));
   }, (error) => {
     dispatch(receiveUserInfoFailure(error));
   });
 };
 
-const testAlert = () => (dispatch) => {
+const testAlert = (alertKey) => (dispatch) => {
   dispatch(requestTestAlert());
-
-  RestClient.POST('alert', null, (response) => {
+  RestClient.POST('alert', alertKey, (response) => {
     dispatch(receiveTestAlert(true));
   }, (error) => {
     dispatch(receiveTestAlert(false));

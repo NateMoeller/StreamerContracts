@@ -59,7 +59,7 @@ class ProfileComponent extends Component {
       <div>
         <PageHeader>Alerts</PageHeader>
         <AlertComponent
-          alertUrl={'http://localhost:8080/'} // TODO: configure this url to change between dev and prod
+          alertKey={this.props.alertKey}
           testAlert={this.props.testAlert}
         />
       </div>
@@ -104,6 +104,7 @@ class ProfileComponent extends Component {
 ProfileComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
+  alertKey: PropTypes.string.isRequired,
   testAlert: PropTypes.func.isRequired
 };
 
