@@ -50,7 +50,8 @@ security:
       userInfoUri: https://api.twitch.tv/helix/users
       preferTokenInfo: true
 
-frontEndUrl: https://localhost:3000
+application:
+  frontEndUrl: https://localhost:3000
 
 logging:
   level:

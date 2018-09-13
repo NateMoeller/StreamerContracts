@@ -22,14 +22,13 @@ import org.springframework.web.filter.CorsFilter;
 @EnableOAuth2Sso
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${frontEndUrl}")
+    @Value("${application.frontEndUrl}")
     private String frontEndUrl;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/login**").permitAll()
-                .antMatchers(HttpMethod.GET, "/restricted").authenticated()
                 .and()
             .csrf()
                 //TODO: uncomment when CSRF and CORS is working
