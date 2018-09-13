@@ -12,44 +12,4 @@
     margin-bottom: 30px;
     color: $primary-blue;
   }
-
-  .donateForm {
-    border: 2px solid green;
-    width: 60%;
-    display: inline-block;
-    height: 400px
-  }
-
-  .alertBox {
-    // background-color: $primary-blue;
-    background: rgba(0, 0, 0, .7);
-    border: 2px solid $primary-blue;
-    width: 100%;
-    height: 50px;
-    color: white;
-
-    .moneyBox {
-      text-align: center;
-      display: inline-block;
-      float: left;
-      margin-right: 10px;
-
-      .moneyText {
-        color: $secondary-blue !important;
-        font-size: 42px;
-        margin: 0px;
-      }
-    }
-
-    .donationBox {
-
-      .newChallenge {
-        font-size: 16px;
-        margin-left: 0px;
-        margin-top: 0px;
-        margin-right: 0px;
-        margin-bottom: 5px;
-      }
-    }
-  }
 }
