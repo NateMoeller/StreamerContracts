@@ -1,8 +1,17 @@
 @import '../../colors.scss';
 
 .loginContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  height: 600px;
+  height: 400px;
+
+  .contentContainer {
+    .message {
+      margin-bottom: 10px;
+    }
+  }
 }
 
 .btnTwitch {

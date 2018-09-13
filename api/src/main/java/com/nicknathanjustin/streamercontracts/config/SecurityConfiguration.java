@@ -22,14 +22,16 @@ import org.springframework.web.filter.CorsFilter;
 @EnableOAuth2Sso
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${frontEndUrl}")
+    @Value("${application.frontEndUrl}")
     private String frontEndUrl;
+
+    @Value("${application.alertUrl}")
+    private String alertUrl;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/login**").permitAll()
-                .antMatchers(HttpMethod.GET, "/restricted").authenticated()
                 .and()
             .csrf()
                 //TODO: uncomment when CSRF and CORS is working
@@ -52,6 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         final CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin(frontEndUrl);
+        config.addAllowedOrigin(alertUrl);
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");

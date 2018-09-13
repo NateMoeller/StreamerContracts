@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import HomeComponent from './HomeComponent';
-import PayWithPayPalComponent from './PayWithPayPalComponent';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -16,7 +15,6 @@ class HomeContainer extends Component {
           fetchApi={fetchApi}
           showSpinner={this.props.home.showSpinner}
         />
-        <PayWithPayPalComponent/>
       </div>
     );
   }

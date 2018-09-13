@@ -26,10 +26,10 @@ class NavbarComponent extends Component {
       return (
         <div className="pull-left">
             <img className="thumbnail-image"
-                src={user.profile_image_url}
+                src={user.profileImageUrl}
                 alt="profileImage"
             />
-            {user.display_name}
+            {user.displayName}
         </div>
       );
     }
@@ -56,7 +56,7 @@ class NavbarComponent extends Component {
           <Navbar.Collapse>
             <Nav>
               <LinkContainer exact to="/about" className={aboutClassname} onClick={() => this.setActiveItem('about')}>
-                <NavItem>About</NavItem>
+                <NavItem>How it works</NavItem>
               </LinkContainer>
               <LinkContainer exact to="/profile" className={profileClassname} onClick={() => this.setActiveItem('profile')}>
                 <NavItem>Profile</NavItem>
@@ -68,7 +68,9 @@ class NavbarComponent extends Component {
                   <NavItem href="/login">Login</NavItem>
                 </LinkContainer> :
                 <NavDropdown eventKey={3} title={userTitle} id="basic-nav-dropdown" className={styles.dropdownMenu}>
-                  <MenuItem eventKey={3.1} href="/profile">My Profile</MenuItem>
+                  <LinkContainer exact to="/profile" onClick={() => this.setActiveItem('profile')}>
+                    <MenuItem eventKey={3.1}>My Profile</MenuItem>
+                  </LinkContainer>
                   <MenuItem eventKey={3.2}>Another action</MenuItem>
                   <MenuItem eventKey={3.3}>Something else here</MenuItem>
                   <MenuItem divider />

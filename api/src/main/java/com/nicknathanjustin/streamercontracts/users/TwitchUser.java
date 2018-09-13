@@ -32,6 +32,7 @@ public class TwitchUser {
         final Map<String, List<Map<String, Object>>> details = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();
         final List<Map<String, Object>> data = details.get("data");
         final Map<String, Object> properties = data.get(0);
+
         return new TwitchUser(
                 (String) properties.get("login"),
                 (String) properties.get("display_name"),

@@ -3,7 +3,9 @@ security:
     client:
       clientId: fal8zh2u859tgnqg4w0tgoqwq8m7ef
 
-frontEndUrl: https://web.streamercontracts.co.uk
+application:
+  frontEndUrl: https://web.streamercontracts.co.uk
+  alertUrl: https://web.streamercontracts.co.uk/alert
 
 spring:
   redis:
