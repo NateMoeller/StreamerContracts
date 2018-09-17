@@ -13,6 +13,14 @@ import PropTypes from 'prop-types';
 import PayWithPayPalComponent from './PayWithPayPalComponent';
 import styles from './DonateStyles.scss';
 
+const REQUIRED_MESSAGE = 'This field is required';
+const TOO_LONG_MESSAGE = 'Too many characters';
+
+const MIN_AMOUNT = 1;
+const MAX_AMOUNT = 1000;
+const MAX_NAME_LENGTH = 64;
+const MAX_BOUNTY_LENGTH = 300;
+
 class DonateComponent extends Component {
   constructor(props) {
     super(props);
@@ -36,10 +44,7 @@ class DonateComponent extends Component {
     this.validateAmount();
     this.validateBounty();
 
-    if ((this.state.nameError && this.state.nameError.type === null) &&
-        (this.state.amountError && this.state.amountError.type === null) &&
-        (this.state.bountyError && this.state.bountyError.type === null)) {
-          // everything is valid
+    if (this.isSubmitEnabled()) {
           const payload = {
             username: this.state.username,
             amount: this.state.amount,
@@ -49,10 +54,30 @@ class DonateComponent extends Component {
     }
   }
 
+  isSubmitEnabled() {
+    if ((this.state.nameError && this.state.nameError.type === null) &&
+        (this.state.amountError && this.state.amountError.type === null) &&
+        (this.state.bountyError && this.state.bountyError.type === null)) {
+          return true;
+    }
+
+    return false;
+  }
+
+  validateRequiredField(value) {
+    if (value === '') {
+      return true;
+    }
+
+    return false;
+  }
+
   validateName() {
     let error = { type: null };
-    if (this.state.username === '') {
-      error = { type: 'error', 'message' : 'This field is required' };
+    if (this.validateRequiredField(this.state.username)) {
+      error = { type: 'error', 'message' : REQUIRED_MESSAGE };
+    } else if (this.state.username.length >= MAX_NAME_LENGTH) {
+      error = { type: 'error', 'message': TOO_LONG_MESSAGE };
     }
 
     this.setState({
@@ -61,11 +86,16 @@ class DonateComponent extends Component {
   }
 
   validateAmount() {
+    const regex = /^[1-9]\d*(?:\.\d{0,2})?$/;
     let error = { type: null };
-    if (isNaN(this.state.amount)) {
+    if (this.validateRequiredField(this.state.amount)) {
+      error = { type: 'error', message: REQUIRED_MESSAGE }
+    } else if (!regex.test(this.state.amount)) {
       error = { type: 'error', message: 'Please enter a valid amount' };
-    } else if (this.state.amount === '') {
-      error = { type: 'error', message: 'This field is required' }
+    } else if (this.state.amount < MIN_AMOUNT) {
+      error = { type: 'error', message: `The minimum amount is $${MIN_AMOUNT}` };
+    } else if (this.state.amount > MAX_AMOUNT) {
+      error = { type: 'error', message: `The maximum amount is $${MAX_AMOUNT}` };
     }
 
     this.setState({
@@ -75,8 +105,10 @@ class DonateComponent extends Component {
 
   validateBounty() {
     let error = { type: null };
-    if (this.state.bounty === '') {
-      error = { type: 'error', message: 'This field is required' };
+    if (this.validateRequiredField(this.state.bounty)) {
+      error = { type: 'error', message: REQUIRED_MESSAGE };
+    } else if (this.state.bounty.length >= MAX_BOUNTY_LENGTH) {
+      error = { type: 'error', message: TOO_LONG_MESSAGE };
     }
 
     this.setState({
@@ -174,7 +206,7 @@ class DonateComponent extends Component {
                   <PayWithPayPalComponent/>
                 </Row>
                 <Row>
-                  <Button type="submit" bsStyle="success" onClick={this.submitForm}>Submit</Button>
+                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Submit</Button>
                 </Row>
               </form>
             </Col>

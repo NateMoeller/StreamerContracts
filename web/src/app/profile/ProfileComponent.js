@@ -31,8 +31,10 @@ class ProfileComponent extends Component {
       return this.getOpenContractsContent();
     } else if (this.state.activeTab === COMPLETED_CONTRACTS_TAB) {
       return this.getCompletedContractsContent();
-    } else {
+    } else if (this.state.activeTab === ALERT_TAB) {
       return this.getAlertContent();
+    } else {
+      return this.getAccountContent();
     }
   }
 

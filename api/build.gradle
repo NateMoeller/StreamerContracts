@@ -3,14 +3,14 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-redis")
+    compile("org.springframework.boot:spring-boot-starter-websocket")
     compile("org.springframework.session:spring-session-data-redis")
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
-    compile("org.springframework.boot:spring-boot-starter-websocket")
 
     compile("com.paypal.sdk:rest-api-sdk:+")
     compile("org.projectlombok:lombok:1.16.20")
     compile("org.postgresql:postgresql:42.1.4")
-    compile group: 'com.google.guava', name: 'guava', version: '23.5-jre'
+    compile("com.google.guava:guava:23.5-jre")
 
     testCompile("junit:junit")
 }

@@ -7,8 +7,7 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
-    const alertUrl = process.env.NODE_ENV === 'development' ?
-    'https://localhost:8080/?id=' + this.props.alertKey : process.env.PUBLIC_URL + '?id=' + this.props.alertKey;
+    const alertUrl = process.env.REACT_APP_ALERT_URL + '?id=' + this.props.alertKey;
 
     return (
       <div>
@@ -33,7 +32,7 @@ class AlertComponent extends Component {
               </CopyToClipboard>
             </div>
             <div className={styles.openButton}>
-              <Button onClick={()=> window.open(alertUrl, "_blank")}>Open Alert</Button>
+              <Button onClick={()=> window.open(alertUrl, "_blank", "location=no,width=640,height=480")}>Open Alert</Button>
             </div>
           </FormGroup>
           </Form>

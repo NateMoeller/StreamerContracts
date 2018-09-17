@@ -14,7 +14,7 @@
   transform: translateX(125%);
 }
 
-.opened {
+.visible {
   transform: translateX(0%);
 }
 

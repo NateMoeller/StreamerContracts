@@ -27,7 +27,6 @@ public class TwitchUser {
 
     private final int viewCount;
 
-
     public static TwitchUser createTwitchUser(@NonNull final OAuth2Authentication auth) {
         final Authentication userAuth = auth.getUserAuthentication();
         final Map<String, List<Map<String, Object>>> details = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();

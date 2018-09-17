@@ -2,17 +2,20 @@ var stompClient = null;
 var id = null;
 
 $(document).ready(function(){
-    connect();
+  var urlParams = new URLSearchParams(window.location.search);
+  id = urlParams.get('id');
 
-    var urlParams = new URLSearchParams(window.location.search);
-    id = urlParams.get('id');
+  if (id) {
+    connect();
+  } else {
+    console.error('No alert id specified.');
+  }
 });
 
 function connect() {
-  var socket = new SockJS('https://localhost:8070/alert-websocket');
+  var socket = new SockJS(REACT_APP_API_HOST + 'alert-websocket');
   stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
         stompClient.subscribe('/alert/' + id, receivedAlert);
     });
 }
@@ -22,19 +25,6 @@ function disconnect() {
         stompClient.disconnect();
     }
     setConnected(false);
-    console.log("Disconnected");
-}
-
-// testing code
-function sendAlert() {
-  console.log('sending alert...');
-  var alert = {
-    username: 'Nathan Moeller',
-    amount: '500',
-    bounty: 'YOU WONT'
-  };
-
-  stompClient.send("/app/alertQueue", {}, JSON.stringify(alert));
 }
 
 function receivedAlert(alertResponse) {
@@ -48,11 +38,9 @@ function showAlert(username, amount, bounty) {
   $('.moneyBox').text('$' + amount);
   $('.bounty').text(bounty);
 
-  // show the alert
-  $('.alertBox').addClass('opened');
+  $('.alertBox').addClass('visible');
 
-  // close the alert
   setTimeout(function() {
-    $('.alertBox').removeClass('opened');
+    $('.alertBox').removeClass('visible');
   }, alertLength);
 }
