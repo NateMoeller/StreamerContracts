@@ -34,7 +34,7 @@ public class UsersApiController {
             return ResponseEntity.ok(user);
         }
 
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping(method = RequestMethod.GET)
