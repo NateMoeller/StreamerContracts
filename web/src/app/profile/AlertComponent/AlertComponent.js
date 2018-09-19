@@ -7,7 +7,7 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
-    const alertUrl = process.env.REACT_APP_ALERT_URL + '?id=' + this.props.alertKey;
+    const alertUrl = process.env.REACT_APP_ALERT_URL + '?id=' + this.props.alertChannelId;
 
     return (
       <div>
@@ -41,7 +41,7 @@ class AlertComponent extends Component {
           </div>
           <div>
             <Button onClick={() => {
-              this.props.testAlert(this.props.alertKey);
+              this.props.testAlert(this.props.alertChannelId);
             }}>Test Alert</Button>
           </div>
       </div>
@@ -50,7 +50,7 @@ class AlertComponent extends Component {
 }
 
 AlertComponent.propTypes = {
-  alertKey: PropTypes.string.isRequired,
+  alertChannelId: PropTypes.string.isRequired,
   testAlert: PropTypes.func.isRequired
 }
 

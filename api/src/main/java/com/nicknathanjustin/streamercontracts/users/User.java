@@ -20,7 +20,7 @@ public class User {
 
     private final int viewCount;
 
-    private final String alertKey;
+    private final String alertChannelId;
 
     public User (@NonNull TwitchUser twitchUser, @NonNull UserModel userModel) {
         this.displayName = twitchUser.getDisplayName();
@@ -29,7 +29,7 @@ public class User {
         this.description = twitchUser.getDescription();
         this.profileImageUrl = twitchUser.getProfileImageUrl();
         this.viewCount = twitchUser.getViewCount();
-        this.alertKey = Hashing.sha256()
+        this.alertChannelId = Hashing.sha256()
                 .hashString(userModel.getId().toString(), StandardCharsets.UTF_8)
                 .toString();
     }

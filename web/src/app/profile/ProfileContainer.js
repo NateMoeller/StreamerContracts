@@ -33,7 +33,7 @@ class ProfileContainer extends Component {
         twitchUserName={user.displayName}
         imageUrl={user.profileImageUrl}
         testAlert={this.props.testAlert}
-        alertKey={user.alertKey}
+        alertChannelId={user.alertChannelId}
       />
     );
   }

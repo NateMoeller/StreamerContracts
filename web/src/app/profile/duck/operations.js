@@ -12,9 +12,9 @@ const getUser = () => (dispatch) => {
   });
 };
 
-const testAlert = (alertKey) => (dispatch) => {
+const testAlert = (alertChannelId) => (dispatch) => {
   dispatch(requestTestAlert());
-  RestClient.POST('alert', alertKey, (response) => {
+  RestClient.POST('alert', alertChannelId, (response) => {
     dispatch(receiveTestAlert(true));
   }, (error) => {
     dispatch(receiveTestAlert(false));

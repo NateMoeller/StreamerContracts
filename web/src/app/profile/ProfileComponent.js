@@ -61,7 +61,7 @@ class ProfileComponent extends Component {
       <div>
         <PageHeader>Alerts</PageHeader>
         <AlertComponent
-          alertKey={this.props.alertKey}
+          alertChannelId={this.props.alertChannelId}
           testAlert={this.props.testAlert}
         />
       </div>
@@ -106,7 +106,7 @@ class ProfileComponent extends Component {
 ProfileComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
-  alertKey: PropTypes.string.isRequired,
+  alertChannelId: PropTypes.string.isRequired,
   testAlert: PropTypes.func.isRequired
 };
 

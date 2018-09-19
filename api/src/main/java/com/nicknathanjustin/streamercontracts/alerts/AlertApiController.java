@@ -19,12 +19,12 @@ public class AlertApiController {
     private SimpMessageSendingOperations messagingTemplate;
 
     @RequestMapping(method = RequestMethod.POST)
-    public boolean testAlert(@NonNull @RequestBody final String alertKey) {
+    public boolean testAlert(@NonNull @RequestBody final String alertChannelId) {
         final String username = "User123";
         final BigDecimal amount = new BigDecimal(3.0);
         final String bounty = "This is a test bounty message";
         final AlertMessage testMessage = new AlertMessage(username, bounty, amount);
-        final String url = "/alert/" + alertKey;
+        final String url = "/alert/" + alertChannelId;
 
         messagingTemplate.convertAndSend(url, testMessage);
         return true;
