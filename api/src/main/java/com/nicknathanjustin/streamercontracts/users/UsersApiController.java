@@ -3,6 +3,8 @@ package com.nicknathanjustin.streamercontracts.users;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/")
@@ -24,8 +25,16 @@ public class UsersApiController {
     @NonNull private final UserService userService;
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
-    public Principal user(@Nullable final Principal principal) {
-        return principal;
+    public ResponseEntity user(@Nullable final OAuth2Authentication auth) {
+        if (auth != null) {
+            final TwitchUser twitchUser = TwitchUser.createTwitchUser(auth);
+            final UserModel userModel = userService.getUser(twitchUser.getDisplayName());
+            User user = new User(twitchUser, userModel);
+
+            return ResponseEntity.ok(user);
+        }
+
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping(method = RequestMethod.GET)

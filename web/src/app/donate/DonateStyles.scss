@@ -1,0 +1,15 @@
+@import '../../colors.scss';
+
+.donateContainer {
+  width: 100%;
+
+  .errorMessage {
+    display: inline-block;
+    color: $error-red;
+  }
+
+  .title {
+    margin-bottom: 30px;
+    color: $primary-blue;
+  }
+}

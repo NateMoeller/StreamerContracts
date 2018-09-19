@@ -18,3 +18,5 @@ web/.classpath
 web/.project
 web/.settings/
 web/bin/
+alert/cert.pem
+alert/key.pem

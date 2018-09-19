@@ -1,40 +1,70 @@
-import { Col, Grid, Image, Nav, NavItem, Row } from 'react-bootstrap';
+import { Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
 import React, { Component } from 'react';
+import AlertComponent from './AlertComponent/AlertComponent';
 import PropTypes from 'prop-types';
+import styles from './ProfileStyles.scss'
+
+const ACCOUNT_TAB = 'account';
+const OPEN_CONTRACTS_TAB = 'open_contracts';
+const COMPLETED_CONTRACTS_TAB = 'completed_contracts';
+const ALERT_TAB = 'alerts';
 
 class ProfileComponent extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      activeTab: ACCOUNT_TAB
+    };
+  }
+
+  onTabClick(newActiveTab) {
+    this.setState({
+      activeTab: newActiveTab
+    });
+  }
+
   getContent() {
-    if (this.props.activeTab === 'account') {
+    if (this.state.activeTab === ACCOUNT_TAB) {
+      return this.getAccountContent();
+    } else if (this.state.activeTab === OPEN_CONTRACTS_TAB) {
+      return this.getOpenContractsContent();
+    } else if (this.state.activeTab === COMPLETED_CONTRACTS_TAB) {
+      return this.getCompletedContractsContent();
+    } else if (this.state.activeTab === ALERT_TAB) {
+      return this.getAlertContent();
+    } else {
       return this.getAccountContent();
     }
-
-    return 'OTHER CONTENT';
   }
 
   getAccountContent() {
     return (
-      <Row>
-        <Row>
-          <Col sm={8} md={6}>
-            <h3 className="number">$0.00</h3>
-            Total contract revenue
-          </Col>
-          <Col sm={8} md={6}>
-            <h3 className="number">0</h3>
-            Open contracts
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={8} md={6}>
-            <h3 className="number">0</h3>
-            Completed contracts
-          </Col>
-          <Col sm={8} md={6}>
-            <h3 className="number">1</h3>
-            Contract in progress
-          </Col>
-        </Row>
-      </Row>
+      <PageHeader>My Profile</PageHeader>
+    );
+  }
+
+  getOpenContractsContent() {
+    return (
+      <PageHeader>Open Contracts</PageHeader>
+    );
+  }
+
+  getCompletedContractsContent() {
+    return (
+      <PageHeader>Completed Contracts</PageHeader>
+    );
+  }
+
+  getAlertContent() {
+    return (
+      <div>
+        <PageHeader>Alerts</PageHeader>
+        <AlertComponent
+          alertChannelId={this.props.alertChannelId}
+          testAlert={this.props.testAlert}
+        />
+      </div>
     );
   }
 
@@ -43,23 +73,23 @@ class ProfileComponent extends Component {
 
     return (
       <Grid className="content">
-        <Col xs={3} md={2} className="sidebar">
+        <Col xs={3} md={2} className={styles.sidebar}>
           <Row>
             <Image src={this.props.imageUrl} thumbnail />
             <h2 className="name">{this.props.twitchUserName}</h2>
           </Row>
           <Row>
-            <Nav bsStyle="pills" stacked activeKey={1}>
-              <NavItem eventKey={1}>
+            <Nav stacked>
+              <NavItem eventKey={1} onClick={() => this.onTabClick(ACCOUNT_TAB)}>
                 Account
               </NavItem>
-              <NavItem eventKey={2} title="Item">
+              <NavItem eventKey={2} onClick={() => this.onTabClick(OPEN_CONTRACTS_TAB)}>
                 Open Contracts
               </NavItem>
-              <NavItem eventKey={3}>
+              <NavItem eventKey={3} onClick={() => this.onTabClick(COMPLETED_CONTRACTS_TAB)}>
                 Completed Contracts
               </NavItem>
-              <NavItem eventKey={4}>
+              <NavItem eventKey={4} onClick={() => this.onTabClick(ALERT_TAB)}>
                 Alerts
               </NavItem>
             </Nav>
@@ -76,7 +106,8 @@ class ProfileComponent extends Component {
 ProfileComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
-  activeTab: PropTypes.string.isRequired
+  alertChannelId: PropTypes.string.isRequired,
+  testAlert: PropTypes.func.isRequired
 };
 
 export default ProfileComponent;
