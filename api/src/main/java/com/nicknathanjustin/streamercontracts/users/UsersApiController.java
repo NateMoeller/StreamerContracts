@@ -28,5 +28,4 @@ public class UsersApiController {
 
         return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
-
 }
