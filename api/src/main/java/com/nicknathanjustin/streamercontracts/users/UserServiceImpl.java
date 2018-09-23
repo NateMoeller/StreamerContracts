@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -22,8 +23,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel getUser(@NonNull final String twitchUsername) {
-        return userModelRepository.findByTwitchUsername(twitchUsername);
+    public Optional<UserModel> getUser(@NonNull final String twitchUsername) {
+        return Optional.ofNullable(userModelRepository.findByTwitchUsername(twitchUsername));
     }
 
     @Override

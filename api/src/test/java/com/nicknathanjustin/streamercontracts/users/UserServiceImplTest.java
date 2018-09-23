@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,12 +71,23 @@ public class UserServiceImplTest {
     public void getUser_validInput_returnsUser() {
         when(mockUserModelRepository.findByTwitchUsername(TWITCH_USER_NAME)).thenReturn(userModel);
 
-        final UserModel userModel = userService.getUser(TWITCH_USER_NAME);
+        final Optional<UserModel> optionalUserModel = userService.getUser(TWITCH_USER_NAME);
+        userModel = optionalUserModel.orElse(null);
 
+        Assert.assertNotNull(userModel);
         Assert.assertEquals(userModel.getTwitchUsername(), TWITCH_USER_NAME);
         Assert.assertEquals(userModel.getTotalLogins(), TOTAL_LOGINS);
         Assert.assertEquals(userModel.getCreatedAt(), CREATED_AT);
         Assert.assertEquals(userModel.getLastLogin(), LAST_LOGIN);
+    }
+
+    @Test
+    public void getUser_noUserForTwitchName_returnsNull() {
+        when(mockUserModelRepository.findByTwitchUsername(TWITCH_USER_NAME)).thenReturn(null);
+
+        final Optional<UserModel> optionalUserModel = userService.getUser(TWITCH_USER_NAME);
+
+        Assert.assertTrue(!optionalUserModel.isPresent());
     }
 
     @Test

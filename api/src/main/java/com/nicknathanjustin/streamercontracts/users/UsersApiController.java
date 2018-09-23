@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -21,9 +23,12 @@ public class UsersApiController {
     public ResponseEntity user(@Nullable final OAuth2Authentication auth) {
         if (auth != null) {
             final TwitchUser twitchUser = TwitchUser.createTwitchUser(auth);
-            final UserModel userModel = userService.getUser(twitchUser.getDisplayName());
-            final UserDto userDto = new UserDto(twitchUser, userModel);
-            return ResponseEntity.ok(userDto);
+            final Optional<UserModel> optionalUserModel = userService.getUser(twitchUser.getDisplayName());
+            final UserModel userModel = optionalUserModel.orElse(null);
+            if(userModel != null) {
+                final UserDto userDto = new UserDto(twitchUser, userModel);
+                return ResponseEntity.ok(userDto);
+            }
         }
 
         return new ResponseEntity(HttpStatus.FORBIDDEN);
