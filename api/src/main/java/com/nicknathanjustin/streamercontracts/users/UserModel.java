@@ -1,17 +1,17 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.AccessLevel;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
 

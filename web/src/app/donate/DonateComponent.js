@@ -29,6 +29,7 @@ class DonateComponent extends Component {
       username: '',
       amount: '',
       bounty: '',
+      showPaymentOptions: false,
       nameError: null,
       amountError: null,
       bountyError: null
@@ -45,12 +46,9 @@ class DonateComponent extends Component {
     this.validateBounty();
 
     if (this.isSubmitEnabled()) {
-          const payload = {
-            username: this.state.username,
-            amount: this.state.amount,
-            bounty: this.state.bounty
-          };
-          this.props.insertBounty(payload);
+        this.setState({
+          showPaymentOptions: true
+        });
     }
   }
 
@@ -203,10 +201,17 @@ class DonateComponent extends Component {
                   <span className={styles.errorMessage}>{bountyErrorMessage}</span>
                 </Row>
                 <Row>
-                  <PayWithPayPalComponent/>
+                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Complete Payment with PayPal</Button>
                 </Row>
                 <Row>
-                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Submit</Button>
+                  {this.state.showPaymentOptions ?
+                    <PayWithPayPalComponent
+                        amount={this.state.amount}
+                        streamerPaypalEmail={this.props.streamerPaypalEmail} //TODO: need to get paypal email from API server based on the person we're donating too
+                        bounty={this.state.amount}
+                        username={this.state.username}
+                    />  :
+                    null}
                 </Row>
               </form>
             </Col>
@@ -219,7 +224,7 @@ class DonateComponent extends Component {
 
 DonateComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
-  insertBounty: PropTypes.func.isRequired
+  streamerPaypalEmail: PropTypes.string.isRequired
 };
 
 export default DonateComponent;
