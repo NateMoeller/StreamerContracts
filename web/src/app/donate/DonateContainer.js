@@ -5,9 +5,6 @@ import { connect } from 'react-redux';
 import { donateOperations } from './duck';
 
 class DonateContainer extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   // TODO: make sure this user exists
   render() {
@@ -16,7 +13,7 @@ class DonateContainer extends Component {
     return (
       <DonateComponent
         twitchUserName={twitchUserName}
-        insertBounty={this.props.insertBounty}
+        streamerPaypalEmail='nckackerman+streamer-business@gmail.com' //TODO: need to query API endpoint for this information
       />
     );
   }

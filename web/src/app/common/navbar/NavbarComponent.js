@@ -5,7 +5,6 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import styles from './NavBarStyles.scss';
-import RestClient from '../../RestClient';
 
 class NavbarComponent extends Component {
   constructor(props) {
