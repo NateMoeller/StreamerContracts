@@ -5,7 +5,6 @@ security:
 
 application:
   frontEndUrl: https://web.streamercontracts.co.uk
-  alertUrl: https://web.streamercontracts.co.uk/alert
 
 spring:
   redis:

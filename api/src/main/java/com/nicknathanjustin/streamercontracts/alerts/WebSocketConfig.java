@@ -11,8 +11,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${application.alertUrl}")
-    private String alertUrl;
+    @Value("${application.frontEndUrl}")
+    private String frontEndUrl;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -21,6 +21,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/alert-websocket").setAllowedOrigins(alertUrl).withSockJS();
+        registry.addEndpoint("/alert-websocket").setAllowedOrigins(frontEndUrl).withSockJS();
     }
 }
