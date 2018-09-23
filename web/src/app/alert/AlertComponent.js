@@ -9,11 +9,13 @@ class AlertComponent extends Component {
     super(props);
 
     this.state = {
+      username: null,
+      amount: null,
+      bounty: null,
       visible: false
     };
 
     this.stompClient = null;
-
     this.receivedAlert = this.receivedAlert.bind(this);
   }
 
@@ -22,9 +24,8 @@ class AlertComponent extends Component {
     if (alertChannelId) {
       this.connect(alertChannelId);
     } else {
-      console.log('No id specified');
+      console.error('No id specified');
     }
-
   }
 
   connect(alertChannelId) {
@@ -35,15 +36,20 @@ class AlertComponent extends Component {
     });
   }
 
-  receivedAlert() {
+  receivedAlert(alertResponse) {
+    const ALERT_LENGTH = 5000;
+    const alert = JSON.parse(alertResponse.body);
     this.setState({
+      username: alert.username,
+      amount: alert.amount,
+      bounty: alert.bounty,
       visible: true
     }, () => {
       setTimeout(() => {
         this.setState({
           visible: false
         });
-      }, 5000);
+      }, ALERT_LENGTH);
     });
   }
 
@@ -52,12 +58,12 @@ class AlertComponent extends Component {
 
     return (
       <div className={boxStyle}>
-        <div className={styles.moneyBox}>$3.0</div>
+        <div className={styles.moneyBox}>${this.state.amount}</div>
         <div className={styles.donationBox}>
           <div className={styles.newChallenge}>
-            New Bounty from <div className={styles.username}>Test User</div>
+            New Bounty from <div className={styles.username}>{this.state.username}</div>
           </div>
-          <div className={styles.bounty}>Score 15 kills in the next game.</div>
+          <div className={styles.bounty}>{this.state.bounty}</div>
         </div>
       </div>
     );
