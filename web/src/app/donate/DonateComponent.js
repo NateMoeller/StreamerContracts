@@ -81,6 +81,7 @@ class DonateComponent extends Component {
     this.setState({
       nameError: error
     });
+    this.updateShowPaymentOptions(error);
   }
 
   validateAmount() {
@@ -99,6 +100,7 @@ class DonateComponent extends Component {
     this.setState({
       amountError: error
     });
+    this.updateShowPaymentOptions(error);
   }
 
   validateBounty() {
@@ -112,6 +114,15 @@ class DonateComponent extends Component {
     this.setState({
       bountyError: error
     });
+    this.updateShowPaymentOptions(error);
+  }
+
+  updateShowPaymentOptions(error) {
+    if(error !== null) {
+     this.setState({
+       showPaymentOptions: false
+     });
+    }
   }
 
   nameChange(newName) {
@@ -207,9 +218,10 @@ class DonateComponent extends Component {
                   {this.state.showPaymentOptions ?
                     <PayWithPayPalComponent
                         amount={this.state.amount}
-                        streamerPaypalEmail={this.props.streamerPaypalEmail} //TODO: need to get paypal email from API server based on the person we're donating too
-                        bounty={this.state.amount}
+                        streamerPaypalEmail={this.props.streamerPaypalEmail}
+                        bounty={this.state.bounty}
                         username={this.state.username}
+                        insertBounty={this.props.insertBounty}
                     />  :
                     null}
                 </Row>
@@ -224,7 +236,8 @@ class DonateComponent extends Component {
 
 DonateComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
-  streamerPaypalEmail: PropTypes.string.isRequired
+  streamerPaypalEmail: PropTypes.string.isRequired,
+  insertBounty: PropTypes.func.isRequired
 };
 
 export default DonateComponent;
