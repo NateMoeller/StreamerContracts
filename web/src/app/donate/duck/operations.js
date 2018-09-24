@@ -4,7 +4,7 @@ import RestClient from '../../RestClient';
 const insertBounty = (payload) => (dispatch) => {
   dispatch(requestInsertBounty(payload));
 
-  RestClient.POST('donations', payload, (response) => {
+  return RestClient.POST('donations/execute', payload, (response) => {
     const responseData = response.data;
     dispatch(receiveInsertBountySuccess(responseData));
   }, (error) => {

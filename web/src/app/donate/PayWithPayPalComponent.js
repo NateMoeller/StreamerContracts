@@ -11,6 +11,7 @@ class PayWithPayPalComponent extends Component {
     const donationAmount = this.props.amount;
     const bounty = this.props.bounty;
     const username = this.props.username;
+    const insertBounty = this.props.insertBounty;
 
     paypal.Button.render({
 
@@ -62,15 +63,10 @@ class PayWithPayPalComponent extends Component {
             bounty: bounty,
             payPalPaymentId: paymentId
           };
-
           // Make a call to the REST api to execute the payment. Unfortunatly 'paypal-checkout' service has a bug
           // that prevents executing payments when payee isnt the client's paypal account.
           // So we must do that on our backend. See this bug: https://github.com/paypal/paypal-checkout/issues/464
-          return RestClient.POST('donations/execute', payload, (response) => {
-            window.alert('Payment Complete!');
-          }, (error) => {
-            window.alert('Something went wrong');
-          })
+          insertBounty(payload);
         }
 
     }, '#paypal-button-container');
@@ -89,7 +85,8 @@ PayWithPayPalComponent.propTypes = {
   amount: PropTypes.string.isRequired,
   streamerPaypalEmail: PropTypes.string.isRequired,
   bounty: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired,
+  insertBounty: PropTypes.func.isRequired
 };
 
 export default PayWithPayPalComponent;

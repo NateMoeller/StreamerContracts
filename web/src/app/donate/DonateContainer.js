@@ -14,6 +14,7 @@ class DonateContainer extends Component {
       <DonateComponent
         twitchUserName={twitchUserName}
         streamerPaypalEmail='nckackerman+streamer-business@gmail.com' //TODO: need to query API endpoint for this information
+        insertBounty={this.props.insertBounty}
       />
     );
   }
