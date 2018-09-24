@@ -29,6 +29,7 @@ class DonateComponent extends Component {
       username: '',
       amount: '',
       bounty: '',
+      showPaymentOptions: false,
       nameError: null,
       amountError: null,
       bountyError: null
@@ -45,12 +46,9 @@ class DonateComponent extends Component {
     this.validateBounty();
 
     if (this.isSubmitEnabled()) {
-          const payload = {
-            username: this.state.username,
-            amount: this.state.amount,
-            bounty: this.state.bounty
-          };
-          this.props.insertBounty(payload);
+        this.setState({
+          showPaymentOptions: true
+        });
     }
   }
 
@@ -83,6 +81,7 @@ class DonateComponent extends Component {
     this.setState({
       nameError: error
     });
+    this.updateShowPaymentOptions(error);
   }
 
   validateAmount() {
@@ -101,6 +100,7 @@ class DonateComponent extends Component {
     this.setState({
       amountError: error
     });
+    this.updateShowPaymentOptions(error);
   }
 
   validateBounty() {
@@ -114,6 +114,15 @@ class DonateComponent extends Component {
     this.setState({
       bountyError: error
     });
+    this.updateShowPaymentOptions(error);
+  }
+
+  updateShowPaymentOptions(error) {
+    if(error !== null) {
+     this.setState({
+       showPaymentOptions: false
+     });
+    }
   }
 
   nameChange(newName) {
@@ -203,10 +212,18 @@ class DonateComponent extends Component {
                   <span className={styles.errorMessage}>{bountyErrorMessage}</span>
                 </Row>
                 <Row>
-                  <PayWithPayPalComponent/>
+                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Complete Payment with PayPal</Button>
                 </Row>
                 <Row>
-                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Submit</Button>
+                  {this.state.showPaymentOptions ?
+                    <PayWithPayPalComponent
+                        amount={this.state.amount}
+                        streamerPaypalEmail={this.props.streamerPaypalEmail}
+                        bounty={this.state.bounty}
+                        username={this.state.username}
+                        insertBounty={this.props.insertBounty}
+                    />  :
+                    null}
                 </Row>
               </form>
             </Col>
@@ -219,6 +236,7 @@ class DonateComponent extends Component {
 
 DonateComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
+  streamerPaypalEmail: PropTypes.string.isRequired,
   insertBounty: PropTypes.func.isRequired
 };
 
