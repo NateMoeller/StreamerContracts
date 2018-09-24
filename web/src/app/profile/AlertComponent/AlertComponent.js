@@ -7,7 +7,7 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
-    const alertUrl = process.env.REACT_APP_ALERT_URL + '?id=' + this.props.alertChannelId;
+    const alertChannelId = process.env.PUBLIC_URL + '/alert/' + this.props.alertChannelId;
 
     return (
       <div>
@@ -23,16 +23,16 @@ class AlertComponent extends Component {
               <FormControl
                 type="text"
                 readOnly
-                value={alertUrl}
+                value={alertChannelId}
               />
             </div>
             <div className={styles.copyButton}>
-              <CopyToClipboard text={alertUrl}>
+              <CopyToClipboard text={alertChannelId}>
                 <Button>Copy Link</Button>
               </CopyToClipboard>
             </div>
             <div className={styles.openButton}>
-              <Button onClick={()=> window.open(alertUrl, "_blank", "location=no,width=640,height=480")}>Open Alert</Button>
+              <Button onClick={()=> window.open(alertChannelId, "_blank", "location=no,width=640,height=480")}>Open Alert</Button>
             </div>
           </FormGroup>
           </Form>

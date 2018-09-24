@@ -52,7 +52,6 @@ security:
 
 application:
   frontEndUrl: https://localhost:3000
-  alertUrl: https://localhost:8080
 
 logging:
   level:
