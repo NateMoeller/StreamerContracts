@@ -12,6 +12,7 @@ phases:
       - echo Entered the api build phase...
       - echo Build started on `date`
       - bash ./gradlew api:clean
+      - bash ./gradlew api:test
       - bash ./gradlew api:build
   post_build:
     commands:

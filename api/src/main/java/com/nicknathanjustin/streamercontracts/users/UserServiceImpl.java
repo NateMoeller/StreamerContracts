@@ -2,10 +2,9 @@ package com.nicknathanjustin.streamercontracts.users;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.Assert;
 
-import java.util.List;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,11 +23,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel getUser(@NonNull final String twitchUsername) {
-        List<UserModel> users = userModelRepository.findByTwitchUsername(twitchUsername);
-        Assert.isTrue(users.size() <= 1, "Error. There are multiple users in the database with the same twitch username.");
-        UserModel user = users.size() == 1 ? users.get(0) : null;
-        return user;
+    public Optional<UserModel> getUser(@NonNull final String twitchUsername) {
+        return Optional.ofNullable(userModelRepository.findByTwitchUsername(twitchUsername));
     }
 
     @Override

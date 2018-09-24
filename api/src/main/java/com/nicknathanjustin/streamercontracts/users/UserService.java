@@ -1,5 +1,7 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import java.util.Optional;
+
 public interface UserService {
     /**
      * Creates the user in the database given the twitch username.
@@ -13,9 +15,9 @@ public interface UserService {
      * Gets a user from the database given the twitch username.
      *
      * @param  twitchUsername The username of the twitch user.
-     * @return An object modeling the user.
+     * @return An Optional<UserModel> for the user.
      */
-    UserModel getUser(String twitchUsername);
+    Optional<UserModel> getUser(String twitchUsername);
 
     /**
      * Updates the login attributes of the user.
