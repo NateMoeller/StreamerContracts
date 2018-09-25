@@ -20,6 +20,7 @@ class AlertComponent extends Component {
   }
 
   componentDidMount() {
+    document.body.style.background = 'transparent';
     const alertChannelId = this.props.match.params.alertChannelId;
     if (alertChannelId) {
       this.connect(alertChannelId);
