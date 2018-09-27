@@ -12,9 +12,9 @@ spring:
 #  Database config
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://sslhoq9gpiri1r.c3cposncqfx6.us-east-1.rds.amazonaws.com:5432/StreamerContractsDB
-    username: StreamerContractsAdmin
-    password: ChangeMe
+    url: jdbc:postgresql://localhost:5432/streamercontractsdb
+    username: postgres
+    password: 8Adgers_rock$
     validation-query: SELECT 1
     initSQL: SET NAMES 'utf8mb4'
   jpa:
