@@ -1,5 +1,10 @@
 server:
   port: 8070
+  ssl:
+    key-store: ${STREAMER_CONTRACTS_KEY_STORE_URL}
+    key-store-password: password
+    key-store-type: JKS
+    key-alias: tomcat
 
 spring:
 #  Redis session config
@@ -28,6 +33,10 @@ spring:
         ddl-auto: validate
 
 security:
+  # SSL config
+  require-ssl: true
+
+  # Oauth config
   oauth2:
     client:
       clientId: asuomro2120fbgjzwimsunv4fl9hqw
@@ -41,7 +50,8 @@ security:
       userInfoUri: https://api.twitch.tv/helix/users
       preferTokenInfo: true
 
-frontEndUrl: http://localhost:3000
+application:
+  frontEndUrl: https://localhost:3000
 
 logging:
   level:

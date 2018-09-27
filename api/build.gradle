@@ -3,12 +3,15 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-redis")
+    compile("org.springframework.boot:spring-boot-starter-websocket")
     compile("org.springframework.session:spring-session-data-redis")
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
 
     compile("com.paypal.sdk:rest-api-sdk:+")
     compile("org.projectlombok:lombok:1.16.20")
     compile("org.postgresql:postgresql:42.1.4")
+    compile("com.google.guava:guava:23.5-jre")
 
     testCompile("junit:junit")
+    testCompile("org.mockito:mockito-core")
 }

@@ -1,0 +1,48 @@
+.alertBox {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: rgba(13, 28, 41, .8);
+  border: 1px solid #1B98E0;
+  width: 80%;
+  height: 200px;
+  color: white;
+  transition: transform 400ms cubic-bezier(0.25, 0.8, 0.075, 1);
+  transform: translateX(125%);
+
+  .moneyBox {
+    display: inline-block;
+    position: relative;
+    top: 15px;
+    width: 30%;
+    text-align: center;
+    font-size: 108px;
+    text-shadow: 2px 2px 2px #000000;
+    color: #1B98E0;
+  }
+
+  .donationBox {
+    display: inline-block;
+    position: relative;
+    width: 65%;
+    vertical-align: top;
+    top: 20px;
+    text-shadow: 2px 2px 2px #000000;
+
+    .newChallenge {
+      font-size: 36px;
+    }
+
+    .bounty {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  }
+}
+
+.visible {
+  transform: translateX(0%);
+}
