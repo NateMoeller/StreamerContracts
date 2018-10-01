@@ -49,14 +49,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TwitchUser getTwitchUserFromUsername(@NonNull String twitchUsername) {
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Client-ID", clientId);
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        final HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = userInfoUri + "?login=" + twitchUsername;
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
+        final RestTemplate restTemplate = new RestTemplate();
+        final String url = userInfoUri + "?login=" + twitchUsername;
+        final ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
         final Map<String, List<Map<String, Object>>> details = response.getBody();
         final List<Map<String, Object>> data = details.get("data");
 
