@@ -1,83 +1,76 @@
 import paypal from 'paypal-checkout';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import RestClient from '../RestClient';
+
+const sandboxID = 'AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop';
+const paypalButtonContainer = 'paypal-button-container';
 
 class PayWithPayPalComponent extends Component {
-  // TODO: clean up code
   componentDidMount() {
 
-    const streamerPaypalEmail = this.props.streamerPaypalEmail;
-    const donationAmount = this.props.amount;
-    const bounty = this.props.bounty;
-    const username = this.props.username;
-    const insertBounty = this.props.insertBounty;
-    const streamerUsername = this.props.streamerUsername;
 
     paypal.Button.render({
-
-      env: 'sandbox', // sandbox | production
-
+        env: 'sandbox', // sandbox | production
         // PayPal Client IDs - replace with your own
         // Create a PayPal app: https://developer.paypal.com/developer/applications/create
         client: {
-            sandbox:    'AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop',
+            sandbox:  sandboxID,
             production: '<insert production client id>'
         },
-
         // Show the buyer a 'Pay Now' button in the checkout flow
         commit: true,
-
         // payment() is called when the button is clicked
-        payment: function(data, actions) {
-          // Make a call to the REST api to create the payment
-          return actions.payment.create({
-            payment: {
-              transactions: [
-                {
-                  payee: {
-                    email: streamerPaypalEmail
-                  },
-                  amount: {
-                    total: donationAmount,
-                    currency: 'USD'
-                  }
-                }
-              ],
-              intent: "authorize"
-            },
-            experience: {
-              input_fields: {
-                no_shipping: 1
-              }
-            }
-          });
-        },
-
+        payment: this.onPayment,
         // onAuthorize() is called when the buyer approves the payment
-        onAuthorize: function(data, actions) {
-          const paymentId = data.paymentID;
-
-          const payload = {
-            username: username,
-            amount: donationAmount,
-            bounty: bounty,
-            payPalPaymentId: paymentId,
-            streamerUsername: streamerUsername
-          };
-          // Make a call to the REST api to execute the payment. Unfortunatly 'paypal-checkout' service has a bug
-          // that prevents executing payments when payee isnt the client's paypal account.
-          // So we must do that on our backend. See this bug: https://github.com/paypal/paypal-checkout/issues/464
-          insertBounty(payload);
-        }
-
-    }, '#paypal-button-container');
+        onAuthorize: this.onAuthorize
+    }, `#${paypalButtonContainer}`);
   }
+
+  onPayment = (data, actions) => {
+    // Make a call to the REST api to create the payment
+    return actions.payment.create({
+      payment: {
+        transactions: [
+          {
+            payee: {
+              email: this.props.streamerPaypalEmail
+            },
+            amount: {
+              total: this.props.amount,
+              currency: 'USD'
+            }
+          }
+        ],
+        intent: "authorize"
+      },
+      experience: {
+        input_fields: {
+          no_shipping: 1
+        }
+      }
+    });
+  };
+
+  onAuthorize = (data, actions) => {
+    const paymentId = data.paymentID;
+
+    const payload = {
+      username: this.props.username,
+      amount: this.props.amount,
+      bounty: this.props.bounty,
+      payPalPaymentId: paymentId,
+      streamerUsername: this.props.streamerUsername
+    };
+    // Make a call to the REST api to execute the payment. Unfortunatly 'paypal-checkout' service has a bug
+    // that prevents executing payments when payee isnt the client's paypal account.
+    // So we must do that on our backend. See this bug: https://github.com/paypal/paypal-checkout/issues/464
+    this.props.insertBounty(payload);
+  };
 
   render() {
     return (
       <div>
-        <div id="paypal-button-container"></div>
+        <div id={`${paypalButtonContainer}`}></div>
       </div>
     );
   }
