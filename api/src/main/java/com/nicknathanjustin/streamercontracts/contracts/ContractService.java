@@ -12,5 +12,5 @@ public interface ContractService {
      * @param  game The name of the game being streamed.
      * @param  description The description of the contract.
      */
-    void createContract(UUID proposerId, UUID streamerId, String game, String description);
+    ContractModel createContract(UUID proposerId, UUID streamerId, String game, String description);
 }

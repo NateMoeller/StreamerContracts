@@ -12,6 +12,7 @@ class PayWithPayPalComponent extends Component {
     const bounty = this.props.bounty;
     const username = this.props.username;
     const insertBounty = this.props.insertBounty;
+    const streamerUsername = this.props.streamerUsername;
 
     paypal.Button.render({
 
@@ -61,7 +62,8 @@ class PayWithPayPalComponent extends Component {
             username: username,
             amount: donationAmount,
             bounty: bounty,
-            payPalPaymentId: paymentId
+            payPalPaymentId: paymentId,
+            streamerUsername: streamerUsername
           };
           // Make a call to the REST api to execute the payment. Unfortunatly 'paypal-checkout' service has a bug
           // that prevents executing payments when payee isnt the client's paypal account.
@@ -86,7 +88,8 @@ PayWithPayPalComponent.propTypes = {
   streamerPaypalEmail: PropTypes.string.isRequired,
   bounty: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  insertBounty: PropTypes.func.isRequired
+  insertBounty: PropTypes.func.isRequired,
+  streamerUsername : PropTypes.string.isRequired
 };
 
 export default PayWithPayPalComponent;

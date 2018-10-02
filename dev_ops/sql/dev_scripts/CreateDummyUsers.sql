@@ -1,13 +1,18 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE OR REPLACE FUNCTION createUsers() RETURNS void AS '
-DECLARE numUsers INTEGER := 10;
-
+CREATE OR REPLACE FUNCTION createUsers() RETURNS void AS
+$func$
+DECLARE
+   adjectives text[] := '{"Crazy","Lazy","Hazy","Salty","Tender","Fluid","Tilted","Pleasant","Short","Tough"}';
+   nouns text[] := '{"Horse","Bitch","Nick","Nathan","Justin","Potato","Cookie","Wing","Hippo","Dog","Phone"}';
 BEGIN
-    FOR i in 0.. numUsers LOOP
-            INSERT INTO users VALUES (uuid_generate_v1(), md5(random()::text), NOW(), NOW(), 1);
+    FOR i in 1..array_length(adjectives, 1) LOOP
+	    FOR j in 1..array_length(nouns, 1) LOOP
+		    INSERT INTO users VALUES (uuid_generate_v1(), CONCAT(adjectives[i], nouns[j]), NOW(), NOW(), 1);
+		END LOOP;
     END LOOP;
 END;
-' LANGUAGE plpgsql;
+
+$func$ LANGUAGE plpgsql;
 
 select createUsers();

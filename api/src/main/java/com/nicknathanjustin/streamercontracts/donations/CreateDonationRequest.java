@@ -13,4 +13,5 @@ public class CreateDonationRequest {
     @NonNull private String payPalPaymentId;
     @NonNull private String bounty;
     @NonNull private BigDecimal amount;
+    @NonNull private String streamerUsername;
 }

@@ -1,4 +1,4 @@
-package com.nicknathanjustin.streamercontracts.contracts;
+package com.nicknathanjustin.streamercontracts.donations;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,41 +12,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Table(name = "contracts")
+@Table(name = "contract_donations")
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter(value = AccessLevel.PACKAGE)
 @Getter
-public class ContractModel {
+public class DonationModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private UUID proposerId;
+    private UUID contractId;
 
-    private UUID streamerId;
+    private UUID donatorId;
 
-    private String game;
+    private BigDecimal donationAmount;
 
-    private String description;
-
-    private Timestamp proposedAt;
-
-    private Timestamp acceptedAt;
-
-    private Timestamp expiresAt;
-
-    private Timestamp completedAt;
-
-    private boolean isAccepted;
-
-    private boolean isCompleted;
-
-    private boolean isCommunityContract;
+    private Timestamp donatedAt;
 }

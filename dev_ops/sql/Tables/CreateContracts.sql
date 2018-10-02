@@ -2,7 +2,7 @@ CREATE TABLE contracts (
     id UUID PRIMARY KEY,
 	proposer_id UUID REFERENCES users (id) NOT NULL,
 	streamer_id UUID REFERENCES users (id) NOT NULL,
-	game VARCHAR(128) NOT NULL,
+	game VARCHAR(128) NULL,
 	description TEXT NOT NULL,
 	proposed_at TIMESTAMP NOT NULL,
 	accepted_at TIMESTAMP NULL,
