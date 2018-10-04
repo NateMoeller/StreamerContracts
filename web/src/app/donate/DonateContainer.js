@@ -32,7 +32,9 @@ class DonateContainer extends Component {
         />
       );
     } else if (this.props.donate.curDonationState === donateTypes.DONATION_ERROR) {
-      return <ErrorComponent />;
+      return (
+        <ErrorComponent />
+      );
     }
 
     return (

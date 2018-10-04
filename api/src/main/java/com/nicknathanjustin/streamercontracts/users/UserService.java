@@ -28,6 +28,9 @@ public interface UserService {
 
     /**
      * Gets the TwitchUser object from Twitch API
+     *
+     * @param twitchUsername The username of the twitch user
+     * @return An Optional<TwitchUser> for the user
      */
-    TwitchUser getTwitchUserFromUsername(String twitchUsername);
+    Optional<TwitchUser> getTwitchUserFromUsername(String twitchUsername);
 }

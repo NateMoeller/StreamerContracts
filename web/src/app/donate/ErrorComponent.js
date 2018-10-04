@@ -11,7 +11,7 @@ import styles from './DonateStyles.scss';
 class ErrorComponent extends Component {
   render() {
     return (
-      <div className={styles.donateContainer}>
+      <div>
         <Grid>
           <Row>
             <PageHeader>

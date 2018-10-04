@@ -32,8 +32,7 @@ public class LoginApiController {
         // Long story short is that there isnt a nice way to move redirects away from "/" when using @EnableOAuth2Sso
         // Since its difficult to move the redirect, we'll have "/" function as the OauthSuccessRedirect when we see
         // a request from our Oauth login flow
-        if(isOauthSuccessRedirect(auth, request)) {
-            loginService.logUserIn(auth);
+        if(isOauthSuccessRedirect(auth, request) && loginService.logUserIn(auth)) {
             response.sendRedirect(frontEndUrl + "/profile");
         }
     }

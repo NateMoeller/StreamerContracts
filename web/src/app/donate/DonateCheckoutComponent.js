@@ -14,12 +14,12 @@ import styles from './DonateStyles.scss';
 class DonateCheckoutComponent extends Component {
   render() {
     return (
-      <div className={styles.donationContainer}>
+      <div className={styles.donateContainer}>
         <Grid>
           <Row>
             <PageHeader>Review your challenge</PageHeader>
           </Row>
-          <Row style={{ marginBottom: '20px' }}>
+          <Row className={styles.backButton}>
             <Col xs={3} md={2}>
               <Button onClick={this.props.goBack}>
                 <Glyphicon glyph="arrow-left" className={styles.arrowLeft} />
@@ -27,7 +27,7 @@ class DonateCheckoutComponent extends Component {
               </Button>
             </Col>
           </Row>
-          <Row style={{ marginBottom: '10px' }}>
+          <Row className={styles.usernameCheckout}>
             <Col xs={3} md={2}>
               Username:
             </Col>
@@ -35,7 +35,7 @@ class DonateCheckoutComponent extends Component {
               {this.props.username}
             </Col>
           </Row>
-          <Row style={{ height: '50px', borderBottom: '1px solid #eee' }}>
+          <Row className={styles.bountyCheckout}>
             <Col xs={3} md={2}>
               Bounty:
             </Col>
@@ -43,11 +43,11 @@ class DonateCheckoutComponent extends Component {
               {this.props.bounty}
             </Col>
           </Row>
-          <Row style={{ marginBottom: '10px', marginTop: '10px' }}>
+          <Row className={styles.totalAmountCheckout}>
             <Col xs={3} md={2}>
               Total amount:
             </Col>
-            <Col xs={3} md={2} style={{ color: 'red' }}>
+            <Col xs={3} md={2} className={styles.amount}>
               ${this.props.amount}
             </Col>
           </Row>

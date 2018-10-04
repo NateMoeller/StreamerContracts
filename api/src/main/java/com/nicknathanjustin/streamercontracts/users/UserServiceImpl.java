@@ -3,7 +3,11 @@ package com.nicknathanjustin.streamercontracts.users;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -48,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TwitchUser getTwitchUserFromUsername(@NonNull String twitchUsername) {
+    public Optional<TwitchUser> getTwitchUserFromUsername(@NonNull final String twitchUsername) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Client-ID", clientId);
@@ -58,22 +62,8 @@ public class UserServiceImpl implements UserService {
         final String url = userInfoUri + "?login=" + twitchUsername;
         final ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
         final Map<String, List<Map<String, Object>>> details = response.getBody();
-        final List<Map<String, Object>> data = details.get("data");
+        Optional<TwitchUser> optionalTwitchUser = TwitchUser.createTwitchUser(details);
 
-        if (data.size() <= 0) {
-            return null;
-        }
-        final Map<String, Object> properties = data.get(0);
-
-        return new TwitchUser(
-                (String) properties.get("login"),
-                (String) properties.get("display_name"),
-                (String) properties.get("type"),
-                (String) properties.get("broadcaster_type"),
-                (String) properties.get("description"),
-                (String) properties.get("profile_image_url"),
-                (String) properties.get("offline_image_url"),
-                (int) properties.get("view_count")
-        );
+        return optionalTwitchUser;
     }
 }
