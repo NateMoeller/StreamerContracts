@@ -222,6 +222,7 @@ class DonateComponent extends Component {
                         bounty={this.state.bounty}
                         username={this.state.username}
                         insertBounty={this.props.insertBounty}
+                        streamerUsername={this.props.twitchUserName}
                     />  :
                     null}
                 </Row>
