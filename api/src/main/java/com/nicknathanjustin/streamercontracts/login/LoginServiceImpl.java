@@ -18,23 +18,21 @@ public class LoginServiceImpl implements LoginService {
     @NonNull private final UserService userService;
 
     @Override
-    public boolean logUserIn(@NonNull final OAuth2Authentication auth) {
+    public void logUserIn(@NonNull final OAuth2Authentication auth) {
         final Authentication userAuth = auth.getUserAuthentication();
         final Map<String, List<Map<String, Object>>> authDetails = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();
         final Optional<TwitchUser> optionalTwitchUser = TwitchUser.createTwitchUser(authDetails);
         final TwitchUser twitchUser = optionalTwitchUser.orElse(null);
-        if (twitchUser == null) {
-            return false;
+        UserModel userModel = null;
+        if(twitchUser != null) {
+            final Optional<UserModel> optionalUser = userService.getUser(twitchUser.getDisplayName());
+            userModel = optionalUser.orElse(null);
         }
 
-        final Optional<UserModel> optionalUser = userService.getUser(twitchUser.getDisplayName());
-        final UserModel userModel = optionalUser.orElse(null);
         if (userModel != null) {
             userService.login(userModel);
         } else {
             userService.createUser(twitchUser.getDisplayName());
         }
-
-        return true;
     }
 }
