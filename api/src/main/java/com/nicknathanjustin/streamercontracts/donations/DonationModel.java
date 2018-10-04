@@ -36,4 +36,6 @@ public class DonationModel {
     private BigDecimal donationAmount;
 
     private Timestamp donatedAt;
+
+    private String paypalPaymentId;
 }

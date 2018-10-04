@@ -13,12 +13,18 @@ public class DonationServiceImpl implements  DonationService{
     @NonNull final DonationModelRepository donationModelRepository;
 
     @Override
-    public void createDonation(UUID contractId, UUID donatorId, BigDecimal donationAmount, Timestamp contractTimestamp) {
+    public void createDonation(
+            @NonNull final UUID contractId,
+            @NonNull final UUID donatorId,
+            @NonNull final BigDecimal donationAmount,
+            @NonNull final Timestamp contractTimestamp,
+            @NonNull final String paypalPaymentId) {
         donationModelRepository.save(DonationModel.builder()
                 .contractId(contractId)
                 .donatorId(donatorId)
                 .donatedAt(contractTimestamp)
                 .donationAmount(donationAmount)
+                .paypalPaymentId(paypalPaymentId)
                 .build());
     }
 }

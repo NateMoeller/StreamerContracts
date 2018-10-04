@@ -14,13 +14,13 @@ public class ContractServiceImpl implements ContractService {
     @NonNull final ContractModelRepository contractModelRepository;
 
     @Override
-    public ContractModel createContract(@NonNull UUID proposerId, @NonNull UUID streamerId, @Nullable String game, @NonNull String description) {
+    public ContractModel createContract(@NonNull final UUID proposerId, @NonNull final UUID streamerId, @Nullable final String game, @NonNull final String description) {
         final Timestamp creationTimestamp = new Timestamp(System.currentTimeMillis());
         // Add 10 days to the current timestamp to create the expires timestamp
-        final Calendar cal = Calendar.getInstance();
-        cal.setTime(creationTimestamp);
-        cal.add(Calendar.DAY_OF_WEEK, 10);
-        final Timestamp expiresTimestamp = new Timestamp(cal.getTime().getTime());
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(creationTimestamp);
+        calendar.add(Calendar.DAY_OF_WEEK, 10);
+        final Timestamp expiresTimestamp = new Timestamp(calendar.getTime().getTime());
         return contractModelRepository.save(ContractModel.builder()
                 .proposerId(proposerId)
                 .streamerId(streamerId)

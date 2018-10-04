@@ -3,13 +3,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE OR REPLACE FUNCTION createUsers() RETURNS void AS
 $func$
 DECLARE
-   adjectives text[] := '{"Crazy","Lazy","Hazy","Salty","Tender","Fluid","Tilted","Pleasant","Short","Tough"}';
-   nouns text[] := '{"Horse","Bitch","Nick","Nathan","Justin","Potato","Cookie","Wing","Hippo","Dog","Phone"}';
+   streamers text[] := '{"Ninja","NICKMERCS","shroud","summit1g","TimTheTatman","TSM_Myth","CDNThe3rd","Vivid","Snipe3down","masoncobb","DrLupo","Hysteria","Fearitself","Heinz","DrDisRespectLIVE","rudeboi2hot","LEGIQN","Halo","nickmercs","Walshy","Tsquared"}';
 BEGIN
-    FOR i in 1..array_length(adjectives, 1) LOOP
-	    FOR j in 1..array_length(nouns, 1) LOOP
-		    INSERT INTO users VALUES (uuid_generate_v1(), CONCAT(adjectives[i], nouns[j]), NOW(), NOW(), 1);
-		END LOOP;
+    FOR i in 1..array_length(streamers, 1) LOOP
+	    INSERT INTO users VALUES (uuid_generate_v1(), streamers[i], NOW(), NOW(), 1);
     END LOOP;
 END;
 

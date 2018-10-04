@@ -9,6 +9,8 @@ import com.paypal.api.payments.Payment;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,24 +34,25 @@ public class DonationsApiController {
     @NonNull private final DonationService donationService;
 
     @RequestMapping(path = "/execute", method = RequestMethod.POST)
-    public String executePayment(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
+    public ResponseEntity executePayment(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
         final Payment payment = paymentsService.executePayment(createDonationRequest.getPayPalPaymentId()).orElse(null);
         if(payment == null) {
-            return "couldn't execute payment for id: " + createDonationRequest.getPayPalPaymentId();
+            log.warn("Couldn't execute payment for id: " + createDonationRequest.getPayPalPaymentId());
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final String streamerName = "CrazyHorse";
         final Optional<UserModel> proposerObj = userService.getUser(createDonationRequest.getUsername());
-        final Optional<UserModel> streamerObj = userService.getUser(streamerName);
+        final Optional<UserModel> streamerObj = userService.getUser(createDonationRequest.getStreamerUsername());
         if (!proposerObj.isPresent() || !streamerObj.isPresent()) {
-            return "users do not exist";
+            log.warn("Username: " + createDonationRequest.getUsername() + " or StreamerUsername: " + createDonationRequest.getStreamerUsername() + " does not exist.");
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
         final UserModel proposer = proposerObj.get();
         final UserModel streamer = streamerObj.get();
         final ContractModel contract = contractService.createContract(proposer.getId(), streamer.getId(), null, createDonationRequest.getBounty());
-        donationService.createDonation(contract.getId(), proposer.getId(), createDonationRequest.getAmount(), contract.getProposedAt());
-        return payment.toJSON();
+        donationService.createDonation(contract.getId(), proposer.getId(), createDonationRequest.getAmount(), contract.getProposedAt(), createDonationRequest.getPayPalPaymentId());
+        return ResponseEntity.ok(payment.toJSON());
     }
 
     //TODO: turn these all into POST requests

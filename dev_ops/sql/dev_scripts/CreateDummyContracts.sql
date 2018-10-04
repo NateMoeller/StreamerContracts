@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE OR REPLACE FUNCTION createContracts() RETURNS void AS
 $func$
 DECLARE
-   numContracts INTEGER := 150;
+   numContracts INTEGER := 15;
    random_user1 UUID;
    random_user2 UUID;
    descriptions text[] := '{"Win this game!",

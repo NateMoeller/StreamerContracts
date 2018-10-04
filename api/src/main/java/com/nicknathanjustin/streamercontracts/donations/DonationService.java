@@ -13,6 +13,7 @@ public interface DonationService {
      * @param  donatorId The UUID of the user that donated.
      * @param  donationAmount The amount of money donated.
      * @param  contractTimestamp The creation timestamp of the contract.
+     * @param  paypalPaymentId The paypal payment id of the transaction.
      */
-    void createDonation(UUID contractId, UUID donatorId, BigDecimal donationAmount, Timestamp contractTimestamp);
+    void createDonation(UUID contractId, UUID donatorId, BigDecimal donationAmount, Timestamp contractTimestamp, String paypalPaymentId);
 }
