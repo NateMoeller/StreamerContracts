@@ -6,11 +6,12 @@ import {
   InputGroup,
   Grid,
   Row,
-  Col
+  Col,
+  PageHeader
 } from 'react-bootstrap';
 import React, { Component } from 'react';
+import DonationCheckoutComponent from './DonateCheckoutComponent';
 import PropTypes from 'prop-types';
-import PayWithPayPalComponent from './PayWithPayPalComponent';
 import styles from './DonateStyles.scss';
 
 const REQUIRED_MESSAGE = 'This field is required';
@@ -18,7 +19,6 @@ const TOO_LONG_MESSAGE = 'Too many characters';
 
 const MIN_AMOUNT = 1;
 const MAX_AMOUNT = 1000;
-const MAX_NAME_LENGTH = 64;
 const MAX_BOUNTY_LENGTH = 300;
 
 class DonateComponent extends Component {
@@ -26,22 +26,20 @@ class DonateComponent extends Component {
     super(props);
 
     this.state = {
-      username: '',
       amount: '',
       bounty: '',
       showPaymentOptions: false,
-      nameError: null,
       amountError: null,
       bountyError: null
     };
 
     this.submitForm = this.submitForm.bind(this);
     this.validateAmount = this.validateAmount.bind(this);
+    this.showBountyForm = this.showBountyForm.bind(this);
   }
 
   submitForm(e) {
     e.preventDefault();
-    this.validateName();
     this.validateAmount();
     this.validateBounty();
 
@@ -53,8 +51,7 @@ class DonateComponent extends Component {
   }
 
   isSubmitEnabled() {
-    if ((this.state.nameError && this.state.nameError.type === null) &&
-        (this.state.amountError && this.state.amountError.type === null) &&
+    if ((this.state.amountError && this.state.amountError.type === null) &&
         (this.state.bountyError && this.state.bountyError.type === null)) {
           return true;
     }
@@ -68,20 +65,6 @@ class DonateComponent extends Component {
     }
 
     return false;
-  }
-
-  validateName() {
-    let error = { type: null };
-    if (this.validateRequiredField(this.state.username)) {
-      error = { type: 'error', 'message' : REQUIRED_MESSAGE };
-    } else if (this.state.username.length >= MAX_NAME_LENGTH) {
-      error = { type: 'error', 'message': TOO_LONG_MESSAGE };
-    }
-
-    this.setState({
-      nameError: error
-    });
-    this.updateShowPaymentOptions(error);
   }
 
   validateAmount() {
@@ -100,7 +83,6 @@ class DonateComponent extends Component {
     this.setState({
       amountError: error
     });
-    this.updateShowPaymentOptions(error);
   }
 
   validateBounty() {
@@ -113,23 +95,6 @@ class DonateComponent extends Component {
 
     this.setState({
       bountyError: error
-    });
-    this.updateShowPaymentOptions(error);
-  }
-
-  updateShowPaymentOptions(error) {
-    if(error !== null) {
-     this.setState({
-       showPaymentOptions: false
-     });
-    }
-  }
-
-  nameChange(newName) {
-    this.setState({
-      username: newName
-    }, () => {
-      this.validateName();
     });
   }
 
@@ -149,16 +114,35 @@ class DonateComponent extends Component {
     });
   }
 
+  showBountyForm() {
+    this.setState({
+      showPaymentOptions: false
+    });
+  }
+
   render() {
-    const nameErrorMessage = this.state.nameError !== null ? this.state.nameError.message : '';
     const amountErrorMessage = this.state.amountError !== null ? this.state.amountError.message : '';
     const bountyErrorMessage = this.state.bountyError !== null ? this.state.bountyError.message : '';
+
+    if (this.state.showPaymentOptions) {
+      return (
+        <DonationCheckoutComponent
+          goBack={this.showBountyForm}
+          amount={this.state.amount}
+          streamerPaypalEmail={this.props.streamerPaypalEmail}
+          bounty={this.state.bounty}
+          username={this.props.user.displayName}
+          insertBounty={this.props.insertBounty}
+          streamerUsername={this.props.streamerUsername}
+        />
+      );
+    }
 
     return (
       <div className={styles.donateContainer}>
         <Grid>
           <Row>
-            <h1 className={styles.title}>Open a bounty for {this.props.twitchUserName}</h1>
+            <PageHeader className={styles.title}>Open a bounty for {this.props.streamerUsername}</PageHeader>
           </Row>
           <Row>
             <Col xs={8} md={6}>
@@ -167,16 +151,14 @@ class DonateComponent extends Component {
                   <Col xs={8} md={6} style={{ paddingLeft: '0px' }}>
                     <FormGroup
                       controlId={'username'}
-                      validationState={this.state.nameError ? this.state.nameError.type : null}
                       >
                       <ControlLabel>Username</ControlLabel>
                       <FormControl
                         type='text'
-                        placeholder='Enter username'
-                        onChange={(e) => this.nameChange(e.target.value)}
+                        value={this.props.user.displayName}
+                        readOnly
                       />
                     </FormGroup>
-                    <span className={styles.errorMessage}>{nameErrorMessage}</span>
                   </Col>
                   <Col xs={8} md={6}>
                     <FormGroup
@@ -188,7 +170,8 @@ class DonateComponent extends Component {
                         <InputGroup.Addon>$</InputGroup.Addon>
                         <FormControl
                           type="text"
-                          placeholder='Enter amount'
+                          value={this.state.amount}
+                          placeholder='5.00'
                           onChange={(e) => this.amountChange(e.target.value)}
                         />
                       </InputGroup>
@@ -204,6 +187,7 @@ class DonateComponent extends Component {
                     <ControlLabel>Bounty message</ControlLabel>
                     <FormControl
                       componentClass="textarea"
+                      value={this.state.bounty}
                       placeholder="Ex: Win the next game with a no scope kill"
                       onChange={(e) => this.bountyChange(e.target.value)}
                       style={{ height: '150px' }}
@@ -212,19 +196,9 @@ class DonateComponent extends Component {
                   <span className={styles.errorMessage}>{bountyErrorMessage}</span>
                 </Row>
                 <Row>
-                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>Complete Payment with PayPal</Button>
-                </Row>
-                <Row>
-                  {this.state.showPaymentOptions ?
-                    <PayWithPayPalComponent
-                        amount={this.state.amount}
-                        streamerPaypalEmail={this.props.streamerPaypalEmail}
-                        bounty={this.state.bounty}
-                        username={this.state.username}
-                        insertBounty={this.props.insertBounty}
-                        streamerUsername={this.props.twitchUserName}
-                    />  :
-                    null}
+                  <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>
+                    Open Challenge
+                  </Button>
                 </Row>
               </form>
             </Col>
@@ -236,7 +210,8 @@ class DonateComponent extends Component {
 }
 
 DonateComponent.propTypes = {
-  twitchUserName: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
+  streamerUsername: PropTypes.string.isRequired,
   streamerPaypalEmail: PropTypes.string.isRequired,
   insertBounty: PropTypes.func.isRequired
 };

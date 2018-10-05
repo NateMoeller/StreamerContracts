@@ -1,5 +1,10 @@
 @import '../../colors.scss';
 
+.missingContainer {
+  width: 100%;
+  text-align: center;
+}
+
 .donateContainer {
   width: 100%;
 
@@ -12,4 +17,44 @@
     margin-bottom: 30px;
     color: $primary-blue;
   }
+
+  .backButton {
+    margin-bottom: 20px;
+  }
+
+  .usernameCheckout {
+    margin-bottom: 10px;
+  }
+
+  .bountyCheckout {
+    height: 50px;
+    border-bottom: 1px solid $outline-gray;
+  }
+
+  .totalAmountCheckout {
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+    .amount {
+      color: $error-red;
+    }
+  }
+}
+
+.checkmark {
+  color: $success-green;
+  margin-right: 20px;
+}
+
+.error {
+  color: $error-red;
+  margin-right: 20px;
+}
+
+.reloadButton {
+  margin-top: 20px;
+}
+
+.arrowLeft {
+   margin-right: 10px;
 }

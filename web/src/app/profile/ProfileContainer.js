@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import LoadingComponent from '../common/loading/LoadingComponent';
 import ProfileComponent from './ProfileComponent';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
@@ -24,8 +25,7 @@ class ProfileContainer extends Component {
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     if (!user) {
-      // TODO: show a nice spinner here
-      return 'Loading...';
+      return <LoadingComponent />;
     }
 
     return (

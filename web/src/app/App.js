@@ -8,6 +8,7 @@ import LoginContainer from '../app/login/LoginContainer';
 import NavBar from '../app/common/navbar/NavbarComponent';
 import ProfileContainer from '../app/profile/ProfileContainer';
 import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
+import UserContainer from '../app/user/UserContainer';
 import cx from 'classnames';
 import styles from '../index.scss';
 
@@ -16,7 +17,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Route path="/(|home|about|login|profile|donate)" component={NavBar} />
+          <Route path="/(|home|about|login|profile|donate|user)" component={NavBar} />
           <Route path="/alert/:alertChannelId" component={AlertComponent} />
           <div className={cx([styles.App, 'container'])}>
             <Route exact path="/" component={HomeContainer} />
@@ -24,7 +25,8 @@ class App extends Component {
             <Route path="/about" component={AboutContainer} />
             <ProtectedRoute path="/login" component={LoginContainer} />
             <Route path="/profile" component={ProfileContainer} />
-            <Route path="/donate/:twitchUserName" component={DonateContainer} />
+            <ProtectedRoute private path="/donate/:twitchUserName" component={DonateContainer} />
+            <ProtectedRoute private path="/user/:twitchUserName" component={UserContainer} />
           </div>
         </div>
       </Router>

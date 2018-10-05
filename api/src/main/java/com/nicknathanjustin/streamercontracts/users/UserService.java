@@ -25,4 +25,12 @@ public interface UserService {
      * @param  user The user model object to update.
      */
     void login(UserModel user);
+
+    /**
+     * Gets the TwitchUser object from Twitch API
+     *
+     * @param twitchUsername The username of the twitch user
+     * @return An Optional<TwitchUser> for the user
+     */
+    Optional<TwitchUser> getTwitchUserFromUsername(String twitchUsername);
 }
