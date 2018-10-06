@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -28,9 +30,11 @@ public class ContractModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private UUID proposerId;
+    @OneToOne
+    private UserModel proposer;
 
-    private UUID streamerId;
+    @OneToOne
+    private UserModel streamer;
 
     private String game;
 

@@ -1,5 +1,5 @@
-import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 import React, { Component } from 'react';
+import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import PropTypes from 'prop-types';
 import styles from './AlertComponentStyles.scss';

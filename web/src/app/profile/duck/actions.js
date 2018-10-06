@@ -3,7 +3,9 @@ import {
   RECEIVE_USER_INFO_SUCCESS,
   REQUEST_USER_INFO,
   REQUEST_TEST_ALERT,
-  RECEIVE_TEST_ALERT
+  RECEIVE_TEST_ALERT,
+  REQUEST_OPEN_CONTRACTS,
+  RECEIVE_OPEN_CONTRACTS
 } from './types';
 
 const requestUserInfo = () => ({
@@ -29,10 +31,21 @@ const receiveTestAlert = (success) => ({
   success
 });
 
+const requestOpenContracts = () => ({
+  type: REQUEST_OPEN_CONTRACTS
+});
+
+const receiveOpenContracts = (data) => ({
+  type: RECEIVE_OPEN_CONTRACTS,
+  data
+});
+
 export {
   requestUserInfo,
   receiveUserInfoSuccess,
   receiveUserInfoFailure,
   requestTestAlert,
-  receiveTestAlert
+  receiveTestAlert,
+  requestOpenContracts,
+  receiveOpenContracts
 };

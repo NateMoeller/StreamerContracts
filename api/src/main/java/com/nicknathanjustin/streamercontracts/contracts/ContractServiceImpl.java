@@ -1,12 +1,12 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
-import lombok.RequiredArgsConstructor;
+import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 
-import java.util.Calendar;
-import java.util.UUID;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 @RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
@@ -14,7 +14,7 @@ public class ContractServiceImpl implements ContractService {
     @NonNull final ContractModelRepository contractModelRepository;
 
     @Override
-    public ContractModel createContract(@NonNull final UUID proposerId, @NonNull final UUID streamerId, @Nullable final String game, @NonNull final String description) {
+    public ContractModel createContract(@NonNull final UserModel proposer, @NonNull final UserModel streamer, @Nullable final String game, @NonNull final String description) {
         final Timestamp creationTimestamp = new Timestamp(System.currentTimeMillis());
         // Add 10 days to the current timestamp to create the expires timestamp
         final Calendar calendar = Calendar.getInstance();
@@ -22,8 +22,8 @@ public class ContractServiceImpl implements ContractService {
         calendar.add(Calendar.DAY_OF_WEEK, 10);
         final Timestamp expiresTimestamp = new Timestamp(calendar.getTime().getTime());
         return contractModelRepository.save(ContractModel.builder()
-                .proposerId(proposerId)
-                .streamerId(streamerId)
+                .proposer(proposer)
+                .streamer(streamer)
                 .game(game)
                 .description(description)
                 .proposedAt(creationTimestamp)
