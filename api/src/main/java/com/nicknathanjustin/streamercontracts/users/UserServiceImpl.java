@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -66,5 +68,26 @@ public class UserServiceImpl implements UserService {
         Optional<TwitchUser> optionalTwitchUser = TwitchUser.createTwitchUser(details);
 
         return optionalTwitchUser;
+    }
+
+    @Override
+    public UserModel getUserFromAuthContext(@NonNull final OAuth2Authentication authentication) throws IllegalArgumentException {
+        final TwitchUser twitchUser = getTwitchUserFromAuthContext(authentication);
+        final Optional<UserModel> optionalUserModel = getUser(twitchUser.getDisplayName());
+        if (optionalUserModel.isPresent()) {
+            return optionalUserModel.get();
+        }
+        throw new IllegalArgumentException("unable to retrieve " + UserModel.class.getName() + " from authentication object: " + authentication);
+    }
+
+    @Override
+    public TwitchUser getTwitchUserFromAuthContext(@NonNull final OAuth2Authentication authentication) {
+        final Authentication userAuth = authentication.getUserAuthentication();
+        final Map<String, List<Map<String, Object>>> authDetails = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();
+        final Optional<TwitchUser> optionalTwitchUser = TwitchUser.createTwitchUser(authDetails);
+        if (optionalTwitchUser.isPresent()) {
+            return optionalTwitchUser.get();
+        }
+        throw new IllegalArgumentException("unable to retrieve " + TwitchUser.class.getName() + " from authentication object: " + authentication);
     }
 }

@@ -1,6 +1,7 @@
 import { Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
 import React, { Component } from 'react';
 import AlertComponent from './AlertComponent/AlertComponent';
+import DonationsComponent from './DonationsComponent/DonationsComponent';
 import PropTypes from 'prop-types';
 import styles from './ProfileStyles.scss'
 
@@ -46,7 +47,15 @@ class ProfileComponent extends Component {
 
   getOpenContractsContent() {
     return (
-      <PageHeader>Open Contracts</PageHeader>
+      <div>
+        <PageHeader>Open Contracts</PageHeader>
+        <DonationsComponent
+          listOpenDonations={this.props.listOpenDonations}
+          updateContract={this.props.updateContract}
+          openContracts={this.props.openContracts}
+          totalOpenDonations={this.props.totalOpenDonations}
+        />
+      </div>
     );
   }
 
@@ -107,7 +116,18 @@ ProfileComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
   alertChannelId: PropTypes.string.isRequired,
-  testAlert: PropTypes.func.isRequired
+  testAlert: PropTypes.func.isRequired,
+  listOpenDonations: PropTypes.func.isRequired,
+  updateContract: PropTypes.func.isRequired,
+  openContracts: PropTypes.arrayOf(
+    PropTypes.shape({
+      streamerName: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      donationAmount: PropTypes.number.isRequired,
+      donationId: PropTypes.string.isRequired
+    }).isRequired
+  ),
+  totalOpenDonations: PropTypes.number.isRequired,
 };
 
 export default ProfileComponent;

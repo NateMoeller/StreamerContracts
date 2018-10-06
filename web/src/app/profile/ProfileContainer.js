@@ -34,6 +34,10 @@ class ProfileContainer extends Component {
         imageUrl={user.profileImageUrl}
         testAlert={this.props.testAlert}
         alertChannelId={user.alertChannelId}
+        listOpenDonations={this.props.listOpenDonations}
+        updateContract={this.props.updateContract}
+        openContracts={this.props.profile.openContracts}
+        totalOpenDonations={this.props.profile.totalOpenDonations}
       />
     );
   }
@@ -52,7 +56,9 @@ function mapStateToProps(state) {
 ProfileContainer.propTypes = {
   getUser: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
+  listOpenDonations: PropTypes.func.isRequired,
+  updateContract: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileContainer);
