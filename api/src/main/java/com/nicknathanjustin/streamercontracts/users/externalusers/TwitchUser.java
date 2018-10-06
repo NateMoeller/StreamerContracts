@@ -1,6 +1,5 @@
-package com.nicknathanjustin.streamercontracts.users;
+package com.nicknathanjustin.streamercontracts.users.externalusers;
 
-import lombok.Data;
 import lombok.NonNull;
 import org.springframework.util.CollectionUtils;
 
@@ -8,24 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Data
-public class TwitchUser {
-
-    private final String login;
-
-    private final String displayName;
-
-    private final String type;
-
-    private final String broadcasterType;
-
-    private final String description;
-
-    private final String profileImageUrl;
-
-    private final String offlineImageUrl;
-
-    private final int viewCount;
+public class TwitchUser extends ExternalUser {
 
     public static Optional<TwitchUser> createTwitchUser(@NonNull final Map<String, List<Map<String, Object>>> details) {
         TwitchUser twitchUser = null;
@@ -56,7 +38,7 @@ public class TwitchUser {
             @NonNull final String description,
             @NonNull final String profileImageUrl,
             @NonNull final String offlineImageUrl,
-            @NonNull final int viewCount) {
+            final int viewCount) {
         this.login = login;
         this.displayName = displayName;
         this.type = type;

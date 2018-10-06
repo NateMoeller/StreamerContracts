@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
