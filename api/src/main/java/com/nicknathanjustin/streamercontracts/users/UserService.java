@@ -1,5 +1,7 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
+
 import java.util.Optional;
 
 public interface UserService {

@@ -1,7 +1,8 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.nicknathanjustin.streamercontracts.users.dtos.PrivateUser;
+import com.nicknathanjustin.streamercontracts.users.dtos.PublicUser;
+import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,8 @@ public class UsersApiController {
             final Optional<UserModel> optionalUserModel = userService.getUser(twitchUser.getDisplayName());
             final UserModel userModel = optionalUserModel.orElse(null);
             if(userModel != null) {
-                final UserDto userDto = new UserDto(twitchUser, userModel);
-                return ResponseEntity.ok(userDto);
+                final PrivateUser privateUser = new PrivateUser(twitchUser, userModel);
+                return ResponseEntity.ok(privateUser);
             }
         }
 
@@ -48,16 +49,15 @@ public class UsersApiController {
     }
 
     @RequestMapping(path = "/{twitchUsername}", method = RequestMethod.GET)
-    @JsonView(View.PublicUser.class)
-    public ResponseEntity<UserDto> publicUser(@PathVariable("twitchUsername") @NonNull final String twitchUsername) {
+    public ResponseEntity<PublicUser> publicUser(@PathVariable("twitchUsername") @NonNull final String twitchUsername) {
         final Optional<TwitchUser> optionalTwitchUser = userService.getTwitchUserFromUsername(twitchUsername);
         final Optional<UserModel> optionalUserModel = userService.getUser(twitchUsername);
         final UserModel userModel = optionalUserModel.orElse(null);
         final TwitchUser twitchUser = optionalTwitchUser.orElse(null);
 
         if (twitchUser != null && userModel != null) {
-            final UserDto userDto = new UserDto(twitchUser, userModel);
-            return ResponseEntity.ok(userDto);
+            final PublicUser publicUser = new PublicUser(twitchUser);
+            return ResponseEntity.ok(publicUser);
         }
 
         return new ResponseEntity(HttpStatus.NOT_FOUND);

@@ -1,6 +1,6 @@
 package com.nicknathanjustin.streamercontracts.login;
 
-import com.nicknathanjustin.streamercontracts.users.TwitchUser;
+import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import lombok.NonNull;
