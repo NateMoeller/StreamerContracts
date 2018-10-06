@@ -13,7 +13,10 @@ pgAdmin 4 is a web dashboard for executing postgres queries. psql is the command
 
 3. Run the setup scripts
 
+Use the password that you specified when you setup the postgres instance
 psql --username=postgres --file=<root>/dev_ops/sql/CreateDatabase.sql
-psql --username=postgres --dbname=streamercontractsdb --file=<root>/dev_ops/sql/CreateSchema.sql
+
+Use 'password' to run this command
+psql --username=dbadmin --dbname=streamercontractsdb --file=<root>/dev_ops/sql/CreateSchema.sql
 
 Done!

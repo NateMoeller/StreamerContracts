@@ -1,1 +1,9 @@
 CREATE DATABASE StreamerContractsDB;
+
+DROP USER dbadmin;
+
+CREATE USER dbadmin WITH ENCRYPTED PASSWORD 'password';
+
+GRANT ALL PRIVILEGES ON DATABASE streamercontractsdb TO dbadmin;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dbadmin;
