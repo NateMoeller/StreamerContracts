@@ -1,9 +1,13 @@
 CREATE DATABASE StreamerContractsDB;
 
-DROP USER dbadmin;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM application_user;
 
-CREATE USER dbadmin WITH ENCRYPTED PASSWORD 'password';
+REVOKE ALL PRIVILEGES ON DATABASE streamercontractsdb FROM application_user;
 
-GRANT ALL PRIVILEGES ON DATABASE streamercontractsdb TO dbadmin;
+DROP USER application_user;
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dbadmin;
+CREATE USER application_user WITH ENCRYPTED PASSWORD 'password';
+
+GRANT ALL PRIVILEGES ON DATABASE streamercontractsdb TO application_user;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO application_user;

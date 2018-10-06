@@ -17,6 +17,6 @@ Use the password that you specified when you setup the postgres instance
 psql --username=postgres --file=<root>/dev_ops/sql/CreateDatabase.sql
 
 Use 'password' to run this command
-psql --username=dbadmin --dbname=streamercontractsdb --file=<root>/dev_ops/sql/CreateSchema.sql
+psql --username=application_user --dbname=streamercontractsdb --file=<root>/dev_ops/sql/CreateSchema.sql
 
 Done!
