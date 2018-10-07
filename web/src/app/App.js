@@ -9,6 +9,7 @@ import NavBar from '../app/common/navbar/NavbarComponent';
 import ProfileContainer from '../app/profile/ProfileContainer';
 import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
 import UserContainer from '../app/user/UserContainer';
+import SplashComponent from '../app/splash/SplashComponent';
 import cx from 'classnames';
 import styles from '../index.scss';
 
@@ -19,6 +20,7 @@ class App extends Component {
         <div>
           <Route path="/(|home|about|login|profile|donate|user)" component={NavBar} />
           <Route path="/alert/:alertChannelId" component={AlertContainer} />
+          <Route path="/splash" component={SplashComponent} />
           <div className={cx([styles.App, 'container'])}>
             <Route exact path="/" component={HomeContainer} />
             <Route path="/home" component={HomeContainer} />
