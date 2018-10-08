@@ -24,7 +24,6 @@ class AlertComponent extends Component {
       });
     }, BUFFER);
 
-    // Hide after timeout
     setTimeout(() => {
       this.setState({
         visible: false
