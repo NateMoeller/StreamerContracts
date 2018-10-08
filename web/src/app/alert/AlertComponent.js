@@ -1,57 +1,35 @@
 import React, { Component } from 'react';
 import cx from 'classnames';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import PropTypes from 'prop-types';
 import styles from './AlertStyles.scss';
+
+const ALERT_LENGTH = 5000;
+const BUFFER = 100;
 
 class AlertComponent extends Component {
   constructor(props) {
     super(props);
 
+    this.stompClient = null;
+
     this.state = {
-      username: null,
-      amount: null,
-      bounty: null,
       visible: false
     };
-
-    this.stompClient = null;
-    this.receivedAlert = this.receivedAlert.bind(this);
   }
 
   componentDidMount() {
-    document.body.style.background = 'transparent';
-    const alertChannelId = this.props.match.params.alertChannelId;
-    if (alertChannelId) {
-      this.connect(alertChannelId);
-    } else {
-      console.error('No id specified');
-    }
-  }
+    setTimeout(() => {
+      this.setState({
+        visible: true,
+      });
+    }, BUFFER);
 
-  connect(alertChannelId) {
-    const socket = new SockJS(`${process.env.REACT_APP_API_HOST}alert-websocket`);
-    this.stompClient = Stomp.over(socket);
-    this.stompClient.connect({}, (frame) => {
-        this.stompClient.subscribe('/alert/' + alertChannelId, this.receivedAlert);
-    });
-  }
-
-  receivedAlert(alertResponse) {
-    const ALERT_LENGTH = 5000;
-    const alert = JSON.parse(alertResponse.body);
-    this.setState({
-      username: alert.username,
-      amount: alert.amount,
-      bounty: alert.bounty,
-      visible: true
-    }, () => {
-      setTimeout(() => {
-        this.setState({
-          visible: false
-        });
-      }, ALERT_LENGTH);
-    });
+    // Hide after timeout
+    setTimeout(() => {
+      this.setState({
+        visible: false
+      });
+    }, ALERT_LENGTH);
   }
 
   render() {
@@ -59,16 +37,22 @@ class AlertComponent extends Component {
 
     return (
       <div className={boxStyle}>
-        <div className={styles.moneyBox}>${this.state.amount}</div>
+        <div className={styles.moneyBox}>${this.props.amount}</div>
         <div className={styles.donationBox}>
           <div className={styles.newChallenge}>
-            New Bounty from <div className={styles.username}>{this.state.username}</div>
+            New Bounty from <div className={styles.username}>{this.props.username}</div>
           </div>
-          <div className={styles.bounty}>{this.state.bounty}</div>
+          <div className={styles.bounty}>{this.props.bounty}</div>
         </div>
       </div>
     );
   }
+}
+
+AlertComponent.propTypes = {
+  bounty: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
 }
 
 export default AlertComponent;
