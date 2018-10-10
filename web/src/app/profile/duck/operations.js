@@ -42,7 +42,6 @@ const updateContract = (payload) => (dispatch) => {
 const listOpenDonations = (page, pageSize) => (dispatch) => {
   dispatch(requestOpenContracts());
   RestClient.GET('donations/listOpenDonations/' + page + '/' + pageSize, (response) => {
-    console.log(response.data);
     dispatch(receiveOpenContracts(response.data));
   }, (error) => {
     //TODO: handle error

@@ -26,8 +26,8 @@ class DonationsComponent extends Component {
 
   handleUpdateContractClick = (donationId, markedCompleted) => {
     const payload = {
-      "donationId": donationId,
-      "markedCompleted": markedCompleted
+      donationId: donationId,
+      markedCompleted: markedCompleted
     };
     this.props.updateContract(payload);
   }
