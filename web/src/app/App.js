@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 import AboutContainer from '../app/about/AboutContainer';
-import AlertComponent from '../app/alert/AlertComponent';
+import AlertContainer from '../app/alert/AlertContainer';
 import DonateContainer from '../app/donate/DonateContainer';
 import HomeContainer from '../app/home/HomeContainer';
 import LoginContainer from '../app/login/LoginContainer';
@@ -18,7 +18,7 @@ class App extends Component {
       <Router>
         <div>
           <Route path="/(|home|about|login|profile|donate|user)" component={NavBar} />
-          <Route path="/alert/:alertChannelId" component={AlertComponent} />
+          <Route path="/alert/:alertChannelId" component={AlertContainer} />
           <div className={cx([styles.App, 'container'])}>
             <Route exact path="/" component={HomeContainer} />
             <Route path="/home" component={HomeContainer} />
