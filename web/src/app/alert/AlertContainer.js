@@ -4,8 +4,8 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import AlertComponent from './AlertComponent';
 
-const INITIAL_RECALL_DELAY = 500;
-const RECALL_DELAY_INCREMENT = 500;
+const INITIAL_RECALL_DELAY = 500; // how in (milli)  to wait if the first attempt at showing an alert fails
+const RECALL_DELAY_INCREMENT = 500; // time (in ms) added to the recallDelay after each failed attempt
 const ALERT_LENGTH = 5000;
 const TIME_BETWEEN_ALERTS = 1000;
 
@@ -16,7 +16,7 @@ class AlertContainer extends Component {
     super(props);
 
     this.stompClient = null;
-    this.showTheAlert = this.createQueue();
+    this.showOrQueueAlert = this.createQueue();
   }
 
   componentDidMount() {
@@ -39,12 +39,12 @@ class AlertContainer extends Component {
 
   receivedAlert = (alertResponse) => {
     const alert = JSON.parse(alertResponse.body);
-    this.showTheAlert(alert);
+    this.showOrQueueAlert(alert);
   }
 
   renderAlert(alert) {
     const target = document.getElementById(alertDivID);
-    ReactDOM.render(<AlertComponent username={alert.username} amount={alert.amount} bounty={alert.bounty} />, target);
+    ReactDOM.render(<AlertComponent username={alert.username} amount={alert.amount} bounty={alert.bounty} alertLength={ALERT_LENGTH} />, target);
   }
 
   hideAlert() {
@@ -54,11 +54,12 @@ class AlertContainer extends Component {
 
   show(alert) {
     if (!document.getElementById(alertDivID).hasChildNodes()) {
-        const renderTimeout = ALERT_LENGTH;
-        this.renderAlert(alert);
-        setTimeout(this.hideAlert, renderTimeout + TIME_BETWEEN_ALERTS);
+      // render alert if not alert is displayed
+      const renderTimeout = ALERT_LENGTH;
+      this.renderAlert(alert);
+      setTimeout(this.hideAlert, renderTimeout + TIME_BETWEEN_ALERTS);
 
-        return true;
+      return true;
     }
 
     return false;
@@ -67,7 +68,7 @@ class AlertContainer extends Component {
   createQueue() {
     this.alertQueue = [];
 
-    this.isVisible = false;
+    this.isVisible = false; // is the showAlert funcion in progress?
     this.currentRecallDelay = INITIAL_RECALL_DELAY;
 
     this.showAlert = () => {
@@ -79,12 +80,13 @@ class AlertContainer extends Component {
       this.isVisible = true;
       const current = this.alertQueue.pop();
       if (this.show(current)) {
-          this.currentRecallDelay = INITIAL_RECALL_DELAY;
-          setTimeout(() => this.showAlert(), ALERT_LENGTH);
+        this.currentRecallDelay = INITIAL_RECALL_DELAY;
+        setTimeout(() => this.showAlert(), ALERT_LENGTH);
       } else {
-          this.alertQueue.unshift(current);
-          setTimeout(() => this.showAlert(), this.currentRecallDelay);
-          this.currentRecallDelay += RECALL_DELAY_INCREMENT;
+        // If this.show failed, re-add the current alert to the front of the queue
+        this.alertQueue.unshift(current);
+        setTimeout(() => this.showAlert(), this.currentRecallDelay);
+        this.currentRecallDelay += RECALL_DELAY_INCREMENT; // backoff by increment
       }
     }
 

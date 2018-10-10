@@ -3,14 +3,11 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './AlertStyles.scss';
 
-const ALERT_LENGTH = 5000;
 const BUFFER = 100;
 
 class AlertComponent extends Component {
   constructor(props) {
     super(props);
-
-    this.stompClient = null;
 
     this.state = {
       visible: false
@@ -28,7 +25,7 @@ class AlertComponent extends Component {
       this.setState({
         visible: false
       });
-    }, ALERT_LENGTH);
+    }, this.props.alertLength);
   }
 
   render() {
@@ -52,6 +49,7 @@ AlertComponent.propTypes = {
   bounty: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
+  alertLength: PropTypes.number.isRequired,
 }
 
 export default AlertComponent;
