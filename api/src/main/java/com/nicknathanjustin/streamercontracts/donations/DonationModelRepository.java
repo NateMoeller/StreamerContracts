@@ -11,11 +11,15 @@ import java.util.UUID;
 
 public interface DonationModelRepository extends CrudRepository<DonationModel, UUID> {
 
-    @Query("SELECT donationModel " +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.donations.OpenDonationDto(" +
+            "donationModel.id, " +
+            "donationModel.donationAmount, " +
+            "donationModel.contract.description, " +
+            "donationModel.contract.streamer.twitchUsername) " +
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donator.id = :donatorId " +
            "AND (donationModel.contract.isCompleted = false OR donationModel.contract.expiresAt > :currentTimestamp)")
-    public Page<DonationModel> findAllDonationsForOpenContracts(@Param("donatorId") UUID donatorId,
+    public Page<OpenDonationDto> findAllDonationsForOpenContracts(@Param("donatorId") UUID donatorId,
                                                                 @Param("currentTimestamp") Timestamp now,
                                                                 Pageable pageable);
 }
