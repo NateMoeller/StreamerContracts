@@ -20,13 +20,13 @@ public class DonationServiceImpl implements  DonationService{
     @Override
     public void createDonation(
             @NonNull final ContractModel contractModel,
-            @NonNull final UserModel donatorUserModel,
+            @NonNull final UserModel donator,
             @NonNull final BigDecimal donationAmount,
             @NonNull final Timestamp contractTimestamp,
             @NonNull final String paypalPaymentId) {
         donationModelRepository.save(DonationModel.builder()
                 .contract(contractModel)
-                .donator(donatorUserModel)
+                .donator(donator)
                 .donatedAt(contractTimestamp)
                 .donationAmount(donationAmount)
                 .paypalPaymentId(paypalPaymentId)
