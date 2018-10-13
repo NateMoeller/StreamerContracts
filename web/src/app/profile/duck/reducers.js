@@ -1,9 +1,16 @@
-import { RECEIVE_USER_INFO_FAILURE, RECEIVE_USER_INFO_SUCCESS, REQUEST_USER_INFO } from './types';
+import {
+  RECEIVE_USER_INFO_FAILURE,
+  RECEIVE_USER_INFO_SUCCESS,
+  REQUEST_USER_INFO,
+  RECEIVE_OPEN_CONTRACTS
+} from './types';
 
 const INITIAL_STATE = {
   showSpinner: false,
   redirect: false,
-  isLoggedIn: false
+  isLoggedIn: false,
+  openContracts: [],
+  totalOpenDonations: 0
 };
 
 /* global sessionStorage */
@@ -31,6 +38,13 @@ const profileReducer = (state = INITIAL_STATE, action) => {
       ...state,
       showSpinner: false,
       isLoggedIn: true
+    };
+  }
+  case RECEIVE_OPEN_CONTRACTS: {
+    return {
+      ...state,
+      openContracts: action.data.content,
+      totalOpenDonations: action.data.totalElements
     };
   }
   default: {
