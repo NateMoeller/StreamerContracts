@@ -66,14 +66,6 @@ public class DonationsApiController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        //TODO: add logic to either void/payout donation, or record that someone has marked the challenge as completed
-//        final String payPalPaymentId = donationModel.getPaypalPaymentId();
-//        if(updateDonationRequest.isMarkedCompleted()) {
-//            paymentsService.capturePayment(payPalPaymentId);
-//        } else {
-//            paymentsService.voidPayment(payPalPaymentId);
-//        }
-
         return new ResponseEntity(HttpStatus.OK);
     }
 
