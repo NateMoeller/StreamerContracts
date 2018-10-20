@@ -8,4 +8,5 @@ BEGIN;
 \i 'dev_ops/sql/Tables/CreatePolls.sql'
 \i 'dev_ops/sql/Tables/CreateVotes.sql'
 \i 'dev_ops/sql/Tables/CreateFeaturedContracts.sql'
+\i 'dev_ops/sql/Tables/CreateEmails.sql'
 COMMIT;

@@ -1,0 +1,147 @@
+@import '../../colors.scss';
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  z-index: 0;
+
+  background: url('../../resources/splash/geoff_right_blackWhite.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  -webkit-animation: fadein 2s;
+  -moz-animation: fadein 2s;
+  -ms-animation: fadein 2s;
+  -o-animation: fadein 2s;
+  animation: fadein 2s;
+
+  @keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(to right, $primary-blue, $splash-gray);
+    background-repeat: no-repeat;
+    z-index: 1;
+    opacity: .85;
+  }
+
+  .header {
+    position: relative;
+    margin: auto;
+    width: 80%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    font-size: 48px;
+    color: $true-white;
+    z-index: 2;
+
+    .image {
+      width: inherit;
+      height: inherit;
+      max-width: 512px;
+      max-height: 128px;
+    }
+  }
+
+  .content {
+    position: relative;
+    width: 80%;
+    height: 50vh;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 2;
+    overflow: auto;
+
+    .mainContent {
+      display: inline-block;
+      width: 55%;
+      vertical-align: top;
+      margin-right: 50px;
+
+      .mainHeader {
+        color: $true-white;
+        font-size: 58px;
+      }
+
+      .mainSubText {
+        color: $true-white;
+        font-size: 24px;
+        margin-top: 30px;
+      }
+    }
+
+    .formContent {
+      display: inline-block;
+      width: inherit;
+      max-width: 400px;
+      height: 100%;
+
+      .form {
+        background: $true-white;
+        height: 100%;
+
+        -moz-box-shadow:    inset 0 0 10px $true-black;
+        -webkit-box-shadow: inset 0 0 10px $true-black;
+        box-shadow:         inset 0 0 10px $true-black;
+
+        .title {
+          padding-top: 30px;
+          margin: 0;
+          text-align: center;
+        }
+
+        .fields {
+          width: 80%;
+          margin: auto;
+          margin-top: 30px;
+
+          .field {
+            margin-top: 15px;
+          }
+        }
+
+        .errorMessage {
+          display: inline-block;
+          color: $error-red;
+        }
+
+        .button {
+          width: 100%;
+          margin-top: 30px;
+          margin-bottom: 30px;
+          background: $secondary-blue;
+          color: $true-white
+        }
+
+        .successContainer {
+          border: 1px solid black;
+          text-align: center;
+          height: inherit;
+          display: flex;
+          justify-content:center;
+          align-content:center;
+          flex-direction:column;
+          font-size: 36px;
+
+          .checkmark {
+            color: $success-green;
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+}

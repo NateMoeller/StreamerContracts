@@ -1,24 +1,34 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
-import AboutContainer from '../app/about/AboutContainer';
-import AlertContainer from '../app/alert/AlertContainer';
-import DonateContainer from '../app/donate/DonateContainer';
-import HomeContainer from '../app/home/HomeContainer';
-import LoginContainer from '../app/login/LoginContainer';
-import NavBar from '../app/common/navbar/NavbarComponent';
-import ProfileContainer from '../app/profile/ProfileContainer';
-import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
-import UserContainer from '../app/user/UserContainer';
-import cx from 'classnames';
+// import AboutContainer from '../app/about/AboutContainer';
+// import AlertContainer from '../app/alert/AlertContainer';
+// import DonateContainer from '../app/donate/DonateContainer';
+// import HomeContainer from '../app/home/HomeContainer';
+// import LoginContainer from '../app/login/LoginContainer';
+// import NavBar from '../app/common/navbar/NavbarComponent';
+// import ProfileContainer from '../app/profile/ProfileContainer';
+// import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
+// import UserContainer from '../app/user/UserContainer';
+import SplashComponent from '../app/splash/SplashComponent';
+// import cx from 'classnames';
 import styles from '../index.scss';
 
 class App extends Component {
   render() {
     return (
       <Router>
+        <div className={styles.App}>
+          <Route exact path="/" component={SplashComponent} />
+        </div>
+      </Router>
+    );
+    /*
+    return (
+      <Router>
         <div>
           <Route path="/(|home|about|login|profile|donate|user)" component={NavBar} />
           <Route path="/alert/:alertChannelId" component={AlertContainer} />
+          <Route path="/splash" component={SplashComponent} />
           <div className={cx([styles.App, 'container'])}>
             <Route exact path="/" component={HomeContainer} />
             <Route path="/home" component={HomeContainer} />
@@ -31,6 +41,7 @@ class App extends Component {
         </div>
       </Router>
     );
+    */
   }
 }
 
