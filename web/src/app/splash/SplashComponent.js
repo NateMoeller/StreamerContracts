@@ -146,7 +146,7 @@ class SplashComponent extends Component {
       <div className={styles.background}>
         <div className={styles.overlay} />
         <div className={styles.header}>
-          <img src={logo} alt="Bounty Streamer" width="512" height="128" />
+          <img src={logo} alt="Bounty Streamer" className={styles.image} />
         </div>
         <div className={styles.content}>
           <div className={styles.mainContent}>

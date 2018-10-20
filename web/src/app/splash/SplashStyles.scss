@@ -47,6 +47,13 @@
     font-size: 48px;
     color: $true-white;
     z-index: 2;
+
+    .image {
+      width: inherit;
+      height: inherit;
+      max-width: 512px;
+      max-height: 128px;
+    }
   }
 
   .content {
@@ -56,10 +63,13 @@
     margin-left: auto;
     margin-right: auto;
     z-index: 2;
+    overflow: auto;
 
     .mainContent {
       display: inline-block;
       width: 55%;
+      vertical-align: top;
+      margin-right: 50px;
 
       .mainHeader {
         color: $true-white;
@@ -75,9 +85,9 @@
 
     .formContent {
       display: inline-block;
-      width: 400px;
+      width: inherit;
+      max-width: 400px;
       height: 100%;
-      float: right;
 
       .form {
         background: $true-white;
@@ -111,6 +121,7 @@
         .button {
           width: 100%;
           margin-top: 30px;
+          margin-bottom: 30px;
           background: $secondary-blue;
           color: $true-white
         }
