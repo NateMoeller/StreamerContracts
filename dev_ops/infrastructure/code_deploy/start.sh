@@ -7,14 +7,15 @@ if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Api" ]]
 then
     if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Prod" ]]
     then
+        echo "Starting Prod StreamerContracts-Api SpringBoot Application"
         applicationSecretsFile = s3://streamer-contracts-application-configurations/prod-application-secrets.yml;
         activeProfile = prod;
     else
+        echo "Starting Beta StreamerContracts-Api SpringBoot Application"
         applicationSecretsFile = s3://streamer-contracts-application-configurations/beta-application-secrets.yml;
         activeProfile = beta;
     fi
 
-    echo "Starting StreamerContracts-Api SpringBoot Application"
     sudo cp /var/www/streamercontracts/awslogs_api_$activeProfile.conf /etc/awslogs/awslogs.conf
     sudo chkconfig awslogs on
     currentDate=`date '+%Y_%m_%d_%H'`;
