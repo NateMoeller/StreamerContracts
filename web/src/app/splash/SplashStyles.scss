@@ -8,7 +8,7 @@
   min-height: 100vh;
   z-index: 0;
 
-  background: url('../../resources/splash/geoff_right_blackWhite.jpg') no-repeat center center fixed;
+  background: url('../../resources/splash/geoff_right_blackWhite_noWindow2.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -69,7 +69,6 @@
       display: inline-block;
       width: 55%;
       vertical-align: top;
-      margin-right: 50px;
 
       .mainHeader {
         color: $true-white;
@@ -87,7 +86,13 @@
       display: inline-block;
       width: inherit;
       max-width: 400px;
+      max-height: 400px;
       height: 100%;
+      float: right;
+
+      @media only screen and (max-width: 1200px) {
+          float: none;
+      }
 
       .form {
         background: $true-white;
