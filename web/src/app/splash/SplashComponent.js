@@ -154,7 +154,7 @@ class SplashComponent extends Component {
               Coming Soon!
             </div>
             <div className={styles.mainSubText}>
-              Donate to your favorite streamers by daring them to complete in game challenges.
+              Donate to your favorite streamers by challenging them to complete in game bounties.
             </div>
           </div>
           <div className={styles.formContent}>
