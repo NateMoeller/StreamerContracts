@@ -8,12 +8,12 @@ then
     if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Prod" ]]
     then
         echo "Starting Prod StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile = s3://streamer-contracts-application-configurations/prod-application-secrets.yml;
-        activeProfile = prod;
+        applicationSecretsFile=s3://streamer-contracts-application-configurations/prod-application-secrets.yml;
+        activeProfile=prod;
     else
         echo "Starting Beta StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile = s3://streamer-contracts-application-configurations/beta-application-secrets.yml;
-        activeProfile = beta;
+        applicationSecretsFile=s3://streamer-contracts-application-configurations/beta-application-secrets.yml;
+        activeProfile=beta;
     fi
 
     sudo cp /var/www/streamercontracts/awslogs_api_$activeProfile.conf /etc/awslogs/awslogs.conf
