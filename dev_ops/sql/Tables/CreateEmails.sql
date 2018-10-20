@@ -1,0 +1,6 @@
+CREATE TABLE emails (
+	id UUID PRIMARY KEY,
+	name VARCHAR(64) NOT NULL,
+	email VARCHAR(64) NOT NULL,
+	created_at TIMESTAMP NOT NULL
+);

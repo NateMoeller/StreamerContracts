@@ -8,7 +8,7 @@
   min-height: 100vh;
   z-index: 0;
 
-  background: url('./animatedBackground.gif') no-repeat center center fixed;
+  background: url('../../resources/splash/geoff_right_blackWhite.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -32,7 +32,7 @@
     width: 100%;
     height: 100%;
 
-    background: linear-gradient(to right, $secondary-blue, $primary-blue);
+    background: linear-gradient(to right, $primary-blue, $splash-gray);
     background-repeat: no-repeat;
     z-index: 1;
     opacity: .85;
@@ -44,14 +44,13 @@
     width: 80%;
     padding-top: 50px;
     padding-bottom: 50px;
-    font-size: 36px;
+    font-size: 48px;
     color: $true-white;
     z-index: 2;
   }
 
   .content {
     position: relative;
-    margin-top: 50px;
     width: 80%;
     height: 50vh;
     margin-left: auto;
@@ -64,7 +63,7 @@
 
       .mainHeader {
         color: $true-white;
-        font-size: 48px;
+        font-size: 58px;
       }
 
       .mainSubText {
@@ -97,10 +96,16 @@
         .fields {
           width: 80%;
           margin: auto;
+          margin-top: 30px;
 
           .field {
-            margin-top: 30px;
+            margin-top: 15px;
           }
+        }
+
+        .errorMessage {
+          display: inline-block;
+          color: $error-red;
         }
 
         .button {
@@ -108,6 +113,22 @@
           margin-top: 30px;
           background: $secondary-blue;
           color: $true-white
+        }
+
+        .successContainer {
+          border: 1px solid black;
+          text-align: center;
+          height: inherit;
+          display: flex;
+          justify-content:center;
+          align-content:center;
+          flex-direction:column;
+          font-size: 36px;
+
+          .checkmark {
+            color: $success-green;
+            margin-right: 20px;
+          }
         }
       }
     }
