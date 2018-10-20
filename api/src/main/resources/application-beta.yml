@@ -4,8 +4,8 @@ security:
       clientId: fal8zh2u859tgnqg4w0tgoqwq8m7ef
 
 application:
-  frontEndUrl: https://web.streamercontracts.co.uk
+  frontEndUrl: https://beta.bountystreamer.gg
 
 spring:
   redis:
-    host: str-st-16hm31lpmuqoc.e1fohh.0001.use1.cache.amazonaws.com
+    host: bet-st-x776hjs3fk4j.e1fohh.0001.use1.cache.amazonaws.com

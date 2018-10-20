@@ -1,0 +1,11 @@
+security:
+  oauth2:
+    client:
+      clientId: 52l9vmy55syz09sumlblwdmb113397
+
+application:
+  frontEndUrl: https://bountystreamer.gg
+
+spring:
+  redis:
+    host: pro-st-nbqxuzgyf1m2.e1fohh.0001.use1.cache.amazonaws.com

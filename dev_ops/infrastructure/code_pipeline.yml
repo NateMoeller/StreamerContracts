@@ -1,14 +1,17 @@
+#Prequisits
+#1) Github repository hosting SpringBoot Application
+#2) Run hosts.yml and retrieve AutoScalingGroup Names for Beta and Prod
 AWSTemplateFormatVersion: 2010-09-09
-Description: Infarstructure for StreamerContracts App
+Description: Builds a codepipeline for managing AWS deployments from a github repository
 Parameters:
   GitHubRepoOwner:
     Type: String
     Description: ex - NateMoeller
-    Default: nckackerman
+    Default: NateMoeller
   GitHubRepoName:
     Type: String
     Description: ex - StreamerContracts
-    Default: spring-hello-world
+    Default: StreamerContracts
   GitHubRepoBranch:
     Type: String
     Description: ex - master
@@ -16,10 +19,18 @@ Parameters:
   GitHubRepoOAuthToken:
     Type: String
     Description: Generate a github personal access token (with least required privlidges) and paste its value in here. See - https://github.com/settings/tokens
-  StreamerContractsEc2InstanceTags:
+  S3WebHostBucketName:
     Type: String
-    Description: The EC2 tags that are already applied to EC2 instances that you want to include in the deployment group.
-    Default: StreamerContracts
+    Description: Must match domain name (likely registered in Route 53)
+    Default: bountystreamer.gg
+  BetaAutoScalingGroup:
+    Type: String
+    Description: Must match AutoScalingGroup for Beta. Check AWS for this value
+    Default: BetaBountyStreamerHosts-StreamerContractsApiAutoScalingGroup-PLCH7OJVG1EQ
+  ProdAutoScalingGroup:
+    Type: String
+    Description: Must match AutoScalingGroup for Beta. Check AWS for this value
+    Default: ProdBountyStreamerHosts-StreamerContractsApiAutoScalingGroup-1LX4CWHGUR80V
 
 Resources:
   CodeBuildServiceRole:
@@ -31,7 +42,6 @@ Resources:
             Principal:
               Service: codebuild.amazonaws.com
             Action: sts:AssumeRole
-      RoleName: CodeBuildServiceRole
       Policies:
         - PolicyName: CodeBuildServiceRole
           PolicyDocument:
@@ -41,8 +51,7 @@ Resources:
               - logs:CreateLogGroup
               - logs:CreateLogStream
               - logs:PutLogEvents
-              Resource:
-                - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*
+              Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*
               Effect: Allow
             - Action:
               - s3:PutObject
@@ -52,14 +61,16 @@ Resources:
               Effect: Allow
             - Action:
               - s3:DeleteObject
-              Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}/*
+              Resource:
+              - !GetAtt BetaStreamerContractsWebHostBucket.Arn
+              - !GetAtt ProdStreamerContractsWebHostBucket.Arn
               Effect: Allow
             - Action:
               - ssm:GetParameters
               Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/CodeBuild/*
               Effect: Allow
 
-  StreamerContractsCodeBuild:
+  StreamerContractsApiCodeBuild:
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:
@@ -76,7 +87,7 @@ Resources:
         BuildSpec: dev_ops/infrastructure/code_build/build_spec.yml
       TimeoutInMinutes: 10
 
-  StreamerContractsWebCodeBuild:
+  BetaStreamerContractsWebCodeBuild:
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:
@@ -84,9 +95,40 @@ Resources:
       Description: StreamerContracts CodeBuild
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+        - Name: S3_WEB_HOST_BUCKET
+          Type: PLAINTEXT
+          Value: !Sub s3://beta.${S3WebHostBucketName}
+        - Name: WEB_BUILD_COMMAND
+          Type: PLAINTEXT
+          Value: buildBetaAssets
         Image: aws/codebuild/java:openjdk-8
         Type: LINUX_CONTAINER
-      Name: StreamerContractsWebCodeBuild
+      Name: BetaStreamerContractsWebCodeBuild
+      ServiceRole: !Ref CodeBuildServiceRole
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: dev_ops/infrastructure/code_build/build_spec_web.yml
+      TimeoutInMinutes: 10
+
+  ProdStreamerContractsWebCodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Description: StreamerContracts CodeBuild
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+        - Name: S3_WEB_HOST_BUCKET
+          Type: PLAINTEXT
+          Value: !Sub s3://${S3WebHostBucketName}
+        - Name: WEB_BUILD_COMMAND
+          Type: PLAINTEXT
+          Value: buildProdAssets
+        Image: aws/codebuild/java:openjdk-8
+        Type: LINUX_CONTAINER
+      Name: ProdStreamerContractsWebCodeBuild
       ServiceRole: !Ref CodeBuildServiceRole
       Source:
         Type: CODEPIPELINE
@@ -102,7 +144,6 @@ Resources:
             Principal:
               Service: codedeploy.amazonaws.com
             Action: sts:AssumeRole
-      RoleName: CodeDeployServiceRole
       Policies:
         - PolicyName: CodeDeployServiceRole
           PolicyDocument:
@@ -154,17 +195,29 @@ Resources:
   StreamerContractsCodeDeployApiApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
-      ApplicationName: StreamerContractsCodeDeploy-Api
       ComputePlatform: Server
 
-  StreamerContractsCodeDeployApiDeploymentGroup:
+  BetaStreamerContractsCodeDeployApiDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     Properties:
       AutoScalingGroups:
-        - ApiAutoScalingGroup
+        # Must match AutoScalingGroupName created in hosts.yml
+        - !Ref BetaAutoScalingGroup
       ApplicationName: !Ref StreamerContractsCodeDeployApiApplication
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
-      DeploymentGroupName: StreamerContractsFleet-Api
+      DeploymentStyle:
+        DeploymentOption: WITHOUT_TRAFFIC_CONTROL
+        DeploymentType: IN_PLACE
+      ServiceRoleArn: !GetAtt CodeDeployServiceRole.Arn
+
+  ProdStreamerContractsCodeDeployApiDeploymentGroup:
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties:
+      AutoScalingGroups:
+        # Must match AutoScalingGroupName created in hosts.yml
+        - !Ref ProdAutoScalingGroup
+      ApplicationName: !Ref StreamerContractsCodeDeployApiApplication
+      DeploymentConfigName: CodeDeployDefault.AllAtOnce
       DeploymentStyle:
         DeploymentOption: WITHOUT_TRAFFIC_CONTROL
         DeploymentType: IN_PLACE
@@ -176,7 +229,7 @@ Resources:
     Properties:
       AccessControl: Private
       # S3 bucket where codepipeline artifacts are stored. Must be lower case and unique across all S3 buckets.
-      BucketName: codepipeline-artifacts-bucket-streamer-contracts
+      BucketName: !Sub codepipeline-artifacts-${S3WebHostBucketName}
       LifecycleConfiguration:
         Rules:
           - ExpirationInDays: 1
@@ -184,7 +237,7 @@ Resources:
       VersioningConfiguration:
         Status: Enabled
 
-  StreamerContractsWebHostBucket:
+  BetaStreamerContractsWebHostBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
@@ -192,18 +245,41 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-      BucketName: web.streamercontracts.co.uk
+      BucketName: !Sub beta.${S3WebHostBucketName}
 
-  StreamerContractsWebHostBucketPolicy:
+  BetaStreamerContractsWebHostBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref StreamerContractsWebHostBucket
+      Bucket: !Ref BetaStreamerContractsWebHostBucket
       PolicyDocument:
         Version: 2012-10-17
         Statement:
         - Action:
           - s3:GetObject
-          Resource: !Sub arn:aws:s3:::${StreamerContractsWebHostBucket}/*
+          Resource: !Sub arn:aws:s3:::${BetaStreamerContractsWebHostBucket}/*
+          Principal: "*"
+          Effect: Allow
+
+  ProdStreamerContractsWebHostBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      BucketName: !Ref S3WebHostBucketName
+
+  ProdStreamerContractsWebHostBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ProdStreamerContractsWebHostBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Action:
+          - s3:GetObject
+          Resource: !Sub arn:aws:s3:::${ProdStreamerContractsWebHostBucket}/*
           Principal: "*"
           Effect: Allow
 
@@ -216,7 +292,6 @@ Resources:
             Principal:
               Service: codepipeline.amazonaws.com
             Action: sts:AssumeRole
-      RoleName: CodePipelineServiceRole
       Policies:
         - PolicyName: CodePipelineServiceRole
           PolicyDocument:
@@ -265,7 +340,6 @@ Resources:
       DisableInboundStageTransitions:
         - StageName: Prod
           Reason: Transitions to PROD must be manually triggered
-      Name: StreamerContractsPipeline
       RoleArn: !GetAtt CodePipelineServiceRole.Arn
       Stages:
         - Name: Source
@@ -286,21 +360,8 @@ Resources:
                 - Name: SourceOutput
         - Name: Build
           Actions:
-            - Name: BuildAction-Web
-              RunOrder: 2
-              InputArtifacts:
-                - Name: SourceOutput
-              ActionTypeId:
-                Category: Build
-                Provider: CodeBuild
-                Owner: AWS
-                Version: 1
-              Configuration:
-                ProjectName: !Ref StreamerContractsWebCodeBuild
-              OutputArtifacts:
-                - Name: BuildOutput-Web
             - Name: BuildAction-Api
-              RunOrder: 2
+              RunOrder: 1
               InputArtifacts:
                 - Name: SourceOutput
               ActionTypeId:
@@ -309,13 +370,26 @@ Resources:
                 Owner: AWS
                 Version: 1
               Configuration:
-                ProjectName: !Ref StreamerContractsCodeBuild
+                ProjectName: !Ref StreamerContractsApiCodeBuild
               OutputArtifacts:
                 - Name: BuildOutput-Api
+            - Name: BuildAction-Web
+              RunOrder: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              ActionTypeId:
+                Category: Build
+                Provider: CodeBuild
+                Owner: AWS
+                Version: 1
+              Configuration:
+                ProjectName: !Ref BetaStreamerContractsWebCodeBuild
+              OutputArtifacts:
+                - Name: BuildOutput-Web
         - Name: Beta
           Actions:
             - Name: BetaDeployAction-Api
-              RunOrder: 3
+              RunOrder: 1
               InputArtifacts:
                 - Name: BuildOutput-Api
               ActionTypeId:
@@ -325,11 +399,22 @@ Resources:
                 Version: 1
               Configuration:
                 ApplicationName: !Ref StreamerContractsCodeDeployApiApplication
-                DeploymentGroupName: !Ref StreamerContractsCodeDeployApiDeploymentGroup
+                DeploymentGroupName: !Ref BetaStreamerContractsCodeDeployApiDeploymentGroup
+            - Name: BetaDeployAction-Web
+              RunOrder: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              ActionTypeId:
+                Category: Build
+                Provider: CodeBuild
+                Owner: AWS
+                Version: 1
+              Configuration:
+                ProjectName: !Ref BetaStreamerContractsWebCodeBuild
         - Name: Prod
           Actions:
             - Name: ProdDeployAction-Api
-              RunOrder: 4
+              RunOrder: 1
               InputArtifacts:
                 - Name: BuildOutput-Api
               ActionTypeId:
@@ -339,4 +424,15 @@ Resources:
                 Version: 1
               Configuration:
                 ApplicationName: !Ref StreamerContractsCodeDeployApiApplication
-                DeploymentGroupName: !Ref StreamerContractsCodeDeployApiDeploymentGroup
+                DeploymentGroupName: !Ref ProdStreamerContractsCodeDeployApiDeploymentGroup
+            - Name: ProdDeployAction-Web
+              RunOrder: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              ActionTypeId:
+                Category: Build
+                Provider: CodeBuild
+                Owner: AWS
+                Version: 1
+              Configuration:
+                ProjectName: !Ref ProdStreamerContractsWebCodeBuild

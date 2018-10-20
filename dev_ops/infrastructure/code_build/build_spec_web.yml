@@ -12,9 +12,8 @@ phases:
       - echo Entered the web build phase...
       - echo Build started on `date`
       - bash ./gradlew web:clean
-      - bash ./gradlew web:buildAssets
+      - bash ./gradlew web:$WEB_BUILD_COMMAND
       # Must match the bucket name created during code_pipeline.yml
-      # s3://web.streamercontracts.co.uk
       - aws s3 sync ./web/build/ $S3_WEB_HOST_BUCKET --delete
   post_build:
     commands:

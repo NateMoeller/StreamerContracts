@@ -12,8 +12,12 @@ task deleteNodeModules(type: Delete) {
     delete "node_modules"
 }
 
-task buildAssets(type: NpmTask, dependsOn: [deleteNodeModules, npmInstall]) {
-    args = ['run', 'build']
+task buildProdAssets(type: NpmTask, dependsOn: [deleteNodeModules, npmInstall]) {
+    args = ['run', 'buildBeta']
+}
+
+task buildBetaAssets(type: NpmTask, dependsOn: [deleteNodeModules, npmInstall]) {
+    args = ['run', 'buildProd']
 }
 
 task runDevServer(type: NpmTask) {
