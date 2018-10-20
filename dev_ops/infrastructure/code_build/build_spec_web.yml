@@ -14,7 +14,8 @@ phases:
       - bash ./gradlew web:clean
       - bash ./gradlew web:buildAssets
       # Must match the bucket name created during code_pipeline.yml
-      - aws s3 sync ./web/build/ s3://web.streamercontracts.co.uk --delete
+      # s3://web.streamercontracts.co.uk
+      - aws s3 sync ./web/build/ $S3_WEB_HOST_BUCKET --delete
   post_build:
     commands:
       - echo Entered the web post_build phase...
