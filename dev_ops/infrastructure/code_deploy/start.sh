@@ -8,11 +8,11 @@ then
     if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Prod" ]]
     then
         echo "Starting Prod StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile=s3://streamer-contracts-application-configurations/prod-application-secrets.yml;
+        applicationSecretsFile=s3://streamer-contracts-application-configurations/application-secrets-beta.yml;
         activeProfile=prod;
     else
         echo "Starting Beta StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile=s3://streamer-contracts-application-configurations/beta-application-secrets.yml;
+        applicationSecretsFile=s3://streamer-contracts-application-configurations/application-secrets-prod.yml;
         activeProfile=beta;
     fi
 
