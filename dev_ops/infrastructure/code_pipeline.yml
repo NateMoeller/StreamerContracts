@@ -33,6 +33,16 @@ Parameters:
     Default: ProdBountyStreamerHosts-StreamerContractsApiAutoScalingGroup-1LX4CWHGUR80V
 
 Resources:
+  StreamerContractsConfigurations:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: Private
+      # Must be lower case and unique across all S3 buckets.
+      BucketName: streamer-contracts-application-configurations
+      VersioningConfiguration:
+        Status: Enabled
+
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:

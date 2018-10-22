@@ -8,11 +8,9 @@ then
     if [[ ${DEPLOYMENT_GROUP_NAME} =~ "Prod" ]]
     then
         echo "Starting Prod StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile=s3://streamer-contracts-application-configurations/application-secrets-beta.yml;
         activeProfile=prod;
     else
         echo "Starting Beta StreamerContracts-Api SpringBoot Application"
-        applicationSecretsFile=s3://streamer-contracts-application-configurations/application-secrets-prod.yml;
         activeProfile=beta;
     fi
 
@@ -22,7 +20,7 @@ then
     sudo mkdir /var/log/streamer-contracts
     sudo touch /var/log/streamer-contracts/streamer-contracts.log.$currentDate
     sudo service awslogs restart
-    sudo aws s3 cp $applicationSecretsFile /var/www/streamercontracts/application-secrets.yml
+    sudo aws s3 cp s3://streamer-contracts-application-configurations/application-secrets-$activeProfile.yml /var/www/streamercontracts/application-secrets.yml
     sudo aws s3 cp s3://streamer-contracts-application-configurations/keystore.jks /var/www/streamercontracts/keystore.jks
     java -DSTREAMER_CONTRACTS_KEY_STORE_URL=/var/www/streamercontracts/keystore.jks -Dspring.profiles.active=$activeProfile -Dspring.config.additional-location=file:/var/www/streamercontracts/application-secrets.yml -jar /var/www/streamercontracts/api-1.0-SNAPSHOT.jar > /var/log/streamer-contracts/streamer-contracts.log.$currentDate 2>&1 &
     exit $?
