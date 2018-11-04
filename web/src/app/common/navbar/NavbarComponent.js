@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import cx from 'classnames';
+import logo from '../../../resources/logo_light.png';
 import styles from './NavBarStyles.scss';
 
 class NavbarComponent extends Component {
@@ -48,7 +49,9 @@ class NavbarComponent extends Component {
         <div className="container">
           <Navbar.Header>
             <Navbar.Brand className={styles.navbarBrand}>
-              <Link to="/" href="/" onClick={() => this.setActiveItem('home')}>Streamer Contracts</Link>
+              <Link to="/" href="/" onClick={() => this.setActiveItem('home')}>
+                <img src={logo} alt="Bounty Streamer" width="200" height="50" />
+              </Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
