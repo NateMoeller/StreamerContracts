@@ -4,8 +4,8 @@ import {
   REQUEST_USER_INFO,
   REQUEST_TEST_ALERT,
   RECEIVE_TEST_ALERT,
-  REQUEST_OPEN_CONTRACTS,
-  RECEIVE_OPEN_CONTRACTS
+  REQUEST_OPEN_BOUNTIES,
+  RECEIVE_OPEN_BOUNTIES
 } from './types';
 
 const requestUserInfo = () => ({
@@ -31,12 +31,12 @@ const receiveTestAlert = (success) => ({
   success
 });
 
-const requestOpenContracts = () => ({
-  type: REQUEST_OPEN_CONTRACTS
+const requestOpenBounties = () => ({
+  type: REQUEST_OPEN_BOUNTIES
 });
 
-const receiveOpenContracts = (data) => ({
-  type: RECEIVE_OPEN_CONTRACTS,
+const receiveOpenBounties = (data) => ({
+  type: RECEIVE_OPEN_BOUNTIES,
   data
 });
 
@@ -46,6 +46,6 @@ export {
   receiveUserInfoFailure,
   requestTestAlert,
   receiveTestAlert,
-  requestOpenContracts,
-  receiveOpenContracts
+  requestOpenBounties,
+  receiveOpenBounties
 };

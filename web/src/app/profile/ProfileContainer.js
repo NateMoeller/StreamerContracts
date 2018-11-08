@@ -36,7 +36,7 @@ class ProfileContainer extends Component {
         alertChannelId={user.alertChannelId}
         listOpenDonations={this.props.listOpenDonations}
         updateContract={this.props.updateContract}
-        openContracts={this.props.profile.openContracts}
+        openBounties={this.props.profile.openBounties}
         totalOpenDonations={this.props.profile.totalOpenDonations}
       />
     );

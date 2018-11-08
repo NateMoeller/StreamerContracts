@@ -1,4 +1,4 @@
-import { Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
+import { Alert, Button, Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
 import React, { Component } from 'react';
 import AlertComponent from './AlertComponent/AlertComponent';
 import DonationsComponent from './DonationsComponent/DonationsComponent';
@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import styles from './ProfileStyles.scss'
 
 const ACCOUNT_TAB = 'account';
-const OPEN_CONTRACTS_TAB = 'open_contracts';
-const COMPLETED_CONTRACTS_TAB = 'completed_contracts';
+const MY_BOUNTIES_TAB = 'my_bounties';
+const BOUNTIES_TO_STREAMERS_TAB = 'bounties_to_streamers';
 const ALERT_TAB = 'alerts';
 
 class ProfileComponent extends Component {
@@ -28,10 +28,10 @@ class ProfileComponent extends Component {
   getContent() {
     if (this.state.activeTab === ACCOUNT_TAB) {
       return this.getAccountContent();
-    } else if (this.state.activeTab === OPEN_CONTRACTS_TAB) {
-      return this.getOpenContractsContent();
-    } else if (this.state.activeTab === COMPLETED_CONTRACTS_TAB) {
-      return this.getCompletedContractsContent();
+    } else if (this.state.activeTab === MY_BOUNTIES_TAB) {
+      return this.getBountiesContent();
+    } else if (this.state.activeTab === BOUNTIES_TO_STREAMERS_TAB) {
+      return this.getBountiesToStreamersContent();
     } else if (this.state.activeTab === ALERT_TAB) {
       return this.getAlertContent();
     } else {
@@ -45,23 +45,24 @@ class ProfileComponent extends Component {
     );
   }
 
-  getOpenContractsContent() {
+  getBountiesContent() {
+    // TODO: go over props to make as modular as possible
     return (
       <div>
-        <PageHeader>Open Contracts</PageHeader>
+        <PageHeader>My Bounties</PageHeader>
         <DonationsComponent
           listOpenDonations={this.props.listOpenDonations}
           updateContract={this.props.updateContract}
-          openContracts={this.props.openContracts}
+          openBounties={this.props.openBounties}
           totalOpenDonations={this.props.totalOpenDonations}
         />
       </div>
     );
   }
 
-  getCompletedContractsContent() {
+  getBountiesToStreamersContent() {
     return (
-      <PageHeader>Completed Contracts</PageHeader>
+      <PageHeader>Bounties to streamers</PageHeader>
     );
   }
 
@@ -74,6 +75,22 @@ class ProfileComponent extends Component {
           testAlert={this.props.testAlert}
         />
       </div>
+    );
+  }
+
+  getActiveBounty() {
+    return (
+      <Alert bsStyle="info" onDismiss={() => console.log('dismiss')}>
+          <h4>Active bounty:</h4>
+          <p>
+            Win this next game.
+          </p>
+          <p>
+            <Button bsStyle="danger">Take this action</Button>
+            <span> or </span>
+            <Button onClick={this.handleDismiss}>Hide Alert</Button>
+          </p>
+        </Alert>
     );
   }
 
@@ -90,13 +107,13 @@ class ProfileComponent extends Component {
           <Row>
             <Nav stacked>
               <NavItem eventKey={1} onClick={() => this.onTabClick(ACCOUNT_TAB)}>
-                Account
+                Profile
               </NavItem>
-              <NavItem eventKey={2} onClick={() => this.onTabClick(OPEN_CONTRACTS_TAB)}>
-                Open Contracts
+              <NavItem eventKey={2} onClick={() => this.onTabClick(MY_BOUNTIES_TAB)}>
+                My Bounties
               </NavItem>
-              <NavItem eventKey={3} onClick={() => this.onTabClick(COMPLETED_CONTRACTS_TAB)}>
-                Completed Contracts
+              <NavItem eventKey={3} onClick={() => this.onTabClick(BOUNTIES_TO_STREAMERS_TAB)}>
+                Bounties to streamers
               </NavItem>
               <NavItem eventKey={4} onClick={() => this.onTabClick(ALERT_TAB)}>
                 Alerts
@@ -119,7 +136,7 @@ ProfileComponent.propTypes = {
   testAlert: PropTypes.func.isRequired,
   listOpenDonations: PropTypes.func.isRequired,
   updateContract: PropTypes.func.isRequired,
-  openContracts: PropTypes.arrayOf(
+  openBounties: PropTypes.arrayOf(
     PropTypes.shape({
       streamerName: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,

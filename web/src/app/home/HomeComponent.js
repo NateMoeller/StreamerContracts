@@ -10,19 +10,19 @@ class HomeComponent extends Component {
         <div className={styles.content}>
           <h1 className={styles.header}>Donations Done <span className={styles.highlight}>Differently</span>.</h1>
           <p className={styles.caption}>
-            Give your stream a competitive edge by enabling competitive donations. As a streamer, StreamerContracts allows viewers to open donation
+            Give your stream a competitive edge by enabling competitive donations. As a streamer, BountyStreamer allows viewers to open donation
           bounties for you to complete while you play. If you complete the bounty, then the money is yours. If you fail, the money returns to the viewer.
-          StreamerContracts gives an every day stream the competitive tension of a high stakes tournament.</p>
-          <Button bsStyle="success" href="/login" bsSize="large">Start Now</Button>
+          BountyStreamer gives an every day stream the competitive tension of a high stakes tournament.</p>
+          <Button className={styles.button} bsStyle="success" href="/login" bsSize="large">Start Now</Button>
         </div>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey={1} id="contract-tabs">
-            <Tab eventKey={1} title="Featured Contracts">
+            <Tab eventKey={1} title="Featured Bounties">
               <div className={styles.tabContent}>
                 Tab 1 content
               </div>
             </Tab>
-            <Tab eventKey={2} title="All Contracts">
+            <Tab eventKey={2} title="All Bounties">
               <div className={styles.tabContent}>
                 Tab 2 Content
               </div>

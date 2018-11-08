@@ -2,14 +2,14 @@ import {
   RECEIVE_USER_INFO_FAILURE,
   RECEIVE_USER_INFO_SUCCESS,
   REQUEST_USER_INFO,
-  RECEIVE_OPEN_CONTRACTS
+  RECEIVE_OPEN_BOUNTIES
 } from './types';
 
 const INITIAL_STATE = {
   showSpinner: false,
   redirect: false,
   isLoggedIn: false,
-  openContracts: [],
+  openBounties: [],
   totalOpenDonations: 0
 };
 
@@ -40,10 +40,10 @@ const profileReducer = (state = INITIAL_STATE, action) => {
       isLoggedIn: true
     };
   }
-  case RECEIVE_OPEN_CONTRACTS: {
+  case RECEIVE_OPEN_BOUNTIES: {
     return {
       ...state,
-      openContracts: action.data.content,
+      openBounties: action.data.content,
       totalOpenDonations: action.data.totalElements
     };
   }

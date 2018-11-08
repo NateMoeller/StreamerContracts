@@ -1,7 +1,7 @@
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import React, { Component } from 'react';
-import { Button, Col, Grid, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Col, Grid, Row, DropdownButton, MenuItem } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
@@ -30,6 +30,32 @@ class DonationsComponent extends Component {
       markedCompleted: markedCompleted
     };
     this.props.updateContract(payload);
+  }
+
+  getDropdownMenu = (cell, row, rowIndex, formatExtraData) => {
+    const kebab = (
+      <div>
+        <figure></figure>
+        <figure className={styles.middle}></figure>
+        <figure></figure>
+      </div>
+    );
+
+    return (
+      <ButtonToolbar>
+        <DropdownButton
+          bsStyle="default"
+          title={kebab}
+          noCaret
+          id="dropdown-no-caret"
+        >
+          <MenuItem eventKey="1">Accept bounty</MenuItem>
+          <MenuItem eventKey="2">Remove bounty</MenuItem>
+          <MenuItem divider />
+          <MenuItem eventKey="3">Report bounty</MenuItem>
+        </DropdownButton>
+      </ButtonToolbar>
+    );
   }
 
   contractActionsFormatter = (cell, row, rowIndex, formatExtraData) => {
@@ -61,31 +87,42 @@ class DonationsComponent extends Component {
   }
 
   columns = [{
+    dataField: 'description',
+    text: 'Bounty',
+    headerStyle: { width: '50%' }
+  }, {
     dataField: 'streamerName',
-    text: 'Streamer'
+    text: 'Submitted by',
+    headerStyle: { width: '25%' }
   }, {
     dataField: 'donationAmount',
-    text: 'Amount'
-  }, {
-    dataField: 'description',
-    text: 'Bounty'
-  }, {
+    text: 'Amount',
+    headerSTyle: { width: '15%' }
+  },{
     dataField: 'action',
-    text: 'Action',
+    text: '',
     isDummyField : true,
-    formatter: this.contractActionsFormatter,
-    formatExtraData: this.handleUpdateContractClick
+    formatter: this.getDropdownMenu,
+    formatExtraData: this.handleUpdateContractClick,
+    headerStyle: { width: '10%' }
   }];
 
   render() {
     return (
-      <BootstrapTable keyField='donationId' data={ this.props.openContracts } columns={ this.columns } pagination={ this.pagination } />
+      <div className={styles.table}>
+        <BootstrapTable
+          keyField='donationId'
+          data={this.props.openBounties}
+          columns={this.columns}
+          pagination={this.pagination}
+        />
+      </div>
     );
   }
 }
 
 DonationsComponent.propTypes = {
-  openContracts: PropTypes.arrayOf(
+  openBounties: PropTypes.arrayOf(
     PropTypes.shape({
       streamerName: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
@@ -95,7 +132,7 @@ DonationsComponent.propTypes = {
   ),
   totalOpenDonations: PropTypes.number.isRequired,
   listOpenDonations: PropTypes.func.isRequired,
-  updateContract: PropTypes.func.isRequired
+  updateContract: PropTypes.func.isRequired,
 }
 
 export default DonationsComponent;
