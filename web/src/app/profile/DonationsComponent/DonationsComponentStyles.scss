@@ -1,3 +1,56 @@
+@import '../../../colors.scss';
+
 .mt5 {
   margin-top: 5px;
+}
+
+.table {
+  th {
+    background-color: $primary-blue;
+    color: $true-white;
+    border: none !important;
+  }
+
+  tbody {
+    tr:nth-child(even) {
+      background: $table-gray1;
+
+      &:hover {
+        background: $table-gray2;
+      }
+    }
+
+    tr {
+      background-color: $true-white;
+
+      td {
+        border-right: none !important;
+        border-left: none !important;
+      }
+
+      &:hover {
+        background-color: $table-gray2;
+        border-left: 3px solid $primary-blue;
+      }
+    }
+  }
+}
+
+:global {
+  #dropdown-no-caret {
+    background-color: transparent;
+    border-color: transparent !important;
+
+    &:hover &:focus {
+      background-color: transparent;
+    }
+  }
+}
+
+figure {
+  width: 3px;
+  height: 3px;
+  border-radius: 5px;
+  background: $primary-blue;
+  margin: 3px 0;
 }

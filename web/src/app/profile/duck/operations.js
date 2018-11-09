@@ -4,8 +4,8 @@ import {
   receiveUserInfoFailure,
   receiveUserInfoSuccess,
   requestUserInfo,
-  requestOpenContracts,
-  receiveOpenContracts
+  requestOpenBounties,
+  receiveOpenBounties
 } from './actions';
 import RestClient from '../../RestClient';
 
@@ -40,9 +40,10 @@ const updateContract = (payload) => (dispatch) => {
 }
 
 const listOpenDonations = (page, pageSize) => (dispatch) => {
-  dispatch(requestOpenContracts());
+  dispatch(requestOpenBounties());
+
   RestClient.GET('donations/listOpenDonations/' + page + '/' + pageSize, (response) => {
-    dispatch(receiveOpenContracts(response.data));
+    dispatch(receiveOpenBounties(response.data));
   }, (error) => {
     //TODO: handle error
     console.error(error);

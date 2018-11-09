@@ -7,9 +7,9 @@ class AboutComponent extends Component {
       <div>
         <h1 className={styles.leftHeader}>eSports style donations</h1>
         <div className={styles.description}>
-          Give your stream a competitive edge by enabling competitive donations. As a streamer, StreamerContracts allows viewers to open donation
+          Give your stream a competitive edge by enabling competitive donations. As a streamer, BountyStreamer allows viewers to open donation
           bounties for you to complete while you play. If you complete the bounty, then the money is yours. If you fail, the money returns to the viewer.
-          StreamerContracts gives an every day stream the competitive tension of a high stakes tournament.
+          BountyStreamer gives an every day stream the competitive tension of a high stakes tournament.
         </div>
         <h1 className={styles.rightHeader}>More Creativity, Interactivity</h1>
         <div className={styles.description}>
