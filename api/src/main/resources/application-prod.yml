@@ -5,6 +5,7 @@ security:
 
 application:
   frontEndUrl: https://bountystreamer.gg
+  environment: Prod
 
 spring:
   redis:

@@ -55,7 +55,7 @@ public class DonationsApiController {
 
         final ContractModel contract = contractService.createContract(proposer, streamer, null, createDonationRequest.getBounty());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), createDonationRequest.getPayPalPaymentId());
-        return ResponseEntity.ok(payment.toJSON());
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(path = "/update", method = RequestMethod.POST)
