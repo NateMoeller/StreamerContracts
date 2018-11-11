@@ -7,6 +7,7 @@ import org.springframework.lang.Nullable;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
@@ -34,5 +35,10 @@ public class ContractServiceImpl implements ContractService {
                 .isCompleted(false)
                 .isCommunityContract(false)
                 .build());
+    }
+
+    @Override
+    public Set<ContractModel> getExpiredContracts() {
+        return contractModelRepository.findAllExpiredContracts(new Timestamp(System.currentTimeMillis()));
     }
 }

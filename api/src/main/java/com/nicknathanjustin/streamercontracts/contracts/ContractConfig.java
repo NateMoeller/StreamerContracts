@@ -14,4 +14,9 @@ public class ContractConfig {
     public ContractService contractService() {
         return new ContractServiceImpl(contractModelRepository);
     }
+
+    @Bean
+    public ExpiredContractsSqsHandler expiredContractsSqsHandler() {
+        return new ExpiredContractsSqsHandler(contractService());
+    }
 }

@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template used to create dev resources needed when developing against StreamerContracts
+
+Resources:
+  ExpiredDonationEvent:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: rate(30 minutes)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt ExpiredDonationsSQS.Arn
+          Id: ExpiredDonationsSQS
+
+  ExpiredDonationsSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: ExpiredDonationsSQS-Dev

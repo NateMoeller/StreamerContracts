@@ -4,6 +4,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-redis")
     compile("org.springframework.boot:spring-boot-starter-websocket")
+    compile("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-aws-messaging:2.0.1.RELEASE")
     compile("org.springframework.session:spring-session-data-redis")
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
 

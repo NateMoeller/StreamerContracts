@@ -52,6 +52,7 @@ security:
 
 application:
   frontEndUrl: https://localhost:3000
+  environment: Dev
 
 logging:
   level:
