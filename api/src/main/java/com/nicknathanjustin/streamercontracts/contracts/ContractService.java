@@ -19,7 +19,7 @@ public interface ContractService {
     /**
      * Gets all expired contracts.
      *
-     * @return a set of all expired donations
+     * @return a set of all expired contracts
      */
     Set<ContractModel> getExpiredContracts();
 }
