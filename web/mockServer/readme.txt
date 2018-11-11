@@ -9,3 +9,5 @@ openssl req -nodes -new -x509 -keyout server.key -out server.cert
 4) Run the mock server
 
 npm run mock-server
+
+5) Navigate to https://localhost:8070 and confirm the certificate

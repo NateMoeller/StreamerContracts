@@ -4,5 +4,45 @@
    "broadcasterType":"",
    "description":"",
    "profileImageUrl":"https://static-cdn.jtvnw.net/jtv_user_pictures/28bc2caf-2697-473f-976f-424d277600a6-profile_image-300x300.jpg",
-   "viewCount":159
+   "canAcceptPayments": true,
+   "viewCount":159,
+   "openBounties": 2,
+   "completedBounties": 0,
+   "failedBounties": 0,
+   "acceptedContracts": [
+     {
+        "contractId":"4f1fb0aa-cb85-11e8-80bd-6bd7f1ac448d",
+        "contractAmount":10,
+        "description":"Test message 1",
+        "isCommunity": true,
+        "game": "Fortnite",
+        "proposedAt": "2018-10-10",
+        "expiresAt": "2018-10-10",
+        "streamerName":"vgame18",
+        "bountyOwnerName": "Justin",
+        "donations": [{
+           "donorUsername": "Justin",
+           "donationAmount": 10,
+           "donatedAt": "2018-10-10"
+         }
+        ]
+     },
+     {
+        "contractId":"4f1fb0ab-cb85-11e8-80bd-6bd7f1ac448d",
+        "contractAmount":5,
+        "description":"Test message 2",
+        "isCommunity": false,
+        "game": "Fortnite",
+        "proposedAt": "2018-10-10",
+        "expiresAt": "2018-10-10",
+        "streamerName":"Ninja",
+        "bountyOwnerName": "Nathan",
+        "donations": [{
+            "donorUserName": "Nathan",
+            "donationAmount": 5,
+            "donatedAt": "2018-10-10"
+          }
+        ]
+     }
+   ]
 }
