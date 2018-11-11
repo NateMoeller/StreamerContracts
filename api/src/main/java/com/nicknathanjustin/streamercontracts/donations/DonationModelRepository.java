@@ -18,7 +18,8 @@ public interface DonationModelRepository extends CrudRepository<DonationModel, U
             "donationModel.contract.streamer.twitchUsername) " +
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donator.id = :donatorId " +
-           "AND (donationModel.contract.isCompleted = false AND donationModel.contract.expiresAt > :currentTimestamp)")
+           "AND donationModel.contract.isCompleted = NULL " +
+           "AND donationModel.contract.expiresAt > :currentTimestamp")
     public Page<OpenDonationDto> findAllDonationsForOpenContracts(@Param("donatorId") UUID donatorId,
                                                                   @Param("currentTimestamp") Timestamp now,
                                                                   Pageable pageable);
