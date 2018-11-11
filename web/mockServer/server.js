@@ -1,6 +1,7 @@
 const privateUser = require('./user/privateUser.json');
 const publicUser = require('./user/publicUser.json');
-const openDonations = require('./donations/openDonations.json');
+const donations = require('./donations/donations.json');
+const bounties = require('./contracts/contracts.json');
 
 const express = require('express');
 const port = 8070;
@@ -34,8 +35,13 @@ app.post('/donations', (request, response) => {
   // this endpoint returns a response, but it is current not used on the FE. omitting for now
   response.send();
 });
-app.get('/donations/listOpenDonations/:page/:pageSize', (request, response) => {
-  response.send(openDonations);
+app.get('/donations/listDonations/:page/:pageSize', (request, response) => {
+  response.send(donations);
+});
+
+// bounty endpoints
+app.get('/bounties/listBounties/:page/:pageSize', (request, response) => {
+  response.send(bounties);
 });
 
 https.createServer({
@@ -43,5 +49,5 @@ https.createServer({
   cert: fs.readFileSync('./mockServer/server.cert')
 }, app)
 .listen(port, function () {
-  console.log(`Example app listening on port ${port}! Go to https://localhost:${port}/`);
+  console.log(`Mock server listening on port ${port}! Go to https://localhost:${port}/`);
 })
