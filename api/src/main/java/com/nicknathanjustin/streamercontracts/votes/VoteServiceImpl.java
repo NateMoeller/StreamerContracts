@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -35,52 +36,64 @@ public class VoteServiceImpl implements VoteService{
         validateContract(contractModel);
 
         final UUID contractId = contractModel.getId();
-        final VoteModel proposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final VoteModel streamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
+        final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
+        final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
         final Timestamp now = new Timestamp(System.currentTimeMillis());
-        return (proposerVote != null && streamerVote != null) ||
-               (proposerMarkedContractCompleted(contractModel)) ||
-               (streamerMarkedContractFailed(contractModel)) ||
-               (now.after(contractModel.getExpiresAt()));
+        final boolean proposerAndStreamerHaveVoted = optionalProposerVote.isPresent() && optionalStreamerVote.isPresent();
+        final boolean contractHasExpired = now.after(contractModel.getExpiresAt());
+        return proposerAndStreamerHaveVoted ||
+               proposerMarkedContractCompleted(contractModel) ||
+               streamerMarkedContractFailed(contractModel) ||
+               contractHasExpired;
     }
 
     @Override
-    public boolean wasContractCompleted(@NonNull final ContractModel contractModel) {
+    public VoteOutcome getVoteOutcome(@NonNull final ContractModel contractModel) {
         if (!isVotingComplete(contractModel)) {
             throw new IllegalArgumentException("Attempted to check if contract was completed before voting was finished. ContractId: " + contractModel.getId());
         }
 
+        VoteOutcome voteOutcome = VoteOutcome.DISPUTE;
         final UUID contractId = contractModel.getId();
-        final VoteModel proposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final VoteModel streamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
+        final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
+        final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
         if (proposerMarkedContractCompleted(contractModel)) {
-            //Proposer has marked contract as completed. Release funds without reading Streamer's vote.
-            return true;
+            log.info("Proposer has marked contract: {} as completed", contractModel.getId());
+            voteOutcome = VoteOutcome.COMPLETED;
         } else if (streamerMarkedContractFailed(contractModel)) {
-            //Streamer has marked contract as failed. Return funds without reading Proposers's vote.
-            return false;
-        } else if(proposerVote == null && streamerVote == null) {
-            //Neither proposer or streamer voted. Release funds if contract was accepted. Return funds otherwise.
-            return contractModel.isAccepted();
-        } else if(proposerVote != null) {
-            //Streamer did not vote. Take Proposer's vote as the final outcome
-            return proposerVote.isViewerFlaggedComplete();
-        } else if(streamerVote != null){
-            //Proposer did not vote. Take Streamer's vote as the final outcome
-            return streamerVote.isViewerFlaggedComplete();
+            log.info("Streamer has marked contract: {} as failed", contractModel.getId());
+            voteOutcome = VoteOutcome.FAILED;
+        } else if(!optionalProposerVote.isPresent() && !optionalStreamerVote.isPresent()) {
+            log.info("Neither Streamer or Proposer voted on contract: {}. contractModel.isAccepted(): {}",
+                    contractModel.getId(),
+                    contractModel.isAccepted());
+            voteOutcome = contractModel.isAccepted() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
+        } else if(!optionalStreamerVote.isPresent()) {
+            log.info("Streamer did not vote on contract: {}. proposerVote.isViewerFlaggedComplete(): {}",
+                    contractModel.getId(),
+                    optionalProposerVote.get().isViewerFlaggedComplete());
+            voteOutcome = optionalProposerVote.get().isViewerFlaggedComplete() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
+        } else if(!optionalProposerVote.isPresent()){
+            log.info("Proposer did not vote on contract: {}. streamerVote.isViewerFlaggedComplete(): {}",
+                    contractModel.getId(),
+                    optionalStreamerVote.get().isViewerFlaggedComplete());
+            voteOutcome = optionalStreamerVote.get().isViewerFlaggedComplete() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
+        } else {
+            log.info("Disputed outcome detected when completing contract: {}", contractModel.getId());
         }
-        //Default case is to consider the contract completed and release money to the streamer.
-        return true;
+        
+        log.info("Contract: {} had the following voteOutcome: {}", contractModel.getId(), voteOutcome);
+        return voteOutcome;
     }
 
     private boolean proposerMarkedContractCompleted(@NonNull final ContractModel contractModel) {
-        final VoteModel proposerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId());
-        return proposerVote != null && proposerVote.isViewerFlaggedComplete();
+        final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId());
+        return optionalProposerVote.isPresent() && optionalProposerVote.get().isViewerFlaggedComplete();
     }
 
     private boolean streamerMarkedContractFailed(@NonNull final ContractModel contractModel) {
-        final VoteModel streamerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId());
-        return streamerVote != null && !streamerVote.isViewerFlaggedComplete();
+        final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId());
+        return optionalStreamerVote.isPresent() && !optionalStreamerVote.get().isViewerFlaggedComplete();
     }
 
     private boolean userCanVoteOnContract(@NonNull final UserModel voter, @NonNull final ContractModel contractModel) {
@@ -101,6 +114,7 @@ public class VoteServiceImpl implements VoteService{
             log.warn("Unauthorized vote detected. User: {} attempted to vote on contractId: {} without having permissions to do so",
                     voter.getId(),
                     contractModel.getId());
+            return false;
         }
 
         final boolean isProposerAndHasVoted = isVoterContractProposer && proposerHasVoted;
@@ -110,8 +124,9 @@ public class VoteServiceImpl implements VoteService{
             log.warn("Multiple votes detected. User: {} attempted to vote on contractId: {} more than once",
                     voter.getId(),
                     contractModel.getId());
+            return false;
         }
-        return isUserAllowedToVote && !userHasVoted;
+        return true;
     }
 
     private void validateContract(@NonNull final ContractModel contractModel) {
@@ -126,5 +141,7 @@ public class VoteServiceImpl implements VoteService{
         if (contractModel.getIsCompleted() != null) {
             throw new IllegalArgumentException("Cannot vote on a completed contract. ContractId " + contractModel.getId());
         }
+
+        //TODO: add check for isDeclined and isExpired
     }
 }

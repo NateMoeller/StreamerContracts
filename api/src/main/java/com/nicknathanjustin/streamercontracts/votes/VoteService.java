@@ -27,7 +27,7 @@ public interface VoteService {
      * considered a completed contract.
      *
      * @param contract contract to check
-     * @return true if contract donations should be released to a streamer. False otherwise.
+     * @return VoteOutcome indicating the the result of all available votes for the given contract
      */
-    boolean wasContractCompleted(ContractModel contract);
+    VoteOutcome getVoteOutcome(ContractModel contract);
 }

@@ -3,6 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
+import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,8 @@ public class ContractsApiController {
 
         voteService.recordVote(userModel, contractModel, contractVoteRequest.isFlagCompleted());
         if(voteService.isVotingComplete(contractModel)) {
-            final boolean contractCompleted = voteService.wasContractCompleted(contractModel);
-            contractService.settlePayments(contractModel, contractCompleted);
+            final VoteOutcome voteOutcome = voteService.getVoteOutcome(contractModel);
+            contractService.settlePayments(contractModel, voteOutcome.isPayStreamer());
         }
 
         return new ResponseEntity(HttpStatus.OK);

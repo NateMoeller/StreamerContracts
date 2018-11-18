@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class ExpiredContractsSqsHandler {
         final Set<ContractModel> expiredContracts = contractService.getExpiredContracts();
         expiredContracts.forEach(expiredContract -> {
             log.info("Settling payments for expiredContract: {}", expiredContract.getId());
-            final boolean contractCompleted = voteService.wasContractCompleted(expiredContract);
-            contractService.settlePayments(expiredContract, contractCompleted);
+            final VoteOutcome voteOutcome = voteService.getVoteOutcome(expiredContract);
+            contractService.settlePayments(expiredContract, voteOutcome.isPayStreamer());
         });
     }
 }
