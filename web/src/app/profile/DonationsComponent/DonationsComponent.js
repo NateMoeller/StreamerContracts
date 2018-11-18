@@ -1,36 +1,45 @@
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Col, Grid, Row, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
+import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from './DonationsComponentStyles.scss';
 
 class DonationsComponent extends Component {
   pageSize = 20;
-  componentWillMount() {
-    this.props.listOpenDonations(0, this.pageSize);
+  componentDidMount() {
+    this.props.listMyDonations(0, this.pageSize);
   }
 
   pageChange = (page, sizePerPage) => {
-    this.props.listOpenDonations(page, sizePerPage);
+    this.props.listMyDonations(page, sizePerPage);
   }
 
   pagination = paginationFactory({
-    totalSize: this.props.totalOpenDonations,
+    totalSize: this.props.totalDonations,
     onPageChange: this.pageChange,
     sizePerPage: this.pageSize,
     hideSizePerPage: true
-  })
+  });
 
-  handleUpdateContractClick = (donationId, markedCompleted) => {
+  onVoteClick = (donationId, markedCompleted) => {
     const payload = {
       donationId: donationId,
       markedCompleted: markedCompleted
     };
-    this.props.updateContract(payload);
+    this.props.voteBounty(payload);
   }
+
+  getBounty = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.description}>{row.description}</div>
+    );
+
+    return cellWrapper;
+  };
 
   getDropdownMenu = (cell, row, rowIndex, formatExtraData) => {
     const kebab = (
@@ -49,50 +58,21 @@ class DonationsComponent extends Component {
           noCaret
           id="dropdown-no-caret"
         >
-          <MenuItem eventKey="1">Accept bounty</MenuItem>
-          <MenuItem eventKey="2">Remove bounty</MenuItem>
-          <MenuItem divider />
-          <MenuItem eventKey="3">Report bounty</MenuItem>
+          <MenuItem eventKey="1">{`${row.streamerName} completed bounty`}</MenuItem>
+          <MenuItem eventKey="2">{`${row.streamerName} failed bounty`}</MenuItem>
         </DropdownButton>
       </ButtonToolbar>
-    );
-  }
-
-  contractActionsFormatter = (cell, row, rowIndex, formatExtraData) => {
-    const donationId = row.donationId;
-    const handleUpdateContractClick = formatExtraData;
-
-    return (
-      <Grid fluid={true}>
-        <Row>
-          <Col sm={12}>
-            <Button
-              bsStyle="success"
-              onClick={() => {handleUpdateContractClick(donationId, true)}}
-              block
-            >Did It</Button>
-          </Col>
-        </Row>
-        <Row className={styles.mt5}>
-          <Col sm={12}>
-            <Button
-              bsStyle="danger"
-              onClick={() => {handleUpdateContractClick(donationId, false)}}
-              block
-            >Failed</Button>
-          </Col>
-        </Row>
-      </Grid>
     );
   }
 
   columns = [{
     dataField: 'description',
     text: 'Bounty',
+    formatter: this.getBounty,
     headerStyle: { width: '50%' }
   }, {
     dataField: 'streamerName',
-    text: 'Submitted by',
+    text: 'Streamer Name',
     headerStyle: { width: '25%' }
   }, {
     dataField: 'donationAmount',
@@ -103,26 +83,39 @@ class DonationsComponent extends Component {
     text: '',
     isDummyField : true,
     formatter: this.getDropdownMenu,
-    formatExtraData: this.handleUpdateContractClick,
     headerStyle: { width: '10%' }
   }];
 
-  render() {
+  getEmptyContent() {
     return (
-      <div className={styles.table}>
-        <BootstrapTable
-          keyField='donationId'
-          data={this.props.openBounties}
-          columns={this.columns}
-          pagination={this.pagination}
-        />
-      </div>
+      <div>You haven't opened any bounties to streamers. Use the directory to find a streamer using BountyStreamer.</div>
     );
+  }
+
+  render() {
+    if (this.props.loading) {
+      return <LoadingComponent />
+    }
+
+    if (this.props.donations.length > 0) {
+      return (
+        <div className={styles.table}>
+          <BootstrapTable
+            keyField='donationId'
+            data={this.props.donations}
+            columns={this.columns}
+            pagination={this.pagination}
+          />
+        </div>
+      );
+    }
+
+    return this.getEmptyContent();
   }
 }
 
 DonationsComponent.propTypes = {
-  openBounties: PropTypes.arrayOf(
+  donations: PropTypes.arrayOf(
     PropTypes.shape({
       streamerName: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
@@ -130,9 +123,14 @@ DonationsComponent.propTypes = {
       donationId: PropTypes.string.isRequired
     }).isRequired
   ),
-  totalOpenDonations: PropTypes.number.isRequired,
-  listOpenDonations: PropTypes.func.isRequired,
-  updateContract: PropTypes.func.isRequired,
-}
+  totalDonations: PropTypes.number.isRequired,
+  listDonations: PropTypes.func.isRequired,
+  voteBounty: PropTypes.func.isRequired,
+  loading: PropTypes.bool
+};
+
+DonationsComponent.defaultProps = {
+  loading: false
+};
 
 export default DonationsComponent;

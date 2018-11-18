@@ -13,7 +13,7 @@ class HomeComponent extends Component {
             Give your stream a competitive edge by enabling competitive donations. As a streamer, BountyStreamer allows viewers to open donation
           bounties for you to complete while you play. If you complete the bounty, then the money is yours. If you fail, the money returns to the viewer.
           BountyStreamer gives an every day stream the competitive tension of a high stakes tournament.</p>
-          <Button className={styles.button} bsStyle="success" href="/login" bsSize="large">Start Now</Button>
+          <Button className={styles.button} href="/login" bsSize="large">Start Now</Button>
         </div>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey={1} id="contract-tabs">

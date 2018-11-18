@@ -30,14 +30,19 @@ class ProfileContainer extends Component {
 
     return (
       <ProfileComponent
-        twitchUserName={user.displayName}
-        imageUrl={user.profileImageUrl}
+        user={user}
         testAlert={this.props.testAlert}
         alertChannelId={user.alertChannelId}
-        listOpenDonations={this.props.listOpenDonations}
-        updateContract={this.props.updateContract}
-        openBounties={this.props.profile.openBounties}
-        totalOpenDonations={this.props.profile.totalOpenDonations}
+        listMyDonations={this.props.listMyDonations}
+        listMyBounties={this.props.listMyBounties}
+        voteBounty={this.props.voteBounty}
+        bounties={this.props.profile.bounties}
+        donations={this.props.profile.donations}
+        totalBounties={this.props.profile.totalBounties}
+        totalDonations={this.props.profile.totalDonations}
+        showSpinner={this.props.profile.showSpinner}
+        acceptBounty={this.props.acceptBounty}
+        removeBounty={this.props.removeBounty}
       />
     );
   }
@@ -57,8 +62,9 @@ ProfileContainer.propTypes = {
   getUser: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  listOpenDonations: PropTypes.func.isRequired,
-  updateContract: PropTypes.func.isRequired
+  listMyDonations: PropTypes.func.isRequired,
+  listMyBounties: PropTypes.func.isRequired,
+  voteBounty: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileContainer);
