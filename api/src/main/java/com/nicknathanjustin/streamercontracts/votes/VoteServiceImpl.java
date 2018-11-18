@@ -38,16 +38,10 @@ public class VoteServiceImpl implements VoteService{
         final VoteModel proposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
         final VoteModel streamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
         final Timestamp now = new Timestamp(System.currentTimeMillis());
-        if (proposerVote != null && streamerVote != null) {
-            return true;
-        } else if (proposerMarkedContractCompleted(contractModel)) {
-            return true;
-        } else if (streamerMarkedContractFailed(contractModel)) {
-            return false;
-        } else if (now.after(contractModel.getExpiresAt())) {
-            return true;
-        }
-        return false;
+        return (proposerVote != null && streamerVote != null) ||
+               (proposerMarkedContractCompleted(contractModel)) ||
+               (streamerMarkedContractFailed(contractModel)) ||
+               (now.after(contractModel.getExpiresAt()));
     }
 
     @Override

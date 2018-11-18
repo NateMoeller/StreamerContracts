@@ -14,6 +14,5 @@ CREATE TABLE contracts (
 	CONSTRAINT valid_timestamps CHECK (
 	    proposed_at < accepted_at AND -- the contract must be accepted after its proposed
 		accepted_at < expires_at AND -- the contract must be accepted before it is expired
-		completed_at <= expires_at AND -- the contract must be completed before it is expired
 		completed_at > accepted_at)  -- if the contract is completed, it must be completed after its accepted
 );
