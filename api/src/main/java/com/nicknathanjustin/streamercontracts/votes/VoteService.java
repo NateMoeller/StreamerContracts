@@ -18,7 +18,7 @@ public interface VoteService {
      * Checks if voting is complete for the given contract
      *
      * @param contract contract to check
-     * @return true is voting is complete enough to distribute contract donations. False otherwise
+     * @return true if voting is complete enough to distribute contract donations. False otherwise
      */
     boolean isVotingComplete(ContractModel contract);
 
