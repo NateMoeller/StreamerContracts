@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +13,16 @@ import java.util.Set;
 public class ExpiredContractsSqsHandler {
 
     @NonNull private final ContractService contractService;
+    @NonNull private final VoteService voteService;
 
     @SqsListener("ExpiredDonationsSQS-${application.environment}")
     @SuppressWarnings("unused") //Method is invoked when pulling AWS SQS. Method is not directly called within our application.
     public void listen(@NonNull final Object message) {
         final Set<ContractModel> expiredContracts = contractService.getExpiredContracts();
-        log.info("expiredContracts count: " + expiredContracts.size());
         expiredContracts.forEach(expiredContract -> {
-            //TODO: add service/logic for paying out donations or sending a donation into dispute
+            log.info("Settling payments for expiredContract: {}", expiredContract.getId());
+            final boolean contractCompleted = voteService.wasContractCompleted(expiredContract);
+            contractService.settlePayments(expiredContract, contractCompleted);
         });
     }
 }
