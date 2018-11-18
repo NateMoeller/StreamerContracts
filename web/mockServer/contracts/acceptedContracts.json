@@ -1,0 +1,51 @@
+{
+   "content":[
+      {
+         "contractId":"5f1fb0aa-cd85-11e8-80bd-6bd7f1ac448d",
+         "contractAmount":2,
+         "description":"Get 1 kill.",
+         "isCommunity": true,
+         "game": "Fortnite",
+         "proposedAt": "2018-10-10",
+         "expiresAt": "2018-10-10",
+         "streamerName":"vgame18",
+         "bountyOwnerName": "Ninja",
+         "isCompleted": null,
+         "isAccepted": true,
+         "isDeclined": null,
+         "isExpired": null,
+         "donations": [{
+            "donorUsername": "Justin",
+            "donationAmount": 1,
+            "donatedAt": "2018-10-10"
+          }, {
+             "donorUserName": "Nathan",
+             "donationAmount": 1,
+             "donatedAt": "2018-10-10"
+           }
+         ]
+      }
+   ],
+   "pageable":{
+      "sort":{
+         "sorted":false,
+         "unsorted":true
+      },
+      "offset":0,
+      "pageNumber":0,
+      "pageSize":20,
+      "unpaged":false,
+      "paged":true
+   },
+   "totalElements":1,
+   "totalPages":1,
+   "last":true,
+   "size":20,
+   "number":0,
+   "sort":{
+      "sorted":false,
+      "unsorted":true
+   },
+   "first":true,
+   "numberOfElements":1
+}

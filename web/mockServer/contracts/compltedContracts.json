@@ -2,21 +2,25 @@
    "content":[
       {
          "contractId":"4f1fb0aa-cb85-11e8-80bd-6bd7f1ac448d",
-         "contractAmount":27.82,
-         "description":"Win the next game with at least 15 kills. The last kill must be with a gray pistol",
+         "contractAmount":2,
+         "description":"Do a 360 snipe.",
          "isCommunity": true,
          "game": "Fortnite",
          "proposedAt": "2018-10-10",
          "expiresAt": "2018-10-10",
          "streamerName":"vgame18",
          "bountyOwnerName": "Ninja",
+         "isCompleted": true,
+         "isAccepted": null,
+         "isDeclined": null,
+         "isExpired": null,
          "donations": [{
             "donorUsername": "Justin",
-            "donationAmount": 10,
+            "donationAmount": 1,
             "donatedAt": "2018-10-10"
           }, {
              "donorUserName": "Nathan",
-             "donationAmount": 17.82,
+             "donationAmount": 1,
              "donatedAt": "2018-10-10"
            }
          ]
@@ -24,16 +28,41 @@
       {
          "contractId":"4f1fb0aa-cb85-11e8-80bd-6bd7f1ac448c",
          "contractAmount":10,
-         "description":"Another bounty description",
+         "description":"Get a FAMAS kill",
          "isCommunity": false,
          "game": "Fortnite",
          "proposedAt": "2018-10-10",
          "expiresAt": "2018-10-10",
          "streamerName":"vgame18",
          "bountyOwnerName": "Justin",
+         "isCompleted": true,
+         "isAccepted": null,
+         "isDeclined": null,
+         "isExpired": null,
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 10,
+            "donatedAt": "2018-10-10"
+          }
+         ]
+      },
+      {
+         "contractId":"4f1fb0aa-cb85-11e8-80bd-6bd7f1ac448c",
+         "contractAmount":30,
+         "description":"Do not use a AR the entire game",
+         "isCommunity": false,
+         "game": "Halo",
+         "proposedAt": "2018-10-10",
+         "expiresAt": "2018-10-10",
+         "streamerName":"vgame18",
+         "bountyOwnerName": "Naded",
+         "isCompleted": true,
+         "isAccepted": null,
+         "isDeclined": null,
+         "isExpired": null,
+         "donations": [{
+            "donorUsername": "Justin",
+            "donationAmount": 30,
             "donatedAt": "2018-10-10"
           }
          ]
@@ -50,7 +79,7 @@
       "unpaged":false,
       "paged":true
    },
-   "totalElements":2,
+   "totalElements":3,
    "totalPages":1,
    "last":true,
    "size":20,
@@ -60,5 +89,5 @@
       "unsorted":true
    },
    "first":true,
-   "numberOfElements":2
+   "numberOfElements":3
 }
