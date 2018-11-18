@@ -1,7 +1,11 @@
 const privateUser = require('./user/privateUser.json');
 const publicUser = require('./user/publicUser.json');
 const donations = require('./donations/donations.json');
-const bounties = require('./contracts/contracts.json');
+const openBounties = require('./contracts/openContracts.json');
+const completedBounties = require('./contracts/compltedContracts.json');
+const allBounties = require('./contracts/allContracts.json');
+const expiredBounties = require('./contracts/expiredContracts.json');
+const acceptedBounties = require('./contracts/acceptedContracts.json');
 
 const express = require('express');
 const port = 8070;
@@ -18,6 +22,7 @@ app.use(bodyParser.urlencoded({
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://localhost:3000");
   res.header("Access-Control-Allow-Credentials", 'true');
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -41,7 +46,25 @@ app.get('/donations/listDonations/:page/:pageSize', (request, response) => {
 
 // bounty endpoints
 app.get('/bounties/listBounties/:page/:pageSize', (request, response) => {
-  response.send(bounties);
+  const query = request.query;
+  if (query.state) {
+    if (query.state === 'open') {
+      response.send(openBounties);
+    } else if (query.state === 'completed') {
+      response.send(completedBounties);
+    } else if (query.state === 'expired') {
+      response.send(expiredBounties);
+    } else if (query.state === 'accepted') {
+      response.send(acceptedBounties);
+    }
+  }
+  response.send(allBounties);
+});
+app.post('/bounties/accept', (request, response) => {
+  response.send();
+});
+app.delete('/bounties/remove/:contractId', (request, response) => {
+  response.send();
 });
 
 https.createServer({
