@@ -15,7 +15,8 @@ public interface VoteService {
     void recordVote(UserModel voter, ContractModel contract, boolean flaggedCompleted);
 
     /**
-     * Checks if voting is complete for the given contract
+     * Checks if voting is complete for the given contract. Voting being complete is independent of the contract
+     * completing.
      *
      * @param contract contract to check
      * @return true if voting is complete enough to distribute contract donations. False otherwise
