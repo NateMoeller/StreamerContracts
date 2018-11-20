@@ -23,8 +23,8 @@ public interface VoteService {
     boolean isVotingComplete(ContractModel contract);
 
     /**
-     * Checks if a contract was completed and payments should be released to streamer. See implementation for what is
-     * considered a completed contract.
+     * Looks at all votes for a given contract and returns the outcome of those votes. See implementation for what
+     * defines each vote outcome.
      *
      * @param contract contract to check
      * @return VoteOutcome indicating the the result of all available votes for the given contract

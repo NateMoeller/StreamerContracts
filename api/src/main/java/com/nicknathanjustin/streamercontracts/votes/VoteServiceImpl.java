@@ -64,7 +64,7 @@ public class VoteServiceImpl implements VoteService{
             log.info("Streamer has marked contract: {} as failed", contractModel.getId());
             voteOutcome = VoteOutcome.FAILED;
         } else if(!optionalProposerVote.isPresent() && !optionalStreamerVote.isPresent()) {
-            log.info("Neither Streamer or Proposer voted on contract: {}. contractModel.isAccepted(): {}",
+            log.info("Neither Streamer nor Proposer voted on contract: {}. contractModel.isAccepted(): {}",
                     contractModel.getId(),
                     contractModel.isAccepted());
             voteOutcome = contractModel.isAccepted() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
@@ -86,11 +86,21 @@ public class VoteServiceImpl implements VoteService{
         return voteOutcome;
     }
 
+    /**
+     * Proposer marking a contract complete is a special case where funds should be released to the streamer
+     * without considering additional votes. This is done because the proposer is the one releasing the money and if
+     * they want to give the money to the streamer we will let them.
+     */
     private boolean proposerMarkedContractCompleted(@NonNull final ContractModel contractModel) {
         final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId());
         return optionalProposerVote.isPresent() && optionalProposerVote.get().isViewerFlaggedComplete();
     }
 
+    /**
+     * Streamer marking a contract failed is a special case where funds should be returned to the proposer
+     * without considering additional votes. The streamer has every incentive to mark a contract as complete, so if
+     * they mark it as failed we trust them without considering other votes.
+     */
     private boolean streamerMarkedContractFailed(@NonNull final ContractModel contractModel) {
         final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId());
         return optionalStreamerVote.isPresent() && !optionalStreamerVote.get().isViewerFlaggedComplete();
