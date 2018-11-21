@@ -1,4 +1,4 @@
-package com.nicknathanjustin.streamercontracts.donations.Requests;
+package com.nicknathanjustin.streamercontracts.donations.requests;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

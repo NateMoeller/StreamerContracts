@@ -2,8 +2,7 @@ package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
-import com.nicknathanjustin.streamercontracts.donations.Requests.CreateDonationRequest;
-import com.nicknathanjustin.streamercontracts.donations.Requests.UpdateDonationRequest;
+import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
@@ -42,30 +41,19 @@ public class DonationsApiController {
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
         final Payment payment = paymentsService.executePayment(createDonationRequest.getPayPalPaymentId()).orElse(null);
         if(payment == null) {
-            log.warn("Couldn't execute payment for id: " + createDonationRequest.getPayPalPaymentId());
+            log.warn("Couldn't execute payment for id: {}", createDonationRequest.getPayPalPaymentId());
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
         final UserModel streamer = userService.getUser(createDonationRequest.getStreamerUsername()).orElse(null);
         if (proposer == null || streamer == null) {
-            log.warn("Username: " + createDonationRequest.getUsername() + " or StreamerUsername: " + createDonationRequest.getStreamerUsername() + " does not exist.");
+            log.warn("Username: {} or StreamerUsername: {} does not exist.", createDonationRequest.getUsername(), createDonationRequest.getStreamerUsername());
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
         final ContractModel contract = contractService.createContract(proposer, streamer, null, createDonationRequest.getBounty());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), createDonationRequest.getPayPalPaymentId());
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @RequestMapping(path = "/update", method = RequestMethod.POST)
-    public ResponseEntity updateDonation(@RequestBody @NonNull final UpdateDonationRequest updateDonationRequest) {
-        final DonationModel donationModel = donationService.getDonation(updateDonationRequest.getDonationId()).orElse(null);
-        if (donationModel == null) {
-            log.warn("No donation found for id: " + updateDonationRequest.getDonationId());
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity(HttpStatus.OK);
     }
 

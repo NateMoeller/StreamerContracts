@@ -7,7 +7,9 @@ import org.springframework.lang.Nullable;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
@@ -32,7 +34,7 @@ public class ContractServiceImpl implements ContractService {
                 .acceptedAt(null)
                 .completedAt(null)
                 .isAccepted(false)
-                .isCompleted(false)
+                .isCompleted(null)
                 .isCommunityContract(false)
                 .build());
     }
@@ -40,5 +42,18 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public Set<ContractModel> getExpiredContracts() {
         return contractModelRepository.findAllExpiredContracts(new Timestamp(System.currentTimeMillis()));
+    }
+
+    @Override
+    public Optional<ContractModel> getContract(@NonNull final UUID contractId) {
+        return contractModelRepository.findById(contractId);
+    }
+
+    @Override
+    public void settlePayments(@NonNull final ContractModel contractModel, final boolean shouldReleasePayments) {
+        //TODO: loop through donations for the contract and either void or capture payPalPayments
+        contractModel.setIsCompleted(shouldReleasePayments);
+        contractModel.setCompletedAt(new Timestamp(System.currentTimeMillis()));
+        contractModelRepository.save(contractModel);
     }
 }

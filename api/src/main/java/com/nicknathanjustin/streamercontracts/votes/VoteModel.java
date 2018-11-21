@@ -1,5 +1,6 @@
-package com.nicknathanjustin.streamercontracts.contracts;
+package com.nicknathanjustin.streamercontracts.votes;
 
+import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,45 +13,32 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Table(name = "contracts")
+@Table(name = "votes")
 @Builder
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 @Setter(value = AccessLevel.PACKAGE)
 @Getter
-public class ContractModel {
+public class VoteModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @OneToOne
-    private UserModel proposer;
+    @ManyToOne
+    private ContractModel contract;
 
     @OneToOne
-    private UserModel streamer;
+    private UserModel voter;
 
-    private String game;
+    private boolean viewerFlaggedComplete;
 
-    private String description;
-
-    private Timestamp proposedAt;
-
-    private Timestamp acceptedAt;
-
-    private Timestamp expiresAt;
-
-    private Timestamp completedAt;
-
-    private boolean isAccepted;
-
-    private Boolean isCompleted;
-
-    private boolean isCommunityContract;
+    private Timestamp votedAt;
 }
