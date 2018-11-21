@@ -69,15 +69,15 @@ public class VoteServiceImpl implements VoteService{
                     contractModel.isAccepted());
             voteOutcome = contractModel.isAccepted() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
         } else if(!optionalStreamerVote.isPresent()) {
-            log.info("Streamer did not vote on contract: {}. proposerVote.isViewerFlaggedComplete(): {}",
+            log.info("Streamer did not vote on contract: {} and proposer did not mark contract complete. ProposerVote.isViewerFlaggedComplete(): {}",
                     contractModel.getId(),
                     optionalProposerVote.get().isViewerFlaggedComplete());
-            voteOutcome = optionalProposerVote.get().isViewerFlaggedComplete() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
+            voteOutcome = VoteOutcome.FAILED;
         } else if(!optionalProposerVote.isPresent()){
-            log.info("Proposer did not vote on contract: {}. streamerVote.isViewerFlaggedComplete(): {}",
+            log.info("Proposer did not vote on contract: {} and streamer did not mark contract failed. StreamerVote.isViewerFlaggedComplete(): {}",
                     contractModel.getId(),
                     optionalStreamerVote.get().isViewerFlaggedComplete());
-            voteOutcome = optionalStreamerVote.get().isViewerFlaggedComplete() ? VoteOutcome.COMPLETED : VoteOutcome.FAILED;
+            voteOutcome = VoteOutcome.COMPLETED;
         } else {
             log.info("Disputed outcome detected when completing contract: {}", contractModel.getId());
         }
