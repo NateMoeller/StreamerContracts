@@ -47,7 +47,7 @@ public class ContractsApiController {
         final ContractModel contractModel = optionalContractModel.get();
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
 
-        voteService.recordVote(userModel, contractModel, contractVoteRequest.isFlagCompleted());
+        voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
         if(voteService.isVotingComplete(contractModel)) {
             final VoteOutcome voteOutcome = voteService.getVoteOutcome(contractModel);
             contractService.settlePayments(contractModel, voteOutcome.isPayStreamer());

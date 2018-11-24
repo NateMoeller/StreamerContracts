@@ -1,14 +1,14 @@
 package com.nicknathanjustin.streamercontracts.contracts.requests;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ContractVoteRequest {
     @NonNull private UUID contractId;
-    private boolean flagCompleted;
+    @NonNull private Boolean flagCompleted;
 }
