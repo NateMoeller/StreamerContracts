@@ -50,7 +50,7 @@ public class ContractsApiControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void voteOnContract_nullContractVoteRequest_throwsException() {
-        contractsApiController.voteOnContract(null, null);
+        contractsApiController.voteOnContract(null, AUTHENTICATION);
     }
 
     @Test

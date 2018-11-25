@@ -41,7 +41,6 @@ public class VoteServiceImpl implements VoteService{
         final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
         final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
         final boolean proposerAndStreamerHaveVoted = optionalProposerVote.isPresent() && optionalStreamerVote.isPresent();
-        boolean streamerMarkedContractFailed = streamerMarkedContractFailed(contractModel);
         return proposerAndStreamerHaveVoted ||
                proposerMarkedContractCompleted(contractModel) ||
                streamerMarkedContractFailed(contractModel) ||

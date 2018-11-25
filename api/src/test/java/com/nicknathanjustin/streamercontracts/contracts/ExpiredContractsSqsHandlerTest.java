@@ -32,6 +32,13 @@ public class ExpiredContractsSqsHandlerTest {
     }
 
     @Test
+    public void settleExpiredDonations_noExpiredDonations_settlesNoContracts() {
+        expiredContractsSqsHandler.settleExpiredDonations(new Object());
+
+        verify(mockContractService, never()).settlePayments(any(), anyBoolean());
+    }
+
+    @Test
     public void settleExpiredDonations_expiredDonations_settlesExpiredContracts() {
         final Set<ContractModel> expiredContracts = new HashSet<>();
         final int numberOfExpiredContracts = 15;
@@ -45,12 +52,5 @@ public class ExpiredContractsSqsHandlerTest {
         expiredContractsSqsHandler.settleExpiredDonations(new Object());
 
         verify(mockContractService, times(numberOfExpiredContracts)).settlePayments(any(), eq(voteOutcome.isPayStreamer()));
-    }
-
-    @Test
-    public void settleExpiredDonations_noExpiredDonations_settlesNoContracts() {
-        expiredContractsSqsHandler.settleExpiredDonations(new Object());
-
-        verify(mockContractService, never()).settlePayments(any(), anyBoolean());
     }
 }

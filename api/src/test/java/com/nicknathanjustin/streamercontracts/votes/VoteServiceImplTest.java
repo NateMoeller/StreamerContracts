@@ -141,48 +141,50 @@ public class VoteServiceImplTest {
     }
 
     @Test
-    public void recordVote_voterIsProposerAndHasntVotedBefore_voteRecorded() {
+    public void recordVote_voterIsProposerAndHasNotVotedBefore_voteRecorded() {
         final ArgumentCaptor<VoteModel> voteModelArgumentCaptor = ArgumentCaptor.forClass(VoteModel.class);
-        final UserModel proposer = createUserModel(PROPOSER_ID);
+        final UserModel voter = createUserModel(PROPOSER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
-                proposer,
+                voter,
                 createUserModel(STREAMER_ID));
         final boolean flaggedCompleted = true;
 
-        voteServiceImpl.recordVote(proposer, contractModel, flaggedCompleted);
+        voteServiceImpl.recordVote(voter, contractModel, flaggedCompleted);
 
         verify(mockVoteModelRepository).save(voteModelArgumentCaptor.capture());
         final VoteModel voteModel = voteModelArgumentCaptor.getValue();
         Assert.assertEquals(contractModel, voteModel.getContract());
-        Assert.assertEquals(proposer, voteModel.getVoter());
+        Assert.assertEquals(voter, voteModel.getVoter());
         Assert.assertNotNull(voteModel.getVotedAt());
         Assert.assertEquals(flaggedCompleted, voteModel.isViewerFlaggedComplete());
     }
 
     @Test
-    public void recordVote_voterIsStreamerAndHasntVotedBefore_voteRecorded() {
+    public void recordVote_voterIsStreamerAndHasNotVotedBefore_voteRecorded() {
         final ArgumentCaptor<VoteModel> voteModelArgumentCaptor = ArgumentCaptor.forClass(VoteModel.class);
-        final UserModel streamer = createUserModel(STREAMER_ID);
+        final UserModel voter = createUserModel(STREAMER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
-                streamer);
+                voter);
         final boolean flaggedCompleted = true;
 
-        voteServiceImpl.recordVote(streamer, contractModel, flaggedCompleted);
+        voteServiceImpl.recordVote(voter, contractModel, flaggedCompleted);
 
         verify(mockVoteModelRepository).save(voteModelArgumentCaptor.capture());
         final VoteModel voteModel = voteModelArgumentCaptor.getValue();
         Assert.assertEquals(contractModel, voteModel.getContract());
-        Assert.assertEquals(streamer, voteModel.getVoter());
+        Assert.assertEquals(voter, voteModel.getVoter());
         Assert.assertNotNull(voteModel.getVotedAt());
         Assert.assertEquals(flaggedCompleted, voteModel.isViewerFlaggedComplete());
     }
 
     @Test
     public void recordVote_voterIsNotProposerOrStreamer_noVoteRecorded() {
-        voteServiceImpl.recordVote(createUserModel(UUID.randomUUID()),
+        final UserModel voter = createUserModel(UUID.randomUUID());
+
+        voteServiceImpl.recordVote(voter,
                 createContractModel(
                         getValidContractModelBuilder(),
                         createUserModel(PROPOSER_ID),
@@ -194,28 +196,28 @@ public class VoteServiceImplTest {
 
     @Test
     public void recordVote_voterIsProposerAndHasVotedBefore_noVoteRecorded() {
-        final UserModel proposer = createUserModel(PROPOSER_ID);
+        final UserModel voter = createUserModel(PROPOSER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
-                proposer,
+                voter,
                 createUserModel(STREAMER_ID));
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), proposer.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
+        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), voter.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
 
-        voteServiceImpl.recordVote(proposer, contractModel, true);
+        voteServiceImpl.recordVote(voter, contractModel, true);
 
         verify(mockVoteModelRepository, never()).save(any());
     }
 
     @Test
     public void recordVote_voterIsStreamerAndHasVotedBefore_noVoteRecorded() {
-        final UserModel streamer = createUserModel(STREAMER_ID);
+        final UserModel voter = createUserModel(STREAMER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
-                streamer);
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), streamer.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
+                voter);
+        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), voter.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
 
-        voteServiceImpl.recordVote(streamer, contractModel, true);
+        voteServiceImpl.recordVote(voter, contractModel, true);
 
         verify(mockVoteModelRepository, never()).save(any());
     }
@@ -384,7 +386,6 @@ public class VoteServiceImplTest {
     private UserModel createUserModel(@NonNull final UUID userId) {
         return UserModel.builder()
                 .id(userId)
-                .twitchUsername("SOME_VALUE")
                 .build();
     }
 
