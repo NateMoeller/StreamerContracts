@@ -1,12 +1,12 @@
 package com.nicknathanjustin.streamercontracts.contracts.requests;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.NonNull;
+import lombok.Value;
 
 import java.util.UUID;
 
-@Data
+@Value
 @Builder
 public class ContractVoteRequest {
     @NonNull private UUID contractId;
