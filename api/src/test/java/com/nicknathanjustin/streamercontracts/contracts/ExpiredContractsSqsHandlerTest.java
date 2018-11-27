@@ -42,7 +42,7 @@ public class ExpiredContractsSqsHandlerTest {
     public void settleExpiredDonations_expiredDonations_settlesExpiredContracts() {
         final Set<ContractModel> expiredContracts = new HashSet<>();
         final int numberOfExpiredContracts = 15;
-        for (int i=0; i<numberOfExpiredContracts; i++) {
+        for (int i = 0; i < numberOfExpiredContracts; i++) {
             expiredContracts.add(ContractModel.builder().build());
         }
         when(mockContractService.getExpiredContracts()).thenReturn(expiredContracts);

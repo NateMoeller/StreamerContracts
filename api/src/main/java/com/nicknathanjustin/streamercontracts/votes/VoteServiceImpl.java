@@ -20,7 +20,7 @@ public class VoteServiceImpl implements VoteService{
     public void recordVote(@NonNull final UserModel voter,
                            @NonNull final ContractModel contractModel,
                            @NonNull final boolean flaggedCompleted) {
-        validateContract(contractModel);
+        validateContract(contractModel, true);
 
         if (userCanVoteOnContract(voter, contractModel)) {
             final VoteModel voteModel = VoteModel.builder()
@@ -35,7 +35,7 @@ public class VoteServiceImpl implements VoteService{
 
     @Override
     public boolean isVotingComplete(@NonNull final ContractModel contractModel) {
-        validateContract(contractModel);
+        validateContract(contractModel, false);
 
         final UUID contractId = contractModel.getId();
         final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
@@ -137,17 +137,21 @@ public class VoteServiceImpl implements VoteService{
         return true;
     }
 
-    private void validateContract(@NonNull final ContractModel contractModel) {
+    private void validateContract(@NonNull final ContractModel contractModel, final boolean validateVote) {
         if (contractModel.isCommunityContract()) {
-            throw new IllegalArgumentException("Voting logic not yet implemented for community contracts. ContractId " + contractModel.getId());
+            throw new IllegalArgumentException("Voting and Settling logic not yet implemented for community contracts. ContractId " + contractModel.getId());
         }
 
-        if (!contractModel.isAccepted() && !isContractExpired(contractModel)) {
-            throw new IllegalArgumentException("Cannot vote on an unaccepted contract that hasnt expired yet. ContractId " + contractModel.getId());
+        if (validateVote && !contractModel.isAccepted()) {
+            throw new IllegalArgumentException("Cannot vote on an unaccepted contract. ContractId " + contractModel.getId());
+        }
+
+        if (!validateVote && !contractModel.isAccepted() && !isContractExpired(contractModel)) {
+            throw new IllegalArgumentException("Cannot settle an unaccepted contract that hasnt expired yet. ContractId " + contractModel.getId());
         }
 
         if (contractModel.getIsCompleted() != null) {
-            throw new IllegalArgumentException("Cannot vote on a completed contract. ContractId " + contractModel.getId());
+            throw new IllegalArgumentException("Cannot vote or settle a completed contract. ContractId " + contractModel.getId());
         }
 
         //TODO: add check for isDeclined and isExpired
