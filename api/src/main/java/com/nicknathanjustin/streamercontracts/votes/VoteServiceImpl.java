@@ -20,6 +20,8 @@ public class VoteServiceImpl implements VoteService{
     public void recordVote(@NonNull final UserModel voter,
                            @NonNull final ContractModel contractModel,
                            @NonNull final boolean flaggedCompleted) {
+        validateContract(contractModel, true);
+
         if (userCanVoteOnContract(voter, contractModel)) {
             final VoteModel voteModel = VoteModel.builder()
                     .voter(voter)
@@ -33,18 +35,16 @@ public class VoteServiceImpl implements VoteService{
 
     @Override
     public boolean isVotingComplete(@NonNull final ContractModel contractModel) {
-        validateContract(contractModel);
+        validateContract(contractModel, false);
 
         final UUID contractId = contractModel.getId();
         final Optional<VoteModel> optionalProposerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
         final Optional<VoteModel> optionalStreamerVote = voteModelRepository.findByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        final Timestamp now = new Timestamp(System.currentTimeMillis());
         final boolean proposerAndStreamerHaveVoted = optionalProposerVote.isPresent() && optionalStreamerVote.isPresent();
-        final boolean contractHasExpired = now.after(contractModel.getExpiresAt());
         return proposerAndStreamerHaveVoted ||
                proposerMarkedContractCompleted(contractModel) ||
                streamerMarkedContractFailed(contractModel) ||
-               contractHasExpired;
+               isContractExpired(contractModel);
     }
 
     @Override
@@ -107,17 +107,15 @@ public class VoteServiceImpl implements VoteService{
     }
 
     private boolean userCanVoteOnContract(@NonNull final UserModel voter, @NonNull final ContractModel contractModel) {
-        validateContract(contractModel);
-
         final UUID contractId = contractModel.getId();
 
         final UUID proposerId = contractModel.getProposer().getId();
         final boolean isVoterContractProposer = voter.getId().equals(proposerId);
-        final boolean proposerHasVoted = (voteModelRepository.findByContractIdAndVoterId(contractId, proposerId) != null);
+        final boolean proposerHasVoted = (voteModelRepository.findByContractIdAndVoterId(contractId, proposerId).isPresent());
 
         final UUID streamerId = contractModel.getStreamer().getId();
         final boolean isVoterContractStreamer = voter.getId().equals(streamerId);
-        final boolean streamerHasVoted = (voteModelRepository.findByContractIdAndVoterId(contractId, streamerId) == null);
+        final boolean streamerHasVoted = (voteModelRepository.findByContractIdAndVoterId(contractId, streamerId).isPresent());
 
         final boolean isUserAllowedToVote = isVoterContractProposer || isVoterContractStreamer;
         if (!isUserAllowedToVote) {
@@ -139,19 +137,28 @@ public class VoteServiceImpl implements VoteService{
         return true;
     }
 
-    private void validateContract(@NonNull final ContractModel contractModel) {
+    private void validateContract(@NonNull final ContractModel contractModel, final boolean validateVote) {
         if (contractModel.isCommunityContract()) {
-            throw new IllegalArgumentException("Voting logic not yet implemented for community contracts. ContractId " + contractModel.getId());
+            throw new IllegalArgumentException("Voting and Settling logic not yet implemented for community contracts. ContractId " + contractModel.getId());
         }
 
-        if (!contractModel.isAccepted()) {
+        if (validateVote && !contractModel.isAccepted()) {
             throw new IllegalArgumentException("Cannot vote on an unaccepted contract. ContractId " + contractModel.getId());
         }
 
+        if (!validateVote && !contractModel.isAccepted() && !isContractExpired(contractModel)) {
+            throw new IllegalArgumentException("Cannot settle an unaccepted contract that hasnt expired yet. ContractId " + contractModel.getId());
+        }
+
         if (contractModel.getIsCompleted() != null) {
-            throw new IllegalArgumentException("Cannot vote on a completed contract. ContractId " + contractModel.getId());
+            throw new IllegalArgumentException("Cannot vote or settle a completed contract. ContractId " + contractModel.getId());
         }
 
         //TODO: add check for isDeclined and isExpired
+    }
+
+    private boolean isContractExpired(@NonNull final ContractModel contractModel) {
+        final Timestamp now = new Timestamp(System.currentTimeMillis());
+        return now.after(contractModel.getExpiresAt());
     }
 }

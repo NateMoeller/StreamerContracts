@@ -14,16 +14,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
 
+    private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
+
     @NonNull final ContractModelRepository contractModelRepository;
 
     @Override
     public ContractModel createContract(@NonNull final UserModel proposer, @NonNull final UserModel streamer, @Nullable final String game, @NonNull final String description) {
         final Timestamp creationTimestamp = new Timestamp(System.currentTimeMillis());
-        // Add 10 days to the current timestamp to create the expires timestamp
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(creationTimestamp);
-        calendar.add(Calendar.DAY_OF_WEEK, 10);
+        calendar.add(Calendar.DAY_OF_WEEK, PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS);
         final Timestamp expiresTimestamp = new Timestamp(calendar.getTime().getTime());
+
         return contractModelRepository.save(ContractModel.builder()
                 .proposer(proposer)
                 .streamer(streamer)

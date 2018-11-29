@@ -18,7 +18,7 @@ public class ExpiredContractsSqsHandler {
 
     @SqsListener("ExpiredDonationsSQS-${application.environment}")
     @SuppressWarnings("unused") //Method is invoked when pulling AWS SQS. Method is not directly called within our application.
-    public void listen(@NonNull final Object message) {
+    public void settleExpiredDonations(@NonNull final Object message) {
         final Set<ContractModel> expiredContracts = contractService.getExpiredContracts();
         expiredContracts.forEach(expiredContract -> {
             log.info("Settling payments for expiredContract: {}", expiredContract.getId());
