@@ -16,16 +16,18 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Override
     public UserSettingsModel updateUserSettings(@NonNull final UserModel userModel,
                                                 @NonNull final UpdateUserSettingsRequest updateUserSettingsRequest) {
+        final Timestamp now = new Timestamp(System.currentTimeMillis());
+        final String paypalEmail = updateUserSettingsRequest.getPaypalEmail();
         final Optional<UserSettingsModel> optionalUserSettingsModel = userSettingsModelRepository.findByUserId(userModel.getId());
-        final Timestamp createdAt = optionalUserSettingsModel.isPresent() ?
-                optionalUserSettingsModel.get().getCreatedAt() :
-                new Timestamp(System.currentTimeMillis());
-        final UserSettingsModel userSettingsModel = UserSettingsModel.builder()
+        final UserSettingsModel userSettingsModel = optionalUserSettingsModel.orElse(
+                UserSettingsModel.builder()
                 .user(userModel)
-                .paypalEmail(updateUserSettingsRequest.getPaypalEmail())
-                .createdAt(createdAt)
-                .updatedAt(new Timestamp(System.currentTimeMillis()))
-                .build();
+                .createdAt(now)
+                .build()
+        );
+
+        userSettingsModel.setPaypalEmail(paypalEmail);
+        userSettingsModel.setUpdatedAt(now);
 
         return userSettingsModelRepository.save(userSettingsModel);
     }
