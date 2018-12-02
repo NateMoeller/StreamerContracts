@@ -15,6 +15,6 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
     @Query("SELECT contractModel " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.settlesAt < :currentTimestamp " +
-           "AND contractModel.state = 'COMPLETED'")
+           "AND contractModel.state = 'ACCEPTED'")
     Set<ContractModel> findAllExpiredContracts(@Param("currentTimestamp") Timestamp now);
 }
