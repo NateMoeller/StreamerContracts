@@ -21,6 +21,7 @@ public class ExpiredContractsSqsHandler {
     public void settleExpiredDonations(@NonNull final Object message) {
         final Set<ContractModel> expiredContracts = contractService.getExpiredContracts();
         expiredContracts.forEach(expiredContract -> {
+            //TODO: expire contract if still open state. else do the following logic
             log.info("Settling payments for expiredContract: {}", expiredContract.getId());
             final VoteOutcome voteOutcome = voteService.getVoteOutcome(expiredContract);
             contractService.settlePayments(expiredContract, voteOutcome.isPayStreamer());
