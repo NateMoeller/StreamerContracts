@@ -35,11 +35,10 @@ public interface ContractService {
 
 
     /**
-     * Loop through all donations for a contract and either void or capture those payments
+     * Changes the state of a contract.
      *
      * @param contractModel contract to settle payment for
-     * @param shouldReleasePayments flag indicating if payments should be released to the streamer. If false the payment
-     *                              Is voided and never leaves the donator's account.
+     * @param newContractState The new contract state after the result of a vote.
      */
-    void settlePayments(ContractModel contractModel, boolean shouldReleasePayments);
+    void setContractState(ContractModel contractModel, ContractState newContractState);
 }

@@ -3,7 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
-import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +47,14 @@ public class ContractsApiController {
         final ContractModel contractModel = optionalContractModel.get();
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
 
-        voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
-        if(voteService.isVotingComplete(contractModel)) {
-            final VoteOutcome voteOutcome = voteService.getVoteOutcome(contractModel);
-            contractService.settlePayments(contractModel, voteOutcome.isPayStreamer());
+        final boolean voteRecordedSuccessfully = voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
+        if (voteRecordedSuccessfully) {
+            final Optional<VoteModel> optionalProposerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
+            final Optional<VoteModel> optionalStreamerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
+            if(voteService.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel)) {
+                final ContractState voteOutcome = voteService.getVoteOutcome(contractModel);
+                contractService.setContractState(contractModel, voteOutcome);
+            }
         }
 
         return new ResponseEntity(HttpStatus.OK);

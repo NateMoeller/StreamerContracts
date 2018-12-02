@@ -24,7 +24,7 @@ public class ContractServiceImpl implements ContractService {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(creationTimestamp);
         calendar.add(Calendar.DAY_OF_WEEK, PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS);
-        final Timestamp expiresTimestamp = new Timestamp(calendar.getTime().getTime());
+        final Timestamp settlesTimestamp = new Timestamp(calendar.getTime().getTime());
 
         return contractModelRepository.save(ContractModel.builder()
                 .proposer(proposer)
@@ -32,12 +32,16 @@ public class ContractServiceImpl implements ContractService {
                 .game(game)
                 .description(description)
                 .proposedAt(creationTimestamp)
-                .expiresAt(expiresTimestamp)
                 .acceptedAt(null)
+                .declinedAt(null)
+                .settlesAt(settlesTimestamp)
+                .expiredAt(null)
                 .completedAt(null)
-                .isAccepted(false)
-                .isCompleted(null)
+                .failedAt(null)
+                .disputedAt(null)
                 .isCommunityContract(false)
+                .state(ContractState.OPEN.name())
+                .devnote(null)
                 .build());
     }
 
@@ -52,10 +56,32 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void settlePayments(@NonNull final ContractModel contractModel, final boolean shouldReleasePayments) {
-        //TODO: loop through donations for the contract and either void or capture payPalPayments
-        contractModel.setIsCompleted(shouldReleasePayments);
-        contractModel.setCompletedAt(new Timestamp(System.currentTimeMillis()));
+    public void setContractState(@NonNull final ContractModel contractModel, final ContractState newContractState) {
+        contractModel.setState(newContractState.name());
+        final Timestamp transitionTimestamp = new Timestamp(System.currentTimeMillis());
+        if (newContractState.equals(ContractState.ACCEPTED)) {
+            contractModel.setAcceptedAt(transitionTimestamp);
+        }
+        else if (newContractState.equals(ContractState.DECLINED)) {
+            contractModel.setDeclinedAt(transitionTimestamp);
+        }
+        else if (newContractState.equals(ContractState.EXPIRED)) {
+            contractModel.setExpiredAt(transitionTimestamp);
+        }
+        else if (newContractState.equals(ContractState.COMPLETED)) {
+            //TODO: loop through donations for the contract and either void or capture payPalPayments
+            contractModel.setCompletedAt(transitionTimestamp);
+        }
+        else if (newContractState.equals(ContractState.FAILED)) {
+            contractModel.setFailedAt(transitionTimestamp);
+        }
+        else if (newContractState.equals(ContractState.DISPUTED)) {
+            contractModel.setDisputedAt(transitionTimestamp);
+        }
+        else {
+            // TODO: Invalid state transition. Log warning message
+        }
+
         contractModelRepository.save(contractModel);
     }
 }

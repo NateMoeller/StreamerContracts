@@ -1,6 +1,5 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
-import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +16,13 @@ public class ExpiredContractsSqsHandler {
     @NonNull private final VoteService voteService;
 
     @SqsListener("ExpiredDonationsSQS-${application.environment}")
-    @SuppressWarnings("unused") //Method is invoked when pulling AWS SQS. Method is not directly called within our application.
+    @SuppressWarnings("unused") // Method is invoked when pulling AWS SQS. Method is not directly called within our application.
     public void settleExpiredDonations(@NonNull final Object message) {
         final Set<ContractModel> expiredContracts = contractService.getExpiredContracts();
         expiredContracts.forEach(expiredContract -> {
             log.info("Settling payments for expiredContract: {}", expiredContract.getId());
-            final VoteOutcome voteOutcome = voteService.getVoteOutcome(expiredContract);
-            contractService.settlePayments(expiredContract, voteOutcome.isPayStreamer());
+            final ContractState voteOutcome = voteService.getVoteOutcome(expiredContract);
+            contractService.setContractState(expiredContract, voteOutcome);
         });
     }
 }

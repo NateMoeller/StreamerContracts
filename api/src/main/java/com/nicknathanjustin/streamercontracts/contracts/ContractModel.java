@@ -44,13 +44,21 @@ public class ContractModel {
 
     private Timestamp acceptedAt;
 
-    private Timestamp expiresAt;
+    private Timestamp declinedAt;
+
+    private Timestamp settlesAt;
+
+    private Timestamp expiredAt;
 
     private Timestamp completedAt;
 
-    private boolean isAccepted;
+    private Timestamp failedAt;
 
-    private Boolean isCompleted;
+    private Timestamp disputedAt;
 
     private boolean isCommunityContract;
+
+    private String state;
+
+    private String devnote;
 }
