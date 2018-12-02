@@ -19,11 +19,11 @@ public interface ContractService {
     ContractModel createContract(UserModel proposer, UserModel streamer, String game, String description);
 
     /**
-     * Gets all expired contracts.
+     * Gets all setteable contracts.
      *
-     * @return a set of all expired contracts
+     * @return a set of all settleable contracts
      */
-    Set<ContractModel> getExpiredContracts();
+    Set<ContractModel> getSettleableContracts();
 
     /**
      * Gets a contract for the given ID

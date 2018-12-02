@@ -46,8 +46,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Set<ContractModel> getExpiredContracts() {
-        return contractModelRepository.findAllExpiredContracts(new Timestamp(System.currentTimeMillis()));
+    public Set<ContractModel> getSettleableContracts() {
+        return contractModelRepository.findAllSettleableContracts(new Timestamp(System.currentTimeMillis()));
     }
 
     @Override

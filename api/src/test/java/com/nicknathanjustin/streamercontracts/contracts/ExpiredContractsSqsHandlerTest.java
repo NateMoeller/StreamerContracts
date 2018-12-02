@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -26,31 +25,30 @@ public class ExpiredContractsSqsHandlerTest {
     @InjectMocks private ExpiredContractsSqsHandler expiredContractsSqsHandler;
 
     @Test(expected = NullPointerException.class)
-    public void settleExpiredDonations_nullInput_throwsException() {
-        expiredContractsSqsHandler.settleExpiredDonations(null);
+    public void settleContracts_nullInput_throwsException() {
+        expiredContractsSqsHandler.settleAndExpireContracts(null);
     }
 
     @Test
-    public void settleExpiredDonations_noExpiredDonations_settlesNoContracts() {
-        expiredContractsSqsHandler.settleExpiredDonations(new Object());
+    public void settleContracts_noSettleableContracts_settlesNoContracts() {
+        expiredContractsSqsHandler.settleAndExpireContracts(new Object());
 
-        // TODO: Fix this
-        //verify(mockContractService, never()).settlePayments(any(), anyBoolean());
+        verify(mockContractService, never()).setContractState(any(), any());
     }
 
     @Test
-    public void settleExpiredDonations_expiredDonations_settlesExpiredContracts() {
-        final Set<ContractModel> expiredContracts = new HashSet<>();
-        final int numberOfExpiredContracts = 15;
-        for (int i = 0; i < numberOfExpiredContracts; i++) {
-            expiredContracts.add(ContractModel.builder().build());
+    public void settleContracts_settleableContracts_settlesContracts() {
+        final Set<ContractModel> settleableContracts = new HashSet<>();
+        final int numberOfSettleableContracts = 15;
+        for (int i = 0; i < numberOfSettleableContracts; i++) {
+            settleableContracts.add(ContractModel.builder().build());
         }
-        when(mockContractService.getExpiredContracts()).thenReturn(expiredContracts);
+        when(mockContractService.getSettleableContracts()).thenReturn(settleableContracts);
         final ContractState voteOutcome = ContractState.COMPLETED;
         when(mockVoteService.getVoteOutcome(any())).thenReturn(voteOutcome);
 
-        expiredContractsSqsHandler.settleExpiredDonations(new Object());
+        expiredContractsSqsHandler.settleAndExpireContracts(new Object());
 
-        verify(mockContractService, times(numberOfExpiredContracts)).setContractState(any(), eq(voteOutcome));
+        verify(mockContractService, times(numberOfSettleableContracts)).setContractState(any(), eq(voteOutcome));
     }
 }
