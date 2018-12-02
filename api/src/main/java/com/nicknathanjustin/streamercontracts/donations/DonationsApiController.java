@@ -67,7 +67,7 @@ public class DonationsApiController {
 
         final Pageable pageable = PageRequest.of(page, pageSize);
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
-        final Page<OpenDonationDto> donationsWithOpenContracts = donationService.listOpenDonations(userModel.getId(), pageable);
+        final Page<OpenDonationDto> donationsWithOpenContracts = donationService.listDonationsForAcceptedContracts(userModel.getId(), pageable);
         return ResponseEntity.ok(donationsWithOpenContracts);
     }
 }

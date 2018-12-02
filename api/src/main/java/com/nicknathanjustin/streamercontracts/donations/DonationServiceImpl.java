@@ -39,8 +39,8 @@ public class DonationServiceImpl implements  DonationService{
     }
 
     @Override
-    public Page<OpenDonationDto> listOpenDonations(@NonNull final UUID donatorId, @NonNull final Pageable pageable) {
-        return donationModelRepository.findAllDonationsForOpenContracts(
+    public Page<OpenDonationDto> listDonationsForAcceptedContracts(@NonNull final UUID donatorId, @NonNull final Pageable pageable) {
+        return donationModelRepository.findAllDonationsForAcceptedContracts(
                 donatorId,
                 new Timestamp(System.currentTimeMillis()),
                 pageable

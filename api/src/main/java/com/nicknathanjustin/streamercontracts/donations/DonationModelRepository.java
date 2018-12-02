@@ -18,9 +18,9 @@ public interface DonationModelRepository extends CrudRepository<DonationModel, U
             "donationModel.contract.streamer.twitchUsername) " +
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donator.id = :donatorId " +
-           "AND donationModel.contract.state = 'COMPLETED' " +
+           "AND donationModel.contract.state = 'ACCEPTED' " +
            "AND donationModel.contract.settlesAt > :currentTimestamp")
-    Page<OpenDonationDto> findAllDonationsForOpenContracts(@Param("donatorId") UUID donatorId,
-                                                           @Param("currentTimestamp") Timestamp now,
-                                                           Pageable pageable);
+    Page<OpenDonationDto> findAllDonationsForAcceptedContracts(@Param("donatorId") UUID donatorId,
+                                                               @Param("currentTimestamp") Timestamp now,
+                                                               Pageable pageable);
 }
