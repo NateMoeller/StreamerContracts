@@ -79,7 +79,9 @@ public class ContractServiceImpl implements ContractService {
             contractModel.setDisputedAt(transitionTimestamp);
         }
         else {
-            // TODO: Invalid state transition. Log warning message
+            throw new IllegalStateException(String.format("Error. Attempting to transition a contract to an invalid state. Contract Id: %s State: %s",
+                    contractModel.getId(),
+                    newContractState.name()));
         }
 
         contractModelRepository.save(contractModel);
