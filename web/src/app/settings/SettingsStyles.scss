@@ -13,22 +13,52 @@
     }
   }
 
+  .panelBody {
+    height: 70px;
+
+    .emailField {
+      width: 50%;
+      display: inline-block;
+    }
+
+    .text {
+      display: inline-block;
+      height: 36px;
+      line-height: 36px;
+      vertical-align: top;
+    }
+  }
+
   .button {
     display: inline-block;
     float: right;
+    margin-right: 5px;
   }
 
   .submitButton {
     background: $secondary-blue;
     color: $true-white;
 
-    &:focus {
+    &:focus, &:hover {
       background: $secondary-blue;
     }
   }
 
-  .emailField {
-    width: 50%;
-    display: inline-block;
+
+  .errorMessage {
+    margin-left: 10px;
+    color: $error-red;
+  }
+
+  .errorIcon {
+    color: $error-red;
+    font-size: 36px;
+    margin-right: 10px;
+  }
+
+  .successIcon {
+    color: $secondary-blue;
+    font-size: 36px;
+    margin-right: 10px;
   }
 }

@@ -4,6 +4,7 @@ import emailReducer from './app/splash/duck';
 import donateReducer from './app/donate/duck';
 import homeReducer from './app/home/duck';
 import profileReducer from './app/profile/duck';
+import settingsReducer from './app/settings/duck';
 
 // add reducers here
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   publicUser: publicUserReducer,
   donate: donateReducer,
   email: emailReducer,
+  settings: settingsReducer
 });
 
 export default rootReducer;

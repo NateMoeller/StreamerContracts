@@ -3,6 +3,8 @@ package com.nicknathanjustin.streamercontracts.settings;
 import com.nicknathanjustin.streamercontracts.settings.requests.UpdateUserSettingsRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 
+import java.util.Optional;
+
 public interface UserSettingsService {
 
     /**
@@ -13,4 +15,11 @@ public interface UserSettingsService {
      * @return the updated UserSettingsModel
      */
     UserSettingsModel updateUserSettings(UserModel UserModel, UpdateUserSettingsRequest updateUserSettingsRequest);
+
+    /**
+     * Gets a user's settings
+     *
+     * @return the UserSettingsModel
+     */
+    Optional<UserSettingsModel> getUserSettings(UserModel UserModel);
 }

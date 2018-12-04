@@ -10,6 +10,7 @@ import styles from './SplashStyles.scss';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { emailOperations } from './duck';
+import { emailRegex } from '../../commonRegex';
 import logo from '../../resources/logo_light.png';
 
 const REQUIRED_MESSAGE = 'This field is required';
@@ -73,7 +74,6 @@ class SplashComponent extends Component {
   }
 
   validateEmail() {
-    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let error = { type: null };
     if (this.validateRequiredField(this.state.email)) {
       error = { type: 'error', message: REQUIRED_MESSAGE };

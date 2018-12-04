@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/userSettings")
@@ -34,5 +35,23 @@ public class UserSettingsApiController {
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
         userSettingsService.updateUserSettings(userModel, updateUserSettingsRequest);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity getUserSettings(@Nullable final OAuth2Authentication authentication) {
+        if (authentication == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final UserModel userModel = userService.getUserFromAuthContext(authentication);
+        final Optional<UserSettingsModel> optionalUserSettingsModel = userSettingsService.getUserSettings(userModel);
+        final UserSettingsModel userSettingsModel = optionalUserSettingsModel.orElse(null);
+
+        if (userSettingsModel != null) {
+            UserSettingsDto userSettingsDto = new UserSettingsDto(userSettingsModel);
+            return ResponseEntity.ok(userSettingsDto);
+        }
+
+        return ResponseEntity.ok(null);
     }
 }
