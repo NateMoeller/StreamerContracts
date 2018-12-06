@@ -18,6 +18,7 @@ public interface UserSettingsService {
 
     /**
      * Gets a user's settings
+     * @param UserModel the userModel to get settings for
      *
      * @return the UserSettingsModel
      */

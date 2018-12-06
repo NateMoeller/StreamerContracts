@@ -1,9 +1,9 @@
 package com.nicknathanjustin.streamercontracts.settings;
 
-import lombok.Data;
 import lombok.NonNull;
+import lombok.Value;
 
-@Data
+@Value
 public class UserSettingsDto {
     private final String paypalEmail;
 

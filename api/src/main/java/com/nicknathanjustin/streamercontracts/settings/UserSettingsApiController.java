@@ -48,10 +48,10 @@ public class UserSettingsApiController {
         final UserSettingsModel userSettingsModel = optionalUserSettingsModel.orElse(null);
 
         if (userSettingsModel != null) {
-            UserSettingsDto userSettingsDto = new UserSettingsDto(userSettingsModel);
+            final UserSettingsDto userSettingsDto = new UserSettingsDto(userSettingsModel);
             return ResponseEntity.ok(userSettingsDto);
         }
 
-        return ResponseEntity.ok(null);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
