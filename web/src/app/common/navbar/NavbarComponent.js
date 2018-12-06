@@ -73,8 +73,9 @@ class NavbarComponent extends Component {
                   <LinkContainer exact to="/profile" onClick={() => this.setActiveItem('profile')}>
                     <MenuItem eventKey={3.1}>My Profile</MenuItem>
                   </LinkContainer>
-                  <MenuItem eventKey={3.2}>Another action</MenuItem>
-                  <MenuItem eventKey={3.3}>Something else here</MenuItem>
+                  <LinkContainer exact to="/settings">
+                    <MenuItem eventKey={3.2}>Settings</MenuItem>
+                  </LinkContainer>
                   <MenuItem divider />
                   <MenuItem eventKey={3.4} href={logoutLink} onClick={() => {
                     sessionStorage.removeItem('user');

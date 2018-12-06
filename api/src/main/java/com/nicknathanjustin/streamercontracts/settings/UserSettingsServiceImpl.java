@@ -31,4 +31,9 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
         return userSettingsModelRepository.save(userSettingsModel);
     }
+
+    @Override
+    public Optional<UserSettingsModel> getUserSettings(@NonNull final UserModel UserModel) {
+        return userSettingsModelRepository.findByUserId(UserModel.getId());
+    }
 }

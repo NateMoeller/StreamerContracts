@@ -1,0 +1,64 @@
+@import '../../colors.scss';
+
+.settingsContent {
+  margin-top: 10px;
+
+  .heading {
+    background-color: $primary-blue;
+    color: $true-white;
+
+    .headingText {
+      margin-left: 5px;
+      display: inline-block;
+    }
+  }
+
+  .panelBody {
+    height: 70px;
+
+    .emailField {
+      width: 50%;
+      display: inline-block;
+    }
+
+    .text {
+      display: inline-block;
+      height: 36px;
+      line-height: 36px;
+      vertical-align: top;
+    }
+  }
+
+  .button {
+    display: inline-block;
+    float: right;
+    margin-right: 5px;
+  }
+
+  .submitButton {
+    background: $secondary-blue;
+    color: $true-white;
+
+    &:focus, &:hover {
+      background: $secondary-blue;
+    }
+  }
+
+
+  .errorMessage {
+    margin-left: 10px;
+    color: $error-red;
+  }
+
+  .errorIcon {
+    color: $error-red;
+    font-size: 36px;
+    margin-right: 10px;
+  }
+
+  .successIcon {
+    color: $secondary-blue;
+    font-size: 36px;
+    margin-right: 10px;
+  }
+}
