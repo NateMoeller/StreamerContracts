@@ -13,8 +13,8 @@ import { publicUserOperations } from '../user/duck';
 class DonateContainer extends Component {
 
   componentWillMount() {
-    const twitchUserName = this.props.match.params.twitchUserName;
-    this.props.getPublicUser(twitchUserName);
+    const streamerUsername = this.props.match.params.twitchUserName;
+    this.props.getPublicUser(streamerUsername);
   }
 
   render() {
@@ -25,6 +25,13 @@ class DonateContainer extends Component {
       return <LoadingComponent />
     } else if (this.props.publicUser.publicUser === null) {
       return <InvalidUserComponent />;
+    } else if (this.props.publicUser.publicUser && !this.props.publicUser.publicUser.hasPayPalEmail) {
+      return (
+        <InvalidUserComponent
+          title={`Paypal not linked`}
+          message={`Once ${streamerUsername} links their paypal, you may open a bounty.`}
+        />
+      );
     } else if (this.props.donate.curDonationState === donateTypes.DONATION_PROCESSED) {
       return (
         <SuccessComponent
