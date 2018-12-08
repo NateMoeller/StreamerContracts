@@ -11,7 +11,12 @@ public class PublicUser extends User{
 
     private final boolean hasPayPalEmail;
 
-    public PublicUser(@NonNull TwitchUser twitchUser, @Nullable UserSettingsModel userSettingsModel) {
+    public PublicUser(@NonNull final TwitchUser twitchUser) {
+        super(twitchUser);
+        this.hasPayPalEmail = false;
+    }
+
+    public PublicUser(@NonNull final TwitchUser twitchUser, @Nullable final UserSettingsModel userSettingsModel) {
         super(twitchUser);
         this.hasPayPalEmail = userSettingsModel != null && userSettingsModel.getPaypalEmail() != null;
     }
