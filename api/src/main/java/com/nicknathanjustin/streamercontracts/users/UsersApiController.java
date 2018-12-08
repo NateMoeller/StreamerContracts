@@ -1,5 +1,7 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import com.nicknathanjustin.streamercontracts.settings.UserSettingsModel;
+import com.nicknathanjustin.streamercontracts.settings.UserSettingsService;
 import com.nicknathanjustin.streamercontracts.users.dtos.PrivateUser;
 import com.nicknathanjustin.streamercontracts.users.dtos.PublicUser;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class UsersApiController {
     
     @NonNull private final UserService userService;
+    @NonNull private final UserSettingsService userSettingsService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity privateUser(@Nullable final OAuth2Authentication authentication) {
@@ -43,7 +46,8 @@ public class UsersApiController {
         final TwitchUser twitchUser = optionalTwitchUser.orElse(null);
 
         if (twitchUser != null && userModel != null) {
-            final PublicUser publicUser = new PublicUser(twitchUser);
+            final UserSettingsModel userSettingsModel = userSettingsService.getUserSettings(userModel).orElse(null);
+            final PublicUser publicUser = new PublicUser(twitchUser, userSettingsModel);
             return ResponseEntity.ok(publicUser);
         }
 
