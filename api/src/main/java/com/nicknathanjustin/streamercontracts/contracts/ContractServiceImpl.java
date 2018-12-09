@@ -36,7 +36,7 @@ public class ContractServiceImpl implements ContractService {
                 .acceptedAt(null)
                 .completedAt(null)
                 .isAccepted(false)
-                .isCompleted(null)
+                .isCompleted(false)
                 .isCommunityContract(false)
                 .build());
     }

@@ -42,6 +42,7 @@
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-table-next": "^1.1.4",
     "react-bootstrap-table2-paginator": "^1.0.2",
+    "react-bootstrap-typeahead": "^3.2.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.0",
