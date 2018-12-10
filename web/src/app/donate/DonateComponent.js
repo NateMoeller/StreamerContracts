@@ -208,7 +208,8 @@ class DonateComponent extends Component {
                     <ControlLabel>Game</ControlLabel>
                     <Typeahead
                       labelKey="name"
-                      onChange={(selected) => this.setState({ game: selected[0] })}
+                      onChange={(selected) => this.setState({ game: selected[0].name })}
+                      onInputChange={(text) => this.setState({ game: text })}
                       options={this.getGameOptions()}
                       renderMenuItemChildren={this.renderOption}
                     />

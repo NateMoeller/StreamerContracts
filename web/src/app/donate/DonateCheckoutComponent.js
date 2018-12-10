@@ -35,13 +35,13 @@ class DonateCheckoutComponent extends Component {
               {this.props.username}
             </Col>
           </Row>
-          {this.props.game.name &&
+          {this.props.game &&
             <Row className={styles.usernameCheckout}>
               <Col xs={3} md={2}>
                 Game:
               </Col>
               <Col xs={8} md={6}>
-                {this.props.game.name}
+                {this.props.game}
               </Col>
             </Row>
           }
@@ -71,7 +71,7 @@ class DonateCheckoutComponent extends Component {
                 username={this.props.username}
                 insertBounty={this.props.insertBounty}
                 streamerUsername={this.props.streamerUsername}
-                gameName={this.props.game.name}
+                gameName={this.props.game}
               />
             </Col>
           </Row>
@@ -89,7 +89,7 @@ DonateCheckoutComponent.propTypes = {
   username: PropTypes.string.isRequired,
   insertBounty: PropTypes.func.isRequired,
   streamerUsername: PropTypes.string.isRequired,
-  game: PropTypes.object.isRequired,
+  game: PropTypes.string.isRequired,
 };
 
 export default DonateCheckoutComponent;
