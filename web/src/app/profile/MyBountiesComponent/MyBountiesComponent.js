@@ -26,7 +26,7 @@ class MyBountiesComponent extends Component {
 
     this.state = {
       curBounty: null,
-      bountyFilter: 'all'
+      bountyFilter: 'open'
     };
   }
 
@@ -89,14 +89,23 @@ class MyBountiesComponent extends Component {
   }
 
   getAcceptedDropdownMenu(row) {
+    const voteCompletedPayload = {
+      contractId: row.contractId,
+      flagCompleted: true
+    };
+    const voteFailedPayload = {
+      contractId: row.contractId,
+      flagCompleted: false
+    }
+
     const completedPopover = (
       <Popover id="popover" title="Bounty completed?">
-        <Button bsStyle="success" onClick={() => console.log('bounty completed')}>I completed this bounty</Button>
+        <Button bsStyle="success" onClick={() => this.props.voteBounty(voteCompletedPayload)}>I completed this bounty</Button>
       </Popover>
     );
     const failedPopover = (
       <Popover id="popover" title="Bounty Failed?">
-        <Button bsStyle="danger" onClick={() => console.log('bounty failed')}>I did not complete this bounty</Button>
+        <Button bsStyle="danger" onClick={() => this.props.voteBounty(voteFailedPayload)}>I did not complete this bounty</Button>
       </Popover>
     );
 
@@ -287,11 +296,11 @@ class MyBountiesComponent extends Component {
 MyBountiesComponent.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   loading: PropTypes.bool,
-  listBounties: PropTypes.func.isRequired,
   bounties: PropTypes.array.isRequired,
   totalBounties: PropTypes.number.isRequired,
   acceptBounty: PropTypes.func.isRequired,
   removeBounty: PropTypes.func.isRequired,
+  voteBounty: PropTypes.func.isRequired,
 }
 
 MyBountiesComponent.defaultProps = {

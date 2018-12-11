@@ -85,6 +85,7 @@ class ProfileComponent extends Component {
           loading={this.props.showSpinner}
           acceptBounty={this.props.acceptBounty}
           removeBounty={this.props.removeBounty}
+          voteBounty={this.props.voteBounty}
         />
       </div>
 

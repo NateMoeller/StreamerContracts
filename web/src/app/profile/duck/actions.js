@@ -13,7 +13,9 @@ import {
   RECEIVE_ACCEPT_BOUNTY_FAILURE,
   REQUEST_REMOVE_BOUNTY,
   RECEIVE_REMOVE_BOUNTY_SUCCESS,
-  RECEIVE_REMOVE_BOUNTY_FAILURE
+  RECEIVE_REMOVE_BOUNTY_FAILURE,
+  REQUEST_VOTE_BOUNTY,
+  RECEIVE_VOTE_BOUNTY,
 } from './types';
 
 const requestUserInfo = () => ({
@@ -81,6 +83,14 @@ const receiveRemoveBountyFailure = () => ({
   type: RECEIVE_REMOVE_BOUNTY_FAILURE
 });
 
+const requestVoteBounty = () => ({
+  type: REQUEST_VOTE_BOUNTY
+});
+
+const receiveVoteBounty = () => ({
+  type: RECEIVE_VOTE_BOUNTY
+});
+
 export {
   requestUserInfo,
   receiveUserInfoSuccess,
@@ -96,5 +106,7 @@ export {
   receiveAcceptBountyFailure,
   requestRemoveBounty,
   receiveRemoveBountySuccess,
-  receiveRemoveBountyFailure
+  receiveRemoveBountyFailure,
+  requestVoteBounty,
+  receiveVoteBounty
 };

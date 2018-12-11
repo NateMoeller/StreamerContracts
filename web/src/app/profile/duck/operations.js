@@ -13,7 +13,9 @@ import {
   receiveAcceptBountyFailure,
   requestRemoveBounty,
   receiveRemoveBountySuccess,
-  receiveRemoveBountyFailure
+  receiveRemoveBountyFailure,
+  requestVoteBounty,
+  receiveVoteBounty
 } from './actions';
 import RestClient from '../../RestClient';
 
@@ -37,9 +39,11 @@ const testAlert = (alertChannelId) => (dispatch) => {
   });
 };
 
-const voteContract = (payload) => (dispatch) => {
+const voteBounty = (payload) => (dispatch) => {
+  dispatch(requestVoteBounty());
+
   RestClient.POST('bounties/vote', payload, (response) => {
-    //TODO: handle success
+    dispatch(receiveVoteBounty());
     console.log(response);
   }, (error) => {
     //TODO: handle error
@@ -98,7 +102,7 @@ const removeBounty = (contractId) => (dispatch) => {
 export default {
   getUser,
   testAlert,
-  voteContract,
+  voteBounty,
   listMyDonations,
   listMyBounties,
   acceptBounty,

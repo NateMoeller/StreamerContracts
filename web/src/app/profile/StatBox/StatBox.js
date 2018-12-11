@@ -18,7 +18,7 @@ class StatBox extends Component {
 }
 
 StatBox.propTypes = {
-  number: PropTypes.string.isRequired,
+  number: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   label: PropTypes.string.isRequired,
 }
 
