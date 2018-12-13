@@ -143,6 +143,12 @@ class DonateComponent extends Component {
     );
   }
 
+  setSelectedGame = (selected) => {
+    if (selected[0]) {
+      this.setState({ game: selected[0].name });
+    }
+  }
+
   render() {
     const amountErrorMessage = this.state.amountError !== null ? this.state.amountError.message : '';
     const bountyErrorMessage = this.state.bountyError !== null ? this.state.bountyError.message : '';
@@ -208,7 +214,7 @@ class DonateComponent extends Component {
                     <ControlLabel>Game</ControlLabel>
                     <Typeahead
                       labelKey="name"
-                      onChange={(selected) => this.setState({ game: selected[0].name })}
+                      onChange={this.setSelectedGame}
                       onInputChange={(text) => this.setState({ game: text })}
                       options={this.getGameOptions()}
                       renderMenuItemChildren={this.renderOption}
