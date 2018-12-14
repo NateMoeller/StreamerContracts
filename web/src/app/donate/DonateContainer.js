@@ -31,7 +31,7 @@ class DonateContainer extends Component {
       return <LoadingComponent />
     } else if (this.props.publicUser.publicUser === null) {
       return <InvalidUserComponent />;
-    } else if (this.props.publicUser.publicUser && !this.props.publicUser.publicUser.hasPayPalEmail) {
+    } else if (this.props.publicUser.publicUser && !this.props.publicUser.publicUser.payPalEmail) {
       return (
         <InvalidUserComponent
           title={`Paypal not linked`}
@@ -54,7 +54,7 @@ class DonateContainer extends Component {
       <DonateComponent
         user={user}
         streamerUsername={streamerUsername}
-        streamerPaypalEmail='nckackerman+streamer-business@gmail.com' //TODO: need to query API endpoint for this information
+        streamerPaypalEmail={this.props.publicUser.publicUser.payPalEmail}
         insertBounty={this.props.insertBounty}
         topGames={this.props.twitch.topGames}
       />

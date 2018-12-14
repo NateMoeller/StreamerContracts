@@ -9,15 +9,15 @@ import org.springframework.lang.Nullable;
 @Value
 public class PublicUser extends User{
 
-    private final boolean hasPayPalEmail;
+    private final String payPalEmail;
 
     public PublicUser(@NonNull final TwitchUser twitchUser) {
         super(twitchUser);
-        this.hasPayPalEmail = false;
+        this.payPalEmail = null;
     }
 
     public PublicUser(@NonNull final TwitchUser twitchUser, @Nullable final UserSettingsModel userSettingsModel) {
         super(twitchUser);
-        this.hasPayPalEmail = userSettingsModel != null && userSettingsModel.getPaypalEmail() != null;
+        this.payPalEmail = userSettingsModel != null ? userSettingsModel.getPaypalEmail() : null;
     }
 }
