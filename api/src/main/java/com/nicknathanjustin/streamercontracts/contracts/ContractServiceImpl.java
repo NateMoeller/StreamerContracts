@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,10 @@ public class ContractServiceImpl implements ContractService {
         // transitions to a "payable" state
         contractModel.setContractState(newContractState);
         contractModelRepository.save(contractModel);
+    }
+
+    @Override
+    public Set<ContractDto> getContractsForUserAndState(UserModel user, ContractState state) {
+        return contractModelRepository.findAllContractsForUserAndState(new Timestamp(System.currentTimeMillis()), user.getTwitchUsername());
     }
 }

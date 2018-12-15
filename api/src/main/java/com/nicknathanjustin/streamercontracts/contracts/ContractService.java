@@ -1,6 +1,8 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
+import org.apache.http.annotation.Contract;
 
 import java.util.Optional;
 import java.util.Set;
@@ -42,4 +44,13 @@ public interface ContractService {
      * @param newContractState The new contract state after the result of a vote.
      */
     void setContractState(ContractModel contractModel, ContractState newContractState);
+
+    /**
+     * Gets all contracts in the given state for the given user.
+     *
+     * @param user The user to retrieve contracts by.
+     * @param state The state to retrieve contracts by.
+     * @return a set of all contracts in the given state for the given user.
+     */
+    Set<ContractDto> getContractsForUserAndState(UserModel user, ContractState state);
 }

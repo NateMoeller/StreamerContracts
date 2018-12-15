@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
@@ -12,12 +13,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -62,6 +67,22 @@ public class ContractsApiController {
             contractService.setContractState(contractModel, voteOutcome);
         }
 
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "listBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContracts(
+            @PathVariable final int page,
+            @PathVariable final int pageSize,
+            @RequestParam("state") Optional<String> optionalState,
+            @RequestParam("username") Optional<String> optionalUsername) {
+
+        // TODO: Make these optional
+        ContractState state = ContractState.OPEN;
+        String username = "TimTheTatman";
+        Optional<UserModel> optionalUser = userService.getUser(username);
+        UserModel tim = optionalUser.get();
+        Set<ContractDto> contracts = contractService.getContractsForUserAndState(tim, state);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
