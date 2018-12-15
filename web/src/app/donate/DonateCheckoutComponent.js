@@ -35,6 +35,16 @@ class DonateCheckoutComponent extends Component {
               {this.props.username}
             </Col>
           </Row>
+          {this.props.game &&
+            <Row className={styles.usernameCheckout}>
+              <Col xs={3} md={2}>
+                Game:
+              </Col>
+              <Col xs={8} md={6}>
+                {this.props.game}
+              </Col>
+            </Row>
+          }
           <Row className={styles.bountyCheckout}>
             <Col xs={3} md={2}>
               Bounty:
@@ -55,12 +65,13 @@ class DonateCheckoutComponent extends Component {
             <Col xs={3} md={2}></Col>
             <Col xs={3} md={2}>
               <PayWithPayPalComponent
-                  amount={this.props.amount}
-                  streamerPaypalEmail={this.props.streamerPaypalEmail}
-                  bounty={this.props.bounty}
-                  username={this.props.username}
-                  insertBounty={this.props.insertBounty}
-                  streamerUsername={this.props.streamerUsername}
+                amount={this.props.amount}
+                streamerPaypalEmail={this.props.streamerPaypalEmail}
+                bounty={this.props.bounty}
+                username={this.props.username}
+                insertBounty={this.props.insertBounty}
+                streamerUsername={this.props.streamerUsername}
+                gameName={this.props.game}
               />
             </Col>
           </Row>
@@ -77,7 +88,8 @@ DonateCheckoutComponent.propTypes = {
   bounty: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   insertBounty: PropTypes.func.isRequired,
-  streamerUsername: PropTypes.string.isRequired
+  streamerUsername: PropTypes.string.isRequired,
+  game: PropTypes.string.isRequired,
 };
 
 export default DonateCheckoutComponent;

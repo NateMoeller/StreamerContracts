@@ -9,22 +9,35 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { donateOperations } from './duck';
 import { publicUserOperations } from '../user/duck';
+import { twitchOperations } from '../twitch/duck';
 
 class DonateContainer extends Component {
 
   componentWillMount() {
-    const twitchUserName = this.props.match.params.twitchUserName;
-    this.props.getPublicUser(twitchUserName);
+    const streamerUsername = this.props.match.params.twitchUserName;
+    this.props.getPublicUser(streamerUsername);
+    this.props.getTopGames();
+  }
+
+  isLoading() {
+    return this.props.publicUser.getPublicUserLoading || this.props.twitch.loading || this.props.donate.curDonationState === donateTypes.DONATION_PROCESSING;
   }
 
   render() {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const streamerUsername = this.props.match.params.twitchUserName;
 
-    if (this.props.publicUser.getPublicUserLoading || this.props.donate.curDonationState === donateTypes.DONATION_PROCESSING) {
+    if (this.isLoading()) {
       return <LoadingComponent />
     } else if (this.props.publicUser.publicUser === null) {
       return <InvalidUserComponent />;
+    } else if (this.props.publicUser.publicUser && !this.props.publicUser.publicUser.payPalEmail) {
+      return (
+        <InvalidUserComponent
+          title={`Paypal not linked`}
+          message={`Once ${streamerUsername} links their paypal, you may open a bounty.`}
+        />
+      );
     } else if (this.props.donate.curDonationState === donateTypes.DONATION_PROCESSED) {
       return (
         <SuccessComponent
@@ -41,21 +54,23 @@ class DonateContainer extends Component {
       <DonateComponent
         user={user}
         streamerUsername={streamerUsername}
-        streamerPaypalEmail='nckackerman+streamer-business@gmail.com' //TODO: need to query API endpoint for this information
+        streamerPaypalEmail={this.props.publicUser.publicUser.payPalEmail}
         insertBounty={this.props.insertBounty}
+        topGames={this.props.twitch.topGames}
       />
     );
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...donateOperations, ...publicUserOperations }, dispatch);
+  return bindActionCreators({ ...donateOperations, ...publicUserOperations, ...twitchOperations }, dispatch);
 }
 
 function mapStateToProps(state) {
   return {
     publicUser: state.publicUser,
-    donate: state.donate
+    donate: state.donate,
+    twitch: state.twitch
   };
 }
 

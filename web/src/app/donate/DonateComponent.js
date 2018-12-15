@@ -10,6 +10,7 @@ import {
   PageHeader
 } from 'react-bootstrap';
 import React, { Component } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import DonationCheckoutComponent from './DonateCheckoutComponent';
 import PropTypes from 'prop-types';
 import styles from './DonateStyles.scss';
@@ -28,6 +29,7 @@ class DonateComponent extends Component {
     this.state = {
       amount: '',
       bounty: '',
+      game: {},
       showPaymentOptions: false,
       amountError: null,
       bountyError: null
@@ -120,6 +122,33 @@ class DonateComponent extends Component {
     });
   }
 
+  getGameOptions() {
+    return this.props.topGames.map((game, idx) => ({
+      id: idx,
+      img: game.box_art_url,
+      name: game.name,
+    }));
+  }
+
+  renderOption(option, props, index) {
+    const width = 50;
+    const height = 75;
+    const url = option.img.replace('{width}', width).replace('{height}', height);
+
+    return (
+      <div>
+        <img className={styles.gameThumbnail} src={url} alt={option.name} width={width} height={height} />
+        {option.name}
+      </div>
+    );
+  }
+
+  setSelectedGame = (selected) => {
+    if (selected[0]) {
+      this.setState({ game: selected[0].name });
+    }
+  }
+
   render() {
     const amountErrorMessage = this.state.amountError !== null ? this.state.amountError.message : '';
     const bountyErrorMessage = this.state.bountyError !== null ? this.state.bountyError.message : '';
@@ -134,6 +163,7 @@ class DonateComponent extends Component {
           username={this.props.user.displayName}
           insertBounty={this.props.insertBounty}
           streamerUsername={this.props.streamerUsername}
+          game={this.state.game}
         />
       );
     }
@@ -180,6 +210,16 @@ class DonateComponent extends Component {
                   </Col>
                 </Row>
                 <Row>
+                  <FormGroup controlId="formControlsSelect">
+                    <ControlLabel>Game</ControlLabel>
+                    <Typeahead
+                      labelKey="name"
+                      onChange={this.setSelectedGame}
+                      onInputChange={(text) => this.setState({ game: text })}
+                      options={this.getGameOptions()}
+                      renderMenuItemChildren={this.renderOption}
+                    />
+                  </FormGroup>
                   <FormGroup
                     controlId="bountyMessage"
                     validationState={this.state.bountyError ? this.state.bountyError.type : null}
@@ -213,7 +253,8 @@ DonateComponent.propTypes = {
   user: PropTypes.object.isRequired,
   streamerUsername: PropTypes.string.isRequired,
   streamerPaypalEmail: PropTypes.string.isRequired,
-  insertBounty: PropTypes.func.isRequired
+  insertBounty: PropTypes.func.isRequired,
+  topGames: PropTypes.array.isRequired
 };
 
 export default DonateComponent;

@@ -47,12 +47,13 @@ public class DonationsApiController {
 
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
         final UserModel streamer = userService.getUser(createDonationRequest.getStreamerUsername()).orElse(null);
+        final String game = createDonationRequest.getGame();
         if (proposer == null || streamer == null) {
             log.warn("Username: {} or StreamerUsername: {} does not exist.", createDonationRequest.getUsername(), createDonationRequest.getStreamerUsername());
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final ContractModel contract = contractService.createContract(proposer, streamer, null, createDonationRequest.getBounty());
+        final ContractModel contract = contractService.createContract(proposer, streamer, game, createDonationRequest.getBounty());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), createDonationRequest.getPayPalPaymentId());
         return new ResponseEntity(HttpStatus.OK);
     }
