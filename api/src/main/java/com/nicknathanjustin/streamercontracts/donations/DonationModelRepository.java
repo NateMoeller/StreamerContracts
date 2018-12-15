@@ -23,4 +23,6 @@ public interface DonationModelRepository extends CrudRepository<DonationModel, U
     Page<OpenDonationDto> findAllDonationsForAcceptedContracts(@Param("donatorId") UUID donatorId,
                                                                @Param("currentTimestamp") Timestamp now,
                                                                Pageable pageable);
+
+    // TODO: Add a method for finding donations for accepted contracts.
 }

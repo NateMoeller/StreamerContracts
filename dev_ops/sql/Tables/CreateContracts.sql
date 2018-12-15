@@ -14,7 +14,7 @@ CREATE TABLE contracts (
 	disputed_at TIMESTAMP NULL,
 	is_community_contract BOOLEAN NOT NULL,
 	state VARCHAR(128) NOT NULL,
-	devnote TEXT NULL,
+	dev_note TEXT NULL,
 	CONSTRAINT valid_timestamps CHECK (
 	    proposed_at < accepted_at AND -- if the contract is accepted, it must be accepted after its proposed
 		proposed_at < declined_at AND -- if the contract is declined, it must be declined after its proposed

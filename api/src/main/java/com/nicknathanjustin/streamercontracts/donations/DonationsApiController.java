@@ -57,8 +57,9 @@ public class DonationsApiController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    // TODO: Change this endpoint so it takes the state of the contract as a parameter
     @RequestMapping(path = "/listOpenDonations/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listDonations(@Nullable final OAuth2Authentication authentication,
+    public ResponseEntity listAcceptedDonations(@Nullable final OAuth2Authentication authentication,
                                         @PathVariable final int page,
                                         @PathVariable final int pageSize) {
         if (authentication == null) {
@@ -67,7 +68,7 @@ public class DonationsApiController {
 
         final Pageable pageable = PageRequest.of(page, pageSize);
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
-        final Page<OpenDonationDto> donationsWithOpenContracts = donationService.listDonationsForAcceptedContracts(userModel.getId(), pageable);
-        return ResponseEntity.ok(donationsWithOpenContracts);
+        final Page<OpenDonationDto> donationsWithAcceptedContracts = donationService.listDonationsForAcceptedContracts(userModel.getId(), pageable);
+        return ResponseEntity.ok(donationsWithAcceptedContracts);
     }
 }

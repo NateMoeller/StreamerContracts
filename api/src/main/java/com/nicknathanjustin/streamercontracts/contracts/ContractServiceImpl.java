@@ -40,8 +40,8 @@ public class ContractServiceImpl implements ContractService {
                 .failedAt(null)
                 .disputedAt(null)
                 .isCommunityContract(false)
-                .state(ContractState.OPEN.name())
-                .devnote(null)
+                .state(ContractState.OPEN)
+                .devNote(null)
                 .build());
     }
 
@@ -57,33 +57,9 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void setContractState(@NonNull final ContractModel contractModel, final ContractState newContractState) {
-        contractModel.setState(newContractState.name());
-        final Timestamp transitionTimestamp = new Timestamp(System.currentTimeMillis());
-        if (newContractState.equals(ContractState.ACCEPTED)) {
-            contractModel.setAcceptedAt(transitionTimestamp);
-        }
-        else if (newContractState.equals(ContractState.DECLINED)) {
-            contractModel.setDeclinedAt(transitionTimestamp);
-        }
-        else if (newContractState.equals(ContractState.EXPIRED)) {
-            contractModel.setExpiredAt(transitionTimestamp);
-        }
-        else if (newContractState.equals(ContractState.COMPLETED)) {
-            //TODO: loop through donations for the contract and either void or capture payPalPayments
-            contractModel.setCompletedAt(transitionTimestamp);
-        }
-        else if (newContractState.equals(ContractState.FAILED)) {
-            contractModel.setFailedAt(transitionTimestamp);
-        }
-        else if (newContractState.equals(ContractState.DISPUTED)) {
-            contractModel.setDisputedAt(transitionTimestamp);
-        }
-        else {
-            throw new IllegalStateException(String.format("Error. Attempting to transition a contract to an invalid state. Contract Id: %s State: %s",
-                    contractModel.getId(),
-                    newContractState.name()));
-        }
-
+        // TODO: loop through donations for the contract and either void or capture payPalPayments when the contract
+        // transitions to a "payable" state
+        contractModel.setContractState(newContractState);
         contractModelRepository.save(contractModel);
     }
 }

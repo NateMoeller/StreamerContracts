@@ -47,14 +47,19 @@ public class ContractsApiController {
         final ContractModel contractModel = optionalContractModel.get();
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
 
-        final boolean voteRecordedSuccessfully = voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
-        if (voteRecordedSuccessfully) {
-            final Optional<VoteModel> optionalProposerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-            final Optional<VoteModel> optionalStreamerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-            if(voteService.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel)) {
-                final ContractState voteOutcome = voteService.getVoteOutcome(contractModel);
-                contractService.setContractState(contractModel, voteOutcome);
-            }
+        // TODO: Need to catch the exception here if voting on the contract fails
+        voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
+        final Optional<VoteModel> optionalProposerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
+        final Optional<VoteModel> optionalStreamerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
+        final VoteModel proposerVote = optionalProposerVote.isPresent() ? optionalProposerVote.get() : null;
+        final VoteModel streamerVote = optionalStreamerVote.isPresent() ? optionalStreamerVote.get() : null;
+
+        // TODO: Propagate back to front end that voting on a contract you've already voted on is not
+        // allowed
+        if(voteService.isVotingComplete(proposerVote, streamerVote, contractModel)) {
+            final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contractModel);
+            contractModel.setContractState(voteOutcome);
+            contractService.setContractState(contractModel, voteOutcome);
         }
 
         return new ResponseEntity(HttpStatus.OK);

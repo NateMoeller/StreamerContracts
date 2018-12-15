@@ -40,25 +40,63 @@ public class ContractModel {
 
     private String description;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp proposedAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp acceptedAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp declinedAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp settlesAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp expiredAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp completedAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp failedAt;
 
+    @Setter(AccessLevel.NONE)
     private Timestamp disputedAt;
 
     private boolean isCommunityContract;
 
-    private String state;
+    @Setter(AccessLevel.NONE)
+    private ContractState state;
 
-    private String devnote;
+    private String devNote;
+
+    public void setContractState(final ContractState newContractState) {
+        state = newContractState;
+        final Timestamp transitionTimestamp = new Timestamp(System.currentTimeMillis());
+        switch (newContractState) {
+            case ACCEPTED:
+                acceptedAt = transitionTimestamp;
+                break;
+            case DECLINED:
+                declinedAt = transitionTimestamp;
+                break;
+            case EXPIRED:
+                expiredAt = transitionTimestamp;
+                break;
+            case COMPLETED:
+                completedAt = transitionTimestamp;
+                break;
+            case FAILED:
+                failedAt = transitionTimestamp;
+                break;
+            case DISPUTED:
+                disputedAt = transitionTimestamp;
+                break;
+            default:
+                throw new IllegalStateException(String.format("Error. Attempting to transition a contract to an invalid state. Contract Id: %s State: %s",
+                        id,
+                        newContractState.name()));
+        }
+    }
 }

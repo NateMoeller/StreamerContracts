@@ -15,31 +15,34 @@ public interface VoteService {
      * @param voter User that voted on this contract
      * @param contract Contract user has voted on
      * @param flaggedCompleted indicates if the user considered the contract completed or not
-     * @return Returns true if the vote was successfully recorded.
      */
-    boolean recordVote(UserModel voter, ContractModel contract, boolean flaggedCompleted);
+    void recordVote(UserModel voter, ContractModel contract, boolean flaggedCompleted);
 
     /**
      * Checks if voting is complete for the given contract. Voting being complete is independent of the contract
      * completing.
      *
-     * @param optionalProposerVote The proposers vote.
-     * @param optionalStreamerVote The streamers vote.
+     * @param proposerVote The proposers vote.
+     * @param streamerVote The streamers vote.
      * @param contract contract to check
      * @return true if voting is complete enough to distribute contract donations. False otherwise
      */
-    boolean isVotingComplete(Optional<VoteModel> optionalProposerVote,
-                             Optional<VoteModel> optionalStreamerVote,
+    boolean isVotingComplete(VoteModel proposerVote,
+                             VoteModel streamerVote,
                              ContractModel contract);
 
     /**
      * Looks at all votes for a given contract and returns the outcome of those votes. See implementation for what
      * defines each vote outcome.
      *
+     * @param proposerVote The proposers vote.
+     * @param streamerVote The streamers vote.
      * @param contract contract to check
      * @return Returns the state the contract should transition to.
      */
-    ContractState getVoteOutcome(ContractModel contract);
+    ContractState getVoteOutcome(VoteModel proposerVote,
+                                 VoteModel streamerVote,
+                                 ContractModel contract);
 
     /**
      * Gets a vote for a given contract id and user id.

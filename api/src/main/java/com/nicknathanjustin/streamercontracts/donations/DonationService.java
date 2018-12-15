@@ -32,11 +32,11 @@ public interface DonationService {
     Optional<DonationModel> getDonation(UUID donationId);
 
     /**
-     * Gets a paged DonationDto result.
+     * Gets a paged OpenDonationDto result.
      *
      * @param donatorId Filter open donations to only include those created by the supplied donatorId
      * @param pageable identifies the page number and pagesize to retrieve
-     * @return A paged DonationDto result
+     * @return A paged OpenDonationDto result
      */
     Page<OpenDonationDto> listDonationsForAcceptedContracts(UUID donatorId, Pageable pageable);
 }

@@ -17,8 +17,6 @@ import java.util.Calendar;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,8 +25,8 @@ public class VoteServiceImplTest {
 
     private static final UUID PROPOSER_ID = UUID.randomUUID();
     private static final UUID STREAMER_ID = UUID.randomUUID();
-    // Subtract 1000ms from timestamp to address potential race conditions
-    private static final Timestamp SETTLE_CONTRACT_TIME_STAMP = new Timestamp(System.currentTimeMillis() - 1000);
+    // Subtract 10000ms from timestamp to address potential race conditions
+    private static final Timestamp SETTLE_CONTRACT_TIMESTAMP = new Timestamp(System.currentTimeMillis() - 10000);
 
     @Mock private VoteModelRepository mockVoteModelRepository;
     @InjectMocks private VoteServiceImpl voteServiceImpl;
@@ -50,99 +48,94 @@ public class VoteServiceImplTest {
 
     @Test(expected = NullPointerException.class)
     public void isVotingComplete_nullContractModel_throwsException() {
-        Optional<VoteModel> optionalProposerVote = Optional.empty();
-        Optional<VoteModel> optionalStreamerVote = Optional.empty();
-        voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, null);
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.isVotingComplete(proposerVote, streamerVote, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void getVoteOutcome_nullContractModel_throwsException() {
-        voteServiceImpl.getVoteOutcome(null);
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.getVoteOutcome( proposerVote, streamerVote, null);
     }
 
-    @Test
-    public void recordVote_contractNotAccepted_returnsFalse() {
-        boolean voteSucceeded = voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
-                createContractModel(getValidContractModelBuilder().state(ContractState.OPEN.name()),
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_contractIsOpen_throwsException() {
+        voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
+                createContractModel(getValidContractModelBuilder().state(ContractState.OPEN),
                         createUserModel(PROPOSER_ID),
                         createUserModel(STREAMER_ID)),
                 true);
-        Assert.assertFalse(voteSucceeded);
     }
 
-    @Test
-    public void recordVote_contractIsCompleted_returnsFalse() {
-        boolean voteSucceeded = voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_contractIsCompleted_throwsException() {
+        voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
                 createContractModel(
-                        getValidContractModelBuilder().state(ContractState.COMPLETED.name()),
+                        getValidContractModelBuilder().state(ContractState.COMPLETED),
                         createUserModel(PROPOSER_ID),
                         createUserModel(STREAMER_ID)),
                 true);
-        Assert.assertFalse(voteSucceeded);
     }
 
-    @Test
-    public void recordVote_contractIsPastSettlesTimestamp_returnsFalse() {
-        boolean voteSucceeded = voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_contractIsPastSettlesTimestamp_throwsException() {
+        voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
                 createContractModel(
-                        getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+                        getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                         createUserModel(PROPOSER_ID),
                         createUserModel(STREAMER_ID)),
                         true);
-        Assert.assertFalse(voteSucceeded);
     }
 
-    @Test
-    public void isVotingComplete_contractIsCommunityContract_returnsFalse() {
+    @Test(expected = IllegalStateException.class)
+    public void isVotingComplete_contractIsCommunityContract_throwsException() {
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder().isCommunityContract(true),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID)
         );
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-
-        boolean voteComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
-        Assert.assertFalse(voteComplete);
+        voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
     }
 
-    @Test
-    public void isVotingComplete_contractNotAccepted_returnsFalse() {
+    @Test(expected = IllegalStateException.class)
+    public void isVotingComplete_contractIsOpen_throwsException() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().state(ContractState.OPEN.name()),
+                getValidContractModelBuilder().state(ContractState.OPEN),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID)
         );
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-
-        boolean votingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
-        Assert.assertFalse(votingComplete);
+        voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
     }
 
-    @Test
-    public void isVotingComplete_contractIsCompleted_returnsFalse() {
+    @Test(expected = IllegalStateException.class)
+    public void isVotingComplete_contractIsCompleted_throwsException() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().state(ContractState.COMPLETED.name()),
+                getValidContractModelBuilder().state(ContractState.COMPLETED),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID)
         );
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        boolean votingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
-
-        Assert.assertFalse(votingComplete);
+        voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
     }
 
     @Test(expected = IllegalStateException.class)
     public void getVoteOutcome_contractIsCommunityContract_throwsException() {
-        voteServiceImpl.getVoteOutcome(createContractModel(
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
                 getValidContractModelBuilder().isCommunityContract(true),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
@@ -150,9 +143,12 @@ public class VoteServiceImplTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getVoteOutcome_contractNotAccepted_throwsException() {
-        voteServiceImpl.getVoteOutcome(createContractModel(
-                getValidContractModelBuilder().state(ContractState.OPEN.name()),
+    public void getVoteOutcome_contractIsOpen_throwsException() {
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
+                getValidContractModelBuilder().state(ContractState.OPEN),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
         );
@@ -160,8 +156,11 @@ public class VoteServiceImplTest {
 
     @Test(expected = IllegalStateException.class)
     public void getVoteOutcome_contractIsCompleted_throwsException() {
-        voteServiceImpl.getVoteOutcome(createContractModel(
-                getValidContractModelBuilder().state(ContractState.COMPLETED.name()),
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
+                getValidContractModelBuilder().state(ContractState.COMPLETED),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
         );
@@ -207,8 +206,8 @@ public class VoteServiceImplTest {
         Assert.assertEquals(flaggedCompleted, voteModel.isViewerFlaggedComplete());
     }
 
-    @Test
-    public void recordVote_voterIsNotProposerOrStreamer_noVoteRecorded() {
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_voterIsNotProposerOrStreamer_throwsException() {
         final UserModel voter = createUserModel(UUID.randomUUID());
 
         voteServiceImpl.recordVote(voter,
@@ -217,12 +216,10 @@ public class VoteServiceImplTest {
                         createUserModel(PROPOSER_ID),
                         createUserModel(STREAMER_ID)),
                 true);
-
-        verify(mockVoteModelRepository, never()).save(any());
     }
 
-    @Test
-    public void recordVote_voterIsProposerAndHasVotedBefore_noVoteRecorded() {
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_voterIsProposerAndHasVotedBefore_throwsException() {
         final UserModel voter = createUserModel(PROPOSER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
@@ -231,12 +228,10 @@ public class VoteServiceImplTest {
         when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), voter.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
 
         voteServiceImpl.recordVote(voter, contractModel, true);
-
-        verify(mockVoteModelRepository, never()).save(any());
     }
 
-    @Test
-    public void recordVote_voterIsStreamerAndHasVotedBefore_noVoteRecorded() {
+    @Test(expected = IllegalStateException.class)
+    public void recordVote_voterIsStreamerAndHasVotedBefore_throwsException() {
         final UserModel voter = createUserModel(STREAMER_ID);
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
@@ -245,8 +240,6 @@ public class VoteServiceImplTest {
         when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), voter.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
 
         voteServiceImpl.recordVote(voter, contractModel, true);
-
-        verify(mockVoteModelRepository, never()).save(any());
     }
 
     @Test
@@ -254,13 +247,10 @@ public class VoteServiceImplTest {
         final UserModel proposer = createUserModel(PROPOSER_ID);
         final UserModel streamer = createUserModel(STREAMER_ID);
         final ContractModel contractModel = createContractModel(getValidContractModelBuilder(), proposer, streamer);
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), proposer.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), streamer.getId())).thenReturn(Optional.of(VoteModel.builder().build()));
+        final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
+        final VoteModel streamerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
+        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
 
         Assert.assertTrue(isVotingComplete);
     }
@@ -271,12 +261,11 @@ public class VoteServiceImplTest {
             getValidContractModelBuilder(),
             createUserModel(PROPOSER_ID),
             createUserModel(STREAMER_ID));
-        setUpProposerVote(contractModel, true);
+        contractModel.setContractState(ContractState.ACCEPTED);
+        final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
+        final VoteModel streamerVote = null;
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
+        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
 
         Assert.assertTrue(isVotingComplete);
     }
@@ -287,12 +276,10 @@ public class VoteServiceImplTest {
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpStreamerVote(contractModel, false);
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(false).build();
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
+        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
 
         Assert.assertTrue(isVotingComplete);
     }
@@ -300,14 +287,13 @@ public class VoteServiceImplTest {
     @Test
     public void isVotingComplete_contractHasExpired_returnsTrue() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
 
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
-        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
+        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
 
         Assert.assertTrue(isVotingComplete);
     }
@@ -318,23 +304,24 @@ public class VoteServiceImplTest {
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        final UUID contractId = contractModel.getId();
-        final Optional<VoteModel> optionalProposerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = voteServiceImpl.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId());
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
 
-        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(optionalProposerVote, optionalStreamerVote, contractModel);
+        final boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
 
         Assert.assertFalse(isVotingComplete);
     }
 
     @Test(expected = IllegalStateException.class)
     public void getVoteOutcome_votingNotComplete_throwsException() {
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
 
-        voteServiceImpl.getVoteOutcome(contractModel);
+        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
     }
 
     @Test
@@ -343,9 +330,10 @@ public class VoteServiceImplTest {
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpProposerVote(contractModel, true);
+        final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
+        final VoteModel streamerVote = null;
 
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(contractModel);
+        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
         Assert.assertEquals(ContractState.COMPLETED, voteOutcome);
     }
@@ -356,17 +344,21 @@ public class VoteServiceImplTest {
                 getValidContractModelBuilder(),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpStreamerVote(contractModel, false);
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(false).build();
 
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(contractModel);
+        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
         Assert.assertEquals(ContractState.FAILED, voteOutcome);
     }
 
     @Test
     public void getVoteOutcome_noVotesButContractWasAccepted_returnsCompleted() {
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(createContractModel(
-                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
+                getValidContractModelBuilder().state(ContractState.ACCEPTED).settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
         );
@@ -374,39 +366,43 @@ public class VoteServiceImplTest {
         Assert.assertEquals(ContractState.COMPLETED, voteOutcome);
     }
 
+    // TODO: This test will need to change when the expiration logic has been implemented
     @Test(expected = IllegalStateException.class)
-    public void getVoteOutcome_noVotesAndContractWasNotAccepted_throwsException() {
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(createContractModel(
-                getValidContractModelBuilder().state(ContractState.OPEN.name()).settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+    public void getVoteOutcome_noVotesAndContractIsOpen_throwsException() {
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = null;
+
+        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
+                getValidContractModelBuilder().state(ContractState.OPEN).settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
         );
-
-        Assert.assertEquals(ContractState.FAILED, voteOutcome);
     }
 
     @Test
-    public void getVoteOutcome_streamerDidNotVoteAndProposerDidNotMarkComplete_returnsFailed() {
+    public void getVoteOutcome_streamerDidNotVoteAndProposerMarkedFailed_returnsFailed() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpProposerVote(contractModel, false);
+        final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(false).build();
+        final VoteModel streamerVote = null;
 
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(contractModel);
+        ContractState contractState = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
-        Assert.assertEquals(ContractState.FAILED, voteOutcome);
+        Assert.assertEquals(contractState, ContractState.FAILED);
     }
 
     @Test
-    public void getVoteOutcome_proposerDidNotVoteAndStreamerDidNotMarkFailed_returnsCompleted() {
+    public void getVoteOutcome_proposerDidNotVoteAndStreamerMarkedCompleted_returnsCompleted() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpStreamerVote(contractModel, true);
+        final VoteModel proposerVote = null;
+        final VoteModel streamerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
 
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(contractModel);
+        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
         Assert.assertEquals(ContractState.COMPLETED, voteOutcome);
     }
@@ -414,13 +410,13 @@ public class VoteServiceImplTest {
     @Test
     public void getVoteOutcome_proposerAndStreamerDisagree_returnsDispute() {
         final ContractModel contractModel = createContractModel(
-                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIME_STAMP),
+                getValidContractModelBuilder().settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID));
-        setUpStreamerVote(contractModel, true);
-        setUpProposerVote(contractModel, false);
+        final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(false).build();
+        final VoteModel streamerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
 
-        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(contractModel);
+        final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
         Assert.assertEquals(ContractState.DISPUTED, voteOutcome);
     }
@@ -440,7 +436,7 @@ public class VoteServiceImplTest {
 
         return ContractModel.builder()
                 .settlesAt(settlesTimestamp)
-                .state(ContractState.ACCEPTED.name())
+                .state(ContractState.ACCEPTED)
                 .isCommunityContract(false);
     }
 
@@ -452,15 +448,5 @@ public class VoteServiceImplTest {
                 .streamer(streamer)
                 .id(UUID.randomUUID())
                 .build();
-    }
-
-    private void setUpProposerVote(@NonNull final ContractModel contractModel, final boolean flaggedCompleted) {
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), PROPOSER_ID))
-                .thenReturn(Optional.of(VoteModel.builder().viewerFlaggedComplete(flaggedCompleted).build()));
-    }
-
-    private void setUpStreamerVote(@NonNull final ContractModel contractModel, final boolean flaggedCompleted) {
-        when(mockVoteModelRepository.findByContractIdAndVoterId(contractModel.getId(), STREAMER_ID))
-                .thenReturn(Optional.of(VoteModel.builder().viewerFlaggedComplete(flaggedCompleted).build()));
     }
 }

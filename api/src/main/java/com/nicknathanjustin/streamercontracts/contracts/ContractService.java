@@ -35,7 +35,8 @@ public interface ContractService {
 
 
     /**
-     * Changes the state of a contract.
+     * Changes the state of a contract. All contract state transitions are expected to use this function.
+     * Do not explicitly set the state.
      *
      * @param contractModel contract to settle payment for
      * @param newContractState The new contract state after the result of a vote.

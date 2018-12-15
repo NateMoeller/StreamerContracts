@@ -1,12 +1,16 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 
+import java.util.Optional;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -20,8 +24,12 @@ public class ExpiredContractsSqsHandler {
     public void settleAndExpireContracts(@NonNull final Object message) {
         final Set<ContractModel> settleableContracts = contractService.getSettleableContracts();
         settleableContracts.forEach(contract -> {
+            final Optional<VoteModel> optionalProposerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getProposer().getId());
+            final Optional<VoteModel> optionalStreamerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getStreamer().getId());
+            final VoteModel proposerVote = optionalProposerVote.isPresent() ? optionalProposerVote.get() : null;
+            final VoteModel streamerVote = optionalStreamerVote.isPresent() ? optionalStreamerVote.get() : null;
             log.info("Settling payments for contract: {}", contract.getId());
-            final ContractState voteOutcome = voteService.getVoteOutcome(contract);
+            final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contract);
             contractService.setContractState(contract, voteOutcome);
         });
     }
