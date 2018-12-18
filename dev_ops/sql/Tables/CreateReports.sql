@@ -1,6 +1,7 @@
 CREATE TABLE reports (
 	id UUID PRIMARY KEY,
 	reporting_user_id UUID REFERENCES users (id),
+	reported_contract_id UUID REFERENCES contracts (id),
 	report VARCHAR(2048) NOT NULL,
 	contact_email VARCHAR(256) NOT NULL,
 	dev_notes VARCHAR(2048),

@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.reports;
 
+import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,9 @@ public class ReportModel {
 
     @OneToOne
     private UserModel reportingUser;
+
+    @OneToOne
+    private ContractModel reportedContract;
 
     private String report;
 
