@@ -38,5 +38,5 @@ public interface DonationService {
      * @param pageable identifies the page number and pagesize to retrieve
      * @return A paged OpenDonationDto result
      */
-    Page<OpenDonationDto> listOpenDonations(UUID donatorId, Pageable pageable);
+    Page<OpenDonationDto> listDonationsForAcceptedContracts(UUID donatorId, Pageable pageable);
 }

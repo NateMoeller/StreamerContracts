@@ -3,7 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
-import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,6 +42,8 @@ public class ContractsApiControllerTest {
             .contractId(CONTRACT_ID)
             .flagCompleted(FLAG_COMPLETED)
             .build();
+    private static final UUID PROPOSER_ID = UUID.randomUUID();
+    private static final UUID STREAMER_ID = UUID.randomUUID();
 
     @Mock private ContractService mockContractService;
     @Mock private UserService mockUserService;
@@ -70,10 +72,12 @@ public class ContractsApiControllerTest {
     @Test
     public void voteOnContract_validInput_returnsOk() {
         final UserModel userModel = UserModel.builder().build();
-        final ContractModel contractModel = ContractModel.builder().build();
+        final ContractModel contractModel = ContractModel.builder()
+                .proposer(UserModel.builder().id(PROPOSER_ID).build())
+                .streamer(UserModel.builder().id(STREAMER_ID).build())
+                .build();
         when(mockUserService.getUserFromAuthContext(AUTHENTICATION)).thenReturn(userModel);
         when(mockContractService.getContract(CONTRACT_ID)).thenReturn(Optional.of(contractModel));
-        when(mockVoteService.isVotingComplete(contractModel)).thenReturn(false);
 
         final ResponseEntity response = contractsApiController.voteOnContract(CONTRACT_VOTE_REQUEST, AUTHENTICATION);
 
@@ -82,19 +86,24 @@ public class ContractsApiControllerTest {
     }
 
     @Test
-    public void voteOnContract_validInputAndVotingIsComplete_settlesContractPaymentsAndReturnsOk() {
+    public void voteOnContract_validInputAndVotingIsComplete_setsContractPaymentsAndReturnsOk() {
         final UserModel userModel = UserModel.builder().build();
-        final ContractModel contractModel = ContractModel.builder().build();
-        final VoteOutcome voteOutcome = VoteOutcome.COMPLETED;
+        final ContractModel contractModel = ContractModel.builder()
+                .proposer(UserModel.builder().id(PROPOSER_ID).build())
+                .streamer(UserModel.builder().id(STREAMER_ID).build())
+                .build();
+        final ContractState voteOutcome = ContractState.COMPLETED;
+        final VoteModel proposerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId()).orElse(null);
+        final VoteModel streamerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId()).orElse(null);
         when(mockUserService.getUserFromAuthContext(AUTHENTICATION)).thenReturn(userModel);
         when(mockContractService.getContract(CONTRACT_ID)).thenReturn(Optional.of(contractModel));
-        when(mockVoteService.isVotingComplete(contractModel)).thenReturn(true);
-        when(mockVoteService.getVoteOutcome(contractModel)).thenReturn(voteOutcome);
+        when(mockVoteService.isVotingComplete(proposerVote, streamerVote, contractModel)).thenReturn(true);
+        when(mockVoteService.getVoteOutcome(proposerVote, streamerVote, contractModel)).thenReturn(voteOutcome);
 
         final ResponseEntity response = contractsApiController.voteOnContract(CONTRACT_VOTE_REQUEST, AUTHENTICATION);
 
         verify(mockVoteService).recordVote(userModel, contractModel, FLAG_COMPLETED);
-        verify(mockContractService).settlePayments(contractModel, voteOutcome.isPayStreamer());
+        verify(mockContractService).setContractState(contractModel, voteOutcome);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

@@ -1,7 +1,11 @@
 package com.nicknathanjustin.streamercontracts.votes;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public interface VoteService {
 
@@ -18,17 +22,34 @@ public interface VoteService {
      * Checks if voting is complete for the given contract. Voting being complete is independent of the contract
      * completing.
      *
+     * @param proposerVote The proposers vote.
+     * @param streamerVote The streamers vote.
      * @param contract contract to check
      * @return true if voting is complete enough to distribute contract donations. False otherwise
      */
-    boolean isVotingComplete(ContractModel contract);
+    boolean isVotingComplete(VoteModel proposerVote,
+                             VoteModel streamerVote,
+                             ContractModel contract);
 
     /**
      * Looks at all votes for a given contract and returns the outcome of those votes. See implementation for what
      * defines each vote outcome.
      *
+     * @param proposerVote The proposers vote.
+     * @param streamerVote The streamers vote.
      * @param contract contract to check
-     * @return VoteOutcome indicating the the result of all available votes for the given contract
+     * @return Returns the state the contract should transition to.
      */
-    VoteOutcome getVoteOutcome(ContractModel contract);
+    ContractState getVoteOutcome(VoteModel proposerVote,
+                                 VoteModel streamerVote,
+                                 ContractModel contract);
+
+    /**
+     * Gets a vote for a given contract id and user id.
+     *
+     * @param contractId The contract id associated with the vote.
+     * @param userId The user id associated with the vote.
+     * @return Returns an optional Vote.
+     */
+    Optional<VoteModel> getVoteByContractIdAndVoterId(UUID contractId, UUID userId);
 }

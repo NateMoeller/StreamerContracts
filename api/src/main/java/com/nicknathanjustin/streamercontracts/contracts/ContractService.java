@@ -19,11 +19,11 @@ public interface ContractService {
     ContractModel createContract(UserModel proposer, UserModel streamer, String game, String description);
 
     /**
-     * Gets all expired contracts.
+     * Gets all setteable contracts.
      *
-     * @return a set of all expired contracts
+     * @return a set of all settleable contracts
      */
-    Set<ContractModel> getExpiredContracts();
+    Set<ContractModel> getSettleableContracts();
 
     /**
      * Gets a contract for the given ID
@@ -35,11 +35,11 @@ public interface ContractService {
 
 
     /**
-     * Loop through all donations for a contract and either void or capture those payments
+     * Changes the state of a contract. All contract state transitions are expected to use this function.
+     * Do not explicitly set the state.
      *
      * @param contractModel contract to settle payment for
-     * @param shouldReleasePayments flag indicating if payments should be released to the streamer. If false the payment
-     *                              Is voided and never leaves the donator's account.
+     * @param newContractState The new contract state after the result of a vote.
      */
-    void settlePayments(ContractModel contractModel, boolean shouldReleasePayments);
+    void setContractState(ContractModel contractModel, ContractState newContractState);
 }

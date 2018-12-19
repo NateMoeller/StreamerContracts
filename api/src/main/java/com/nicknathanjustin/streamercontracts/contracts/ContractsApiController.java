@@ -3,7 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
-import com.nicknathanjustin.streamercontracts.votes.VoteOutcome;
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +47,16 @@ public class ContractsApiController {
         final ContractModel contractModel = optionalContractModel.get();
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
 
+        // TODO: Need to catch the exception here if voting on the contract fails
         voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
-        if(voteService.isVotingComplete(contractModel)) {
-            final VoteOutcome voteOutcome = voteService.getVoteOutcome(contractModel);
-            contractService.settlePayments(contractModel, voteOutcome.isPayStreamer());
+        final VoteModel proposerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId()).orElse(null);
+        final VoteModel streamerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId()).orElse(null);
+
+        // TODO: Propagate back to front end that voting on a contract you've already voted on is not
+        // allowed
+        if(voteService.isVotingComplete(proposerVote, streamerVote, contractModel)) {
+            final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contractModel);
+            contractService.setContractState(contractModel, voteOutcome);
         }
 
         return new ResponseEntity(HttpStatus.OK);

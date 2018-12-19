@@ -24,7 +24,7 @@ public class ContractServiceImpl implements ContractService {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(creationTimestamp);
         calendar.add(Calendar.DAY_OF_WEEK, PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS);
-        final Timestamp expiresTimestamp = new Timestamp(calendar.getTime().getTime());
+        final Timestamp settlesTimestamp = new Timestamp(calendar.getTime().getTime());
 
         return contractModelRepository.save(ContractModel.builder()
                 .proposer(proposer)
@@ -32,18 +32,22 @@ public class ContractServiceImpl implements ContractService {
                 .game(game)
                 .description(description)
                 .proposedAt(creationTimestamp)
-                .expiresAt(expiresTimestamp)
                 .acceptedAt(null)
+                .declinedAt(null)
+                .settlesAt(settlesTimestamp)
+                .expiredAt(null)
                 .completedAt(null)
-                .isAccepted(false)
-                .isCompleted(false)
+                .failedAt(null)
+                .disputedAt(null)
                 .isCommunityContract(false)
+                .state(ContractState.OPEN)
+                .devNote(null)
                 .build());
     }
 
     @Override
-    public Set<ContractModel> getExpiredContracts() {
-        return contractModelRepository.findAllExpiredContracts(new Timestamp(System.currentTimeMillis()));
+    public Set<ContractModel> getSettleableContracts() {
+        return contractModelRepository.findAllSettleableContracts(new Timestamp(System.currentTimeMillis()));
     }
 
     @Override
@@ -52,10 +56,10 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void settlePayments(@NonNull final ContractModel contractModel, final boolean shouldReleasePayments) {
-        //TODO: loop through donations for the contract and either void or capture payPalPayments
-        contractModel.setIsCompleted(shouldReleasePayments);
-        contractModel.setCompletedAt(new Timestamp(System.currentTimeMillis()));
+    public void setContractState(@NonNull final ContractModel contractModel, final ContractState newContractState) {
+        // TODO: loop through donations for the contract and either void or capture payPalPayments when the contract
+        // transitions to a "payable" state
+        contractModel.setContractState(newContractState);
         contractModelRepository.save(contractModel);
     }
 }
