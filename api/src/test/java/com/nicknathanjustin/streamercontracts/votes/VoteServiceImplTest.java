@@ -25,8 +25,8 @@ public class VoteServiceImplTest {
 
     private static final UUID PROPOSER_ID = UUID.randomUUID();
     private static final UUID STREAMER_ID = UUID.randomUUID();
-    // Subtract 10000ms from timestamp to address potential race conditions
-    private static final Timestamp SETTLE_CONTRACT_TIMESTAMP = new Timestamp(System.currentTimeMillis() - 10000);
+    // Subtract 1000ms from timestamp to address potential race conditions
+    private static final Timestamp SETTLE_CONTRACT_TIMESTAMP = new Timestamp(System.currentTimeMillis() - 1000);
 
     @Mock private VoteModelRepository mockVoteModelRepository;
     @InjectMocks private VoteServiceImpl voteServiceImpl;
@@ -388,7 +388,7 @@ public class VoteServiceImplTest {
         final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(false).build();
         final VoteModel streamerVote = null;
 
-        ContractState contractState = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
+        final ContractState contractState = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, contractModel);
 
         Assert.assertEquals(contractState, ContractState.FAILED);
     }

@@ -93,10 +93,8 @@ public class ContractsApiControllerTest {
                 .streamer(UserModel.builder().id(STREAMER_ID).build())
                 .build();
         final ContractState voteOutcome = ContractState.COMPLETED;
-        final Optional<VoteModel> optionalProposerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId());
-        final Optional<VoteModel> optionalStreamerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId());
-        final VoteModel proposerVote = optionalProposerVote.isPresent() ? optionalProposerVote.get() : null;
-        final VoteModel streamerVote = optionalStreamerVote.isPresent() ? optionalStreamerVote.get() : null;
+        final VoteModel proposerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getProposer().getId()).orElse(null);
+        final VoteModel streamerVote = mockVoteService.getVoteByContractIdAndVoterId(contractModel.getId(), contractModel.getStreamer().getId()).orElse(null);
         when(mockUserService.getUserFromAuthContext(AUTHENTICATION)).thenReturn(userModel);
         when(mockContractService.getContract(CONTRACT_ID)).thenReturn(Optional.of(contractModel));
         when(mockVoteService.isVotingComplete(proposerVote, streamerVote, contractModel)).thenReturn(true);

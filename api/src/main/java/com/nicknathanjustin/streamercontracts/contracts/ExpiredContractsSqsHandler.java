@@ -24,10 +24,8 @@ public class ExpiredContractsSqsHandler {
     public void settleAndExpireContracts(@NonNull final Object message) {
         final Set<ContractModel> settleableContracts = contractService.getSettleableContracts();
         settleableContracts.forEach(contract -> {
-            final Optional<VoteModel> optionalProposerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getProposer().getId());
-            final Optional<VoteModel> optionalStreamerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getStreamer().getId());
-            final VoteModel proposerVote = optionalProposerVote.isPresent() ? optionalProposerVote.get() : null;
-            final VoteModel streamerVote = optionalStreamerVote.isPresent() ? optionalStreamerVote.get() : null;
+            final VoteModel proposerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getProposer().getId()).orElse(null);
+            final VoteModel streamerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getStreamer().getId()).orElse(null);
             log.info("Settling payments for contract: {}", contract.getId());
             final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contract);
             contractService.setContractState(contract, voteOutcome);
