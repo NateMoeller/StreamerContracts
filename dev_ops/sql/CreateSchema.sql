@@ -9,4 +9,5 @@ BEGIN;
 \i 'dev_ops/sql/Tables/CreateFeaturedContracts.sql'
 \i 'dev_ops/sql/Tables/CreateEmails.sql'
 \i 'dev_ops/sql/Tables/CreateUserSettings.sql'
+\i 'dev_ops/sql/Tables/CreateReports.sql'
 COMMIT;
