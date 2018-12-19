@@ -37,7 +37,7 @@ BEGIN
     FOR i in 1..numContracts LOOP
 	    random_user1 := (select id from users ORDER BY random() LIMIT 1);
 		random_user2 := (select id from users WHERE id != random_user1 ORDER BY random() LIMIT 1);
-		INSERT INTO contracts VALUES (uuid_generate_v1(), random_user1, random_user2, games[floor(random() * ((array_length(games, 1))-1+1) + 1)], descriptions[floor(random() * ((array_length(descriptions, 1))-1+1) + 1)], NOW(), NULL, NULL, NOW() + interval '3' day, NULL, NULL, NULL, NULL, false, 1, NULL);
+		INSERT INTO contracts VALUES (uuid_generate_v1(), random_user1, random_user2, games[floor(random() * ((array_length(games, 1))-1+1) + 1)], descriptions[floor(random() * ((array_length(descriptions, 1))-1+1) + 1)], NOW(), NULL, NULL, NOW() + interval '3' day, NULL, NULL, NULL, NULL, false, 0, NULL);
     END LOOP;
 END;
 

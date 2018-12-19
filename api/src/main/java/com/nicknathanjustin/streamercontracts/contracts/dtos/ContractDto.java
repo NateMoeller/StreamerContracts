@@ -2,7 +2,7 @@ package com.nicknathanjustin.streamercontracts.contracts.dtos;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.donations.DonationModel;
-import com.nicknathanjustin.streamercontracts.donations.OpenDonationDto;
+import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -29,11 +29,10 @@ public class ContractDto {
     private Timestamp disputedAt;
     private String streamerName;
     private String bountyOwnerName;
-    private List<OpenDonationDto> donations;
+    private List<DonationDto> donations;
 
     public ContractDto(
-            @NonNull final ContractModel contract,
-            @NonNull final BigDecimal contractTotal) {
+            @NonNull final ContractModel contract) {
         contractId = contract.getId();
         description = contract.getDescription();
         isCommunity = contract.isCommunityContract();
@@ -48,15 +47,17 @@ public class ContractDto {
         disputedAt = contract.getDisputedAt();
         streamerName = contract.getStreamer().getTwitchUsername();
         bountyOwnerName = contract.getProposer().getTwitchUsername();
-        contractAmount = contractTotal;
-        donations = new ArrayList<OpenDonationDto>();
-        // TODO: Remove the redundancy here
+        contractAmount = new BigDecimal(0);
+        donations = new ArrayList<DonationDto>();
         for (DonationModel donation : contract.getDonations()) {
-            donations.add(new OpenDonationDto(
-                    donation.getId(),
+            // TODO: This is so ugly and I hate it. We're re-computing a SUM when we could be just issuing a subquery
+            // We're doing it this way because I cant figure out how to issue a subquery in Hibernate and use
+            // Spring's pagination. Ugly, ugly, ugly.
+            contractAmount = contractAmount.add(donation.getDonationAmount());
+            donations.add(new DonationDto(
                     donation.getDonationAmount(),
-                    contract.getDescription(),
-                    contract.getStreamer().getTwitchUsername()));
+                    contract.getProposer().getTwitchUsername(),
+                    donation.getDonatedAt()));
         }
     }
 }

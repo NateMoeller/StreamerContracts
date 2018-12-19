@@ -9,6 +9,9 @@ import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -20,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -70,19 +71,100 @@ public class ContractsApiController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(path = "listBounties/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listContracts(
+    @RequestMapping(path = "listStreamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContractsForStreamer(
             @PathVariable final int page,
             @PathVariable final int pageSize,
-            @RequestParam("state") Optional<String> optionalState,
-            @RequestParam("username") Optional<String> optionalUsername) {
+            @RequestParam("state") final Optional<String> optionalState,
+            @RequestParam("username") final Optional<String> optionalUsername) {
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ContractDto> contracts = null;
+        final UserModel streamer = getUser(optionalUsername);
+        final ContractState state = getContractState(optionalState);
+        if (streamer != null && state != null) {
+            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable);
+        } else if (streamer != null) {
+            contracts = contractService.getContractsForStreamer(streamer, pageable);
+        } else if (state != null) {
+            contracts = contractService.getContractsForState(state, pageable);
+        } else {
+            contracts = contractService.getAllContracts(pageable);
+        }
 
-        // TODO: Make these optional
-        ContractState state = ContractState.OPEN;
-        String username = "TimTheTatman";
-        Optional<UserModel> optionalUser = userService.getUser(username);
-        UserModel tim = optionalUser.get();
-        Set<ContractDto> contracts = contractService.getContractsForUserAndState(tim, state);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok(contracts);
+    }
+
+    /*
+    @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContractsForDonator(
+            @Nullable final OAuth2Authentication authentication,
+            @PathVariable final int page,
+            @PathVariable final int pageSize,
+            @RequestParam("state") final Optional<String> optionalState) {
+        if (authentication == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+
+        final UserModel donator = userService.getUserFromAuthContext(authentication);
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ContractDto> contracts = null;
+        final ContractState state = getContractState(optionalState);
+        if (state != null) {
+            contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
+        } else {
+            contracts = contractService.getContractsForDonator(donator, pageable);
+        }
+
+        return ResponseEntity.ok(contracts);
+    }
+    */
+
+    @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContractsForDonator(
+            @PathVariable final int page,
+            @PathVariable final int pageSize,
+            @RequestParam("state") final Optional<String> optionalState,
+            @RequestParam("username") final Optional<String> optionalUsername) {
+        final UserModel donator = getUser(optionalUsername);
+        if (donator == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ContractDto> contracts = null;
+        final ContractState state = getContractState(optionalState);
+        if (state != null) {
+            contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
+        } else {
+            contracts = contractService.getContractsForDonator(donator, pageable);
+        }
+
+        return ResponseEntity.ok(contracts);
+    }
+
+    private ContractState getContractState(Optional<String> optionalState) {
+        if (optionalState.isPresent()) {
+            try {
+                return ContractState.valueOf(optionalState.get());
+            } catch (IllegalArgumentException e) {
+            }
+        }
+
+        return null;
+    }
+
+    private UserModel getUser(Optional<String> optionalUsername) {
+        if (optionalUsername.isPresent()) {
+            String username = optionalUsername.get();
+            Optional<UserModel> optionalUser = userService.getUser(username);
+            if (optionalUser.isPresent()) {
+                return optionalUser.get();
+            }
+
+            return null;
+        }
+
+        return null;
     }
 }

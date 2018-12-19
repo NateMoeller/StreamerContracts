@@ -2,7 +2,8 @@ package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
-import org.apache.http.annotation.Contract;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -48,9 +49,55 @@ public interface ContractService {
     /**
      * Gets all contracts in the given state for the given user.
      *
-     * @param user The user to retrieve contracts by.
+     * @param streamer The user to retrieve contracts by.
      * @param state The state to retrieve contracts by.
+     * @param pageable identifies the page number and pagesize to retrieve
      * @return a set of all contracts in the given state for the given user.
      */
-    Set<ContractDto> getContractsForUserAndState(UserModel user, ContractState state);
+    Page<ContractDto> getContractsForStreamerAndState(UserModel streamer, ContractState state, Pageable pageable);
+
+    /**
+     * Gets all contracts for the given user.
+     *
+     * @param streamer The user to retrieve contracts by.
+     * @param pageable identifies the page number and pagesize to retrieve
+     * @return a set of all contracts for the given user.
+     */
+    Page<ContractDto> getContractsForStreamer(UserModel streamer, Pageable pageable);
+
+    /** Gets all contracts in the given state.
+     *
+     * @param state The state to retrieve contracts by.
+     * @param pageable identifies the page number and pagesize to retrieve
+     * @return a set of all contracts in the given state for the given user.
+     */
+    Page<ContractDto> getContractsForState(ContractState state, Pageable pageable);
+
+    /** Gets all contracts.
+     *
+     * @param pageable identifies the page number and pagesize to retrieve
+     * @return all of the contracts.
+     */
+    Page<ContractDto> getAllContracts(Pageable pageable);
+
+    /**
+     * Gets all contracts where the contract contains a donation from the given proposer
+     * and is in the given state.
+     *
+     * @param donator The user to retrieve contracts by.
+     * @param state The state to retrieve contracts by.
+     * @param pageable identifies the page number and pagesize to retrieve
+     * @return all contracts where the contract contains a donation from the given proposer
+     * and is in the given state.
+     */
+    Page<ContractDto> getContractsForDonatorAndState(UserModel donator, ContractState state, Pageable pageable);
+
+    /**
+     * Gets all contracts where the contract contains a donation from the given proposer.
+     *
+     * @param donator The user to retrieve contracts by.
+     * @param pageable identifies the page number and pagesize to retrieve
+     * @return a set of all contracts in the given state for the given user.
+     */
+    Page<ContractDto> getContractsForDonator(UserModel donator, Pageable pageable);
 }

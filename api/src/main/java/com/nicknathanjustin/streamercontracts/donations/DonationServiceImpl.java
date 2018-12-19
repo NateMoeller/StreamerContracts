@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +37,5 @@ public class DonationServiceImpl implements  DonationService{
     @Override
     public Optional<DonationModel> getDonation(@NonNull final UUID donationId) {
         return donationModelRepository.findById(donationId);
-    }
-
-    @Override
-    public Page<OpenDonationDto> listDonationsForAcceptedContracts(@NonNull final UUID donatorId, @NonNull final Pageable pageable) {
-        return donationModelRepository.findAllDonationsForAcceptedContracts(
-                donatorId,
-                new Timestamp(System.currentTimeMillis()),
-                pageable
-        );
     }
 }

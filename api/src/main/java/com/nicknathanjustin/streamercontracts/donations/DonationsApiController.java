@@ -2,6 +2,7 @@ package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
+import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/donations")
@@ -56,20 +60,5 @@ public class DonationsApiController {
         final ContractModel contract = contractService.createContract(proposer, streamer, game, createDonationRequest.getBounty());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), createDonationRequest.getPayPalPaymentId());
         return new ResponseEntity(HttpStatus.OK);
-    }
-
-    // TODO: Change this endpoint so it takes the state of the contract as a parameter
-    @RequestMapping(path = "/listOpenDonations/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listAcceptedDonations(@Nullable final OAuth2Authentication authentication,
-                                        @PathVariable final int page,
-                                        @PathVariable final int pageSize) {
-        if (authentication == null) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
-
-        final Pageable pageable = PageRequest.of(page, pageSize);
-        final UserModel userModel = userService.getUserFromAuthContext(authentication);
-        final Page<OpenDonationDto> donationsWithAcceptedContracts = donationService.listDonationsForAcceptedContracts(userModel.getId(), pageable);
-        return ResponseEntity.ok(donationsWithAcceptedContracts);
     }
 }

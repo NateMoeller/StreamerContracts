@@ -1,6 +1,8 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
+import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,13 +32,4 @@ public interface DonationService {
      * @return An Optional<DonationModel> for the user.
      */
     Optional<DonationModel> getDonation(UUID donationId);
-
-    /**
-     * Gets a paged OpenDonationDto result.
-     *
-     * @param donatorId Filter open donations to only include those created by the supplied donatorId
-     * @param pageable identifies the page number and pagesize to retrieve
-     * @return A paged OpenDonationDto result
-     */
-    Page<OpenDonationDto> listDonationsForAcceptedContracts(UUID donatorId, Pageable pageable);
 }
