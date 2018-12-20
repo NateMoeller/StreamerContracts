@@ -2,7 +2,6 @@ package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
-import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
@@ -11,21 +10,12 @@ import com.paypal.api.payments.Payment;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/donations")

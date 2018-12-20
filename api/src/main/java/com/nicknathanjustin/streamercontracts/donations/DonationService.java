@@ -1,11 +1,7 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
-import com.nicknathanjustin.streamercontracts.contracts.ContractState;
-import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
