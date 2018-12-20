@@ -91,7 +91,6 @@ public class ContractsApiController {
         return ResponseEntity.ok(contracts);
     }
 
-    /*
     @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
     public ResponseEntity listContractsForDonator(
             @Nullable final OAuth2Authentication authentication,
@@ -102,32 +101,7 @@ public class ContractsApiController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-
         final UserModel donator = userService.getUserFromAuthContext(authentication);
-        final Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ContractDto> contracts = null;
-        final ContractState state = getContractState(optionalState);
-        if (state != null) {
-            contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
-        } else {
-            contracts = contractService.getContractsForDonator(donator, pageable);
-        }
-
-        return ResponseEntity.ok(contracts);
-    }
-    */
-
-    @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listContractsForDonator(
-            @PathVariable final int page,
-            @PathVariable final int pageSize,
-            @RequestParam("state") final Optional<String> optionalState,
-            @RequestParam("username") final Optional<String> optionalUsername) {
-        final UserModel donator = getUser(optionalUsername);
-        if (donator == null) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
-
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<ContractDto> contracts = null;
         final ContractState state = getContractState(optionalState);
