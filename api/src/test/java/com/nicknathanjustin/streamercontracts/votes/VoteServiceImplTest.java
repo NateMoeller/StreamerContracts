@@ -25,6 +25,7 @@ public class VoteServiceImplTest {
 
     private static final UUID PROPOSER_ID = UUID.randomUUID();
     private static final UUID STREAMER_ID = UUID.randomUUID();
+
     // Subtract 1000ms from timestamp to address potential race conditions
     private static final Timestamp SETTLE_CONTRACT_TIMESTAMP = new Timestamp(System.currentTimeMillis() - 1000);
 

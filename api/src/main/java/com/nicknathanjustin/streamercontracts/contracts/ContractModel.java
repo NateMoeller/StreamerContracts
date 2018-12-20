@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.donations.DonationModel;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,9 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -70,6 +73,9 @@ public class ContractModel {
     private ContractState state;
 
     private String devNote;
+
+    @OneToMany(mappedBy = "contract")
+    private List<DonationModel> donations;
 
     public void setContractState(final ContractState newContractState) {
         state = newContractState;

@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
@@ -8,13 +9,18 @@ import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -60,5 +66,49 @@ public class ContractsApiController {
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "listStreamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContractsForStreamer(
+            @PathVariable final int page,
+            @PathVariable final int pageSize,
+            @RequestParam("state") @Nullable final ContractState state,
+            @RequestParam("username") @Nullable final String username) {
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ContractDto> contracts = null;
+        final UserModel streamer = userService.getUser(username).orElse(null);
+        if (streamer != null && state != null) {
+            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable);
+        } else if (streamer != null) {
+            contracts = contractService.getContractsForStreamer(streamer, pageable);
+        } else if (state != null) {
+            contracts = contractService.getContractsForState(state, pageable);
+        } else {
+            contracts = contractService.getAllContracts(pageable);
+        }
+
+        return ResponseEntity.ok(contracts);
+    }
+
+    @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listContractsForDonator(
+            @Nullable final OAuth2Authentication authentication,
+            @PathVariable final int page,
+            @PathVariable final int pageSize,
+            @RequestParam("state") @Nullable final ContractState state) {
+        if (authentication == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final UserModel donator = userService.getUserFromAuthContext(authentication);
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<ContractDto> contracts = null;
+        if (state != null) {
+            contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
+        } else {
+            contracts = contractService.getContractsForDonator(donator, pageable);
+        }
+
+        return ResponseEntity.ok(contracts);
     }
 }

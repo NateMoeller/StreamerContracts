@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 
-import java.util.Optional;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Slf4j
