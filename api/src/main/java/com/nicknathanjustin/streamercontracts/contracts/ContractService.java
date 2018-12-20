@@ -5,6 +5,7 @@ import com.nicknathanjustin.streamercontracts.users.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -111,4 +112,12 @@ public interface ContractService {
      * @return number of contracts in the given state.
      */
     long countByStateAndStreamer(ContractState state, UserModel streamer);
+
+    /**
+     * Gets the total amount of money earned for the streamer.
+     *
+     * @param streamer The user object.
+     * @return the total amount of money the streamer has earned.
+     */
+    BigDecimal getMoneyEarnedForStreamer(UserModel streamer);
 }

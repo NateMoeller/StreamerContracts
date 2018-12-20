@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Optional;
@@ -102,5 +103,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public long countByStateAndStreamer(@NonNull final ContractState state, @NonNull final UserModel streamer) {
         return contractModelRepository.countByStateAndStreamer(state, streamer);
+    }
+
+    @Override
+    public BigDecimal getMoneyEarnedForStreamer(UserModel streamer) {
+        return contractModelRepository.getMoneyEarnedForStreamer(streamer.getTwitchUsername());
     }
 }
