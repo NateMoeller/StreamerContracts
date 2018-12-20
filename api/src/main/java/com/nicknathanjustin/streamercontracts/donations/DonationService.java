@@ -13,11 +13,11 @@ public interface DonationService {
     /**
      * Creates the donation in the database.
      *
-     * @param  contractModel The contract entity donated to.
-     * @param  donator The donator user entity.
-     * @param  donationAmount The amount of money donated.
-     * @param  contractTimestamp The creation timestamp of the contract.
-     * @param  paypalPaymentId The paypal payment id of the transaction.
+     * @param contractModel The contract entity donated to.
+     * @param donator The donator user entity.
+     * @param donationAmount The amount of money donated.
+     * @param contractTimestamp The creation timestamp of the contract.
+     * @param paypalPaymentId The paypal payment id of the transaction.
      */
     void createDonation(ContractModel contractModel, UserModel donator, BigDecimal donationAmount, Timestamp contractTimestamp, String paypalPaymentId);
 

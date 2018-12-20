@@ -50,9 +50,9 @@ public class ContractDto {
         contractAmount = new BigDecimal(0);
         donations = new ArrayList<DonationDto>();
         for (DonationModel donation : contract.getDonations()) {
-            // TODO: This is so ugly and I hate it. We're re-computing a SUM when we could be just issuing a subquery
-            // We're doing it this way because I cant figure out how to issue a subquery in Hibernate and use
-            // Spring's pagination. Ugly, ugly, ugly.
+            // We're re-computing a SUM when we could be just issuing a subquery
+            // This is because it is difficult with Spring Pagination to issue a subquery.
+            // Since we already need to loop over the donations, we just sum up the donation total here.
             contractAmount = contractAmount.add(donation.getDonationAmount());
             donations.add(new DonationDto(
                     donation.getDonationAmount(),

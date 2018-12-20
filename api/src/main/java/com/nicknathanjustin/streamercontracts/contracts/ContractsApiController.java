@@ -72,12 +72,11 @@ public class ContractsApiController {
     public ResponseEntity listContractsForStreamer(
             @PathVariable final int page,
             @PathVariable final int pageSize,
-            @RequestParam("state") final Optional<String> optionalState,
-            @RequestParam("username") final Optional<String> optionalUsername) {
+            @RequestParam("state") @Nullable final ContractState state,
+            @RequestParam("username") @Nullable final String username) {
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<ContractDto> contracts = null;
-        final UserModel streamer = getUser(optionalUsername);
-        final ContractState state = getContractState(optionalState);
+        final UserModel streamer = userService.getUser(username).orElse(null);
         if (streamer != null && state != null) {
             contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable);
         } else if (streamer != null) {
@@ -96,7 +95,7 @@ public class ContractsApiController {
             @Nullable final OAuth2Authentication authentication,
             @PathVariable final int page,
             @PathVariable final int pageSize,
-            @RequestParam("state") final Optional<String> optionalState) {
+            @RequestParam("state") @Nullable final ContractState state) {
         if (authentication == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
@@ -104,7 +103,6 @@ public class ContractsApiController {
         final UserModel donator = userService.getUserFromAuthContext(authentication);
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<ContractDto> contracts = null;
-        final ContractState state = getContractState(optionalState);
         if (state != null) {
             contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
         } else {
@@ -112,30 +110,5 @@ public class ContractsApiController {
         }
 
         return ResponseEntity.ok(contracts);
-    }
-
-    private ContractState getContractState(Optional<String> optionalState) {
-        if (optionalState.isPresent()) {
-            try {
-                return ContractState.valueOf(optionalState.get());
-            } catch (IllegalArgumentException e) {
-            }
-        }
-
-        return null;
-    }
-
-    private UserModel getUser(Optional<String> optionalUsername) {
-        if (optionalUsername.isPresent()) {
-            String username = optionalUsername.get();
-            Optional<UserModel> optionalUser = userService.getUser(username);
-            if (optionalUser.isPresent()) {
-                return optionalUser.get();
-            }
-
-            return null;
-        }
-
-        return null;
     }
 }

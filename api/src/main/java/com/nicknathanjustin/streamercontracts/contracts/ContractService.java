@@ -65,7 +65,8 @@ public interface ContractService {
      */
     Page<ContractDto> getContractsForStreamer(UserModel streamer, Pageable pageable);
 
-    /** Gets all contracts in the given state.
+    /**
+     * Gets all contracts in the given state.
      *
      * @param state The state to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
@@ -73,7 +74,8 @@ public interface ContractService {
      */
     Page<ContractDto> getContractsForState(ContractState state, Pageable pageable);
 
-    /** Gets all contracts.
+    /**
+     * Gets all contracts.
      *
      * @param pageable identifies the page number and pagesize to retrieve
      * @return all of the contracts.
