@@ -106,7 +106,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public BigDecimal getMoneyEarnedForStreamer(UserModel streamer) {
-        return contractModelRepository.getMoneyEarnedForStreamer(streamer.getTwitchUsername());
+    public BigDecimal getMoneyForStreamerAndState(UserModel streamer, ContractState state) {
+        return contractModelRepository.getMoneyForStreamerAndState(streamer.getTwitchUsername(), state);
     }
 }

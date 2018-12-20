@@ -117,7 +117,8 @@ public interface ContractService {
      * Gets the total amount of money earned for the streamer.
      *
      * @param streamer The user object.
+     * @param state The state to retrieve the total money by.
      * @return the total amount of money the streamer has earned.
      */
-    BigDecimal getMoneyEarnedForStreamer(UserModel streamer);
+    BigDecimal getMoneyForStreamerAndState(UserModel streamer, ContractState state);
 }

@@ -45,7 +45,7 @@ public class UsersApiController {
         final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, userModel);
         final long failedContracts = contractService.countByStateAndStreamer(ContractState.FAILED, userModel);
         final long disputedContracts = contractService.countByStateAndStreamer(ContractState.DISPUTED, userModel);
-        final BigDecimal moneyEarned = contractService.getMoneyEarnedForStreamer(userModel);
+        final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(userModel, ContractState.COMPLETED);
         final PrivateUser privateUser = new PrivateUser(
                 twitchUser,
                 userModel,

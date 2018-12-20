@@ -62,6 +62,6 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
            "WHERE donationModel.donator.twitchUsername = :donator ")
     Page<ContractDto> findAllContractsForDonator(@Param("donator") String donator, Pageable pageable);
 
-    @Query("SELECT SUM(d.donationAmount) FROM DonationModel d WHERE d.contract.state = 4")
-    BigDecimal getMoneyEarnedForStreamer(@Param("streamer") String streamer);
+    @Query("SELECT SUM(d.donationAmount) FROM DonationModel d WHERE d.contract.state = :state AND d.contract.streamer.twitchUsername = :streamer")
+    BigDecimal getMoneyForStreamerAndState(@Param("streamer") String streamer, @Param("state") ContractState state);
 }
