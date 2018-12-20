@@ -68,7 +68,7 @@ public class ContractsApiController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping(path = "listStreamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    @RequestMapping(path = "streamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
     public ResponseEntity listContractsForStreamer(
             @PathVariable final int page,
             @PathVariable final int pageSize,
@@ -90,7 +90,7 @@ public class ContractsApiController {
         return ResponseEntity.ok(contracts);
     }
 
-    @RequestMapping(path = "listDonatorBounties/{page}/{pageSize}", method = RequestMethod.GET)
+    @RequestMapping(path = "donorBounties/{page}/{pageSize}", method = RequestMethod.GET)
     public ResponseEntity listContractsForDonator(
             @Nullable final OAuth2Authentication authentication,
             @PathVariable final int page,
@@ -100,15 +100,57 @@ public class ContractsApiController {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final UserModel donator = userService.getUserFromAuthContext(authentication);
+        final UserModel donor = userService.getUserFromAuthContext(authentication);
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<ContractDto> contracts = null;
         if (state != null) {
-            contracts = contractService.getContractsForDonatorAndState(donator, state, pageable);
+            contracts = contractService.getContractsForDonatorAndState(donor, state, pageable);
         } else {
-            contracts = contractService.getContractsForDonator(donator, pageable);
+            contracts = contractService.getContractsForDonator(donor, pageable);
         }
 
         return ResponseEntity.ok(contracts);
+    }
+
+    @RequestMapping(path = "accept", method = RequestMethod.PUT)
+    public ResponseEntity acceptContract(
+            @Nullable final OAuth2Authentication authentication,
+            @RequestBody @NonNull final UUID contractId) {
+        if (authentication == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
+        if (contractModel == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        if (!contractModel.getState().equals(ContractState.OPEN)) {
+            throw new IllegalStateException(String.format("Cannot accept a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
+        }
+
+        contractService.setContractState(contractModel, ContractState.ACCEPTED);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "decline", method = RequestMethod.PUT)
+    public ResponseEntity declineContract(
+            @Nullable final OAuth2Authentication authentication,
+            @RequestBody @NonNull final UUID contractId) {
+        if (authentication == null) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
+        if (contractModel == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        if (!contractModel.getState().equals(ContractState.OPEN)) {
+            throw new IllegalStateException(String.format("Cannot decline a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
+        }
+
+        contractService.setContractState(contractModel, ContractState.DECLINED);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

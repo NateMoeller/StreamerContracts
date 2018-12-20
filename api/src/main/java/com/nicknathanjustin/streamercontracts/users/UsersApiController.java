@@ -1,5 +1,7 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import com.nicknathanjustin.streamercontracts.contracts.ContractService;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.settings.UserSettingsModel;
 import com.nicknathanjustin.streamercontracts.settings.UserSettingsService;
 import com.nicknathanjustin.streamercontracts.users.dtos.PrivateUser;
@@ -25,6 +27,7 @@ public class UsersApiController {
     
     @NonNull private final UserService userService;
     @NonNull private final UserSettingsService userSettingsService;
+    @NonNull private final ContractService contractService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity privateUser(@Nullable final OAuth2Authentication authentication) {
@@ -34,7 +37,23 @@ public class UsersApiController {
 
         final TwitchUser twitchUser = userService.getTwitchUserFromAuthContext(authentication);
         final UserModel userModel = userService.getUserFromAuthContext(authentication);
-        final PrivateUser privateUser = new PrivateUser(twitchUser, userModel);
+        final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, userModel);
+        final long acceptedContracts = contractService.countByStateAndStreamer(ContractState.ACCEPTED, userModel);
+        final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, userModel);
+        final long expiredContracts = contractService.countByStateAndStreamer(ContractState.EXPIRED, userModel);
+        final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, userModel);
+        final long failedContracts = contractService.countByStateAndStreamer(ContractState.FAILED, userModel);
+        final long disputedContracts = contractService.countByStateAndStreamer(ContractState.DISPUTED, userModel);
+        final PrivateUser privateUser = new PrivateUser(
+                twitchUser,
+                userModel,
+                openContracts,
+                acceptedContracts,
+                declinedContracts,
+                expiredContracts,
+                completedContracts,
+                failedContracts,
+                disputedContracts);
         return ResponseEntity.ok(privateUser);
     }
 
