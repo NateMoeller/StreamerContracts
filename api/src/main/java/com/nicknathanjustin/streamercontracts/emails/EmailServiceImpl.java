@@ -4,10 +4,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
+
     @NonNull final EmailModelRepository emailModelRepository;
 
     @Override
