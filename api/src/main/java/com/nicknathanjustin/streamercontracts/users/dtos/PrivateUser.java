@@ -13,10 +13,40 @@ public class PrivateUser extends User{
 
     private final String alertChannelId;
 
-    public PrivateUser(@NonNull TwitchUser twitchUser, @NonNull UserModel userModel) {
+    private final long openContracts;
+
+    private final long acceptedContracts;
+
+    private final long declinedContracts;
+
+    private final long expiredContracts;
+
+    private final long completedContracts;
+
+    private final long failedContracts;
+
+    private final long disputedContracts;
+
+    public PrivateUser(
+            @NonNull final TwitchUser twitchUser,
+            @NonNull final UserModel userModel,
+            final long openContracts,
+            final long acceptedContracts,
+            final long declinedContracts,
+            final long expiredContracts,
+            final long completedContracts,
+            final long failedContracts,
+            final long disputedContracts) {
         super(twitchUser);
         this.alertChannelId = Hashing.sha256()
                 .hashString(userModel.getId().toString(), StandardCharsets.UTF_8)
                 .toString();
+        this.openContracts = openContracts;
+        this.acceptedContracts = acceptedContracts;
+        this.declinedContracts = declinedContracts;
+        this.expiredContracts = expiredContracts;
+        this.completedContracts = completedContracts;
+        this.failedContracts = failedContracts;
+        this.disputedContracts = disputedContracts;
     }
 }

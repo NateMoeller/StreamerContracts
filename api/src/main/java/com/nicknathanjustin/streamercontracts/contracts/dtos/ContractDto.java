@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts.dtos;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.donations.DonationModel;
 import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 public class ContractDto {
     private UUID contractId;
+    private ContractState state;
     private BigDecimal contractAmount;
     private String description;
     private boolean isCommunity;
@@ -34,6 +36,7 @@ public class ContractDto {
     public ContractDto(
             @NonNull final ContractModel contract) {
         contractId = contract.getId();
+        state = contract.getState();
         description = contract.getDescription();
         isCommunity = contract.isCommunityContract();
         game = contract.getGame();

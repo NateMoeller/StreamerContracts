@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.users.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,8 @@ import java.util.UUID;
 
 @Repository
 public interface ContractModelRepository extends CrudRepository<ContractModel, UUID> {
+
+    long countByStateAndStreamer(ContractState state, UserModel streamer);
 
     @Query("SELECT contractModel " +
            "FROM ContractModel contractModel " +
