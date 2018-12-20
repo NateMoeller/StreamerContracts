@@ -104,7 +104,7 @@ public interface ContractService {
     Page<ContractDto> getContractsForDonator(UserModel donator, Pageable pageable);
 
     /**
-     * Counts the contracts given the state.
+     * Counts the contracts given the state and the streamer.
      *
      * @param state The state to retrieve contracts by.
      * @param streamer The user to retrieve contracts by.
