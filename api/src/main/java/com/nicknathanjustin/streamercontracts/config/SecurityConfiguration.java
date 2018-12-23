@@ -25,6 +25,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${application.frontEndUrl}")
     private String frontEndUrl;
 
+    @Value("${twitch.frontEndUrls}")
+    private String[] twitchUrls;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -50,6 +53,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsFilter corsFilter() {
         final CorsConfiguration config = new CorsConfiguration();
+        for (String twitchUrl : twitchUrls) {
+            config.addAllowedOrigin(twitchUrl);
+        }
         config.addAllowedOrigin(frontEndUrl);
         config.addAllowedHeader("*");
         config.addAllowedMethod("GET");

@@ -2,7 +2,6 @@ package com.nicknathanjustin.streamercontracts.alerts;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,8 @@ import java.math.BigDecimal;
 @RequestMapping("/alert")
 @RequiredArgsConstructor
 public class AlertApiController {
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+
+    @NonNull final private SimpMessageSendingOperations messagingTemplate;
 
     @RequestMapping(method = RequestMethod.POST)
     public boolean testAlert(@NonNull @RequestBody final String alertChannelId) {

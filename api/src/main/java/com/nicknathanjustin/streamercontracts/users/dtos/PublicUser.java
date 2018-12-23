@@ -7,7 +7,7 @@ import lombok.Value;
 import org.springframework.lang.Nullable;
 
 @Value
-public class PublicUser extends User{
+public class PublicUser extends User {
 
     private final String payPalEmail;
 

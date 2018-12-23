@@ -1,8 +1,8 @@
 package com.nicknathanjustin.streamercontracts.users;
 
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public interface UserService {
@@ -30,28 +30,20 @@ public interface UserService {
     void login(UserModel user);
 
     /**
-     * Gets the TwitchUser object from Twitch API
+     * Returns a UserModel from a valid HttpRequest Object.
      *
-     * @param twitchUsername The username of the twitch user
-     * @return An Optional<TwitchUser> for the user
+     * @param httpServletRequest HttpRequest to get a user from.
+     * @return UserModel associated with the provided HttpRequest.
+     * @throws IllegalArgumentException thrown when no user is associated with the supplied request.
      */
-    Optional<TwitchUser> getTwitchUserFromUsername(String twitchUsername);
+    UserModel getUserModelFromRequest(HttpServletRequest httpServletRequest) throws IllegalArgumentException;
 
     /**
-     * Returns a UserModel from a valid OAuth2Authentication Object.
+     * Returns a TwitchUser from a valid HttpRequest Object.
      *
-     * @param authentication OAuth2Authentication for the signed in user.
-     * @return UserModel associated with the provided OAuth2Authentication.
-     * @throws IllegalArgumentException thrown when an invalid OAuth2Authentication is provided.
+     * @param httpServletRequest the HttpRequest to get a user from.
+     * @return TwitchUser associated with the provided HttpRequest.
+     * @throws IllegalArgumentException thrown when no user is associated with the supplied request.
      */
-    UserModel getUserFromAuthContext(OAuth2Authentication authentication) throws IllegalArgumentException;
-
-    /**
-     * Returns a TwitchUser from a valid OAuth2Authentication Object.
-     *
-     * @param authentication OAuth2Authentication for the signed in user.
-     * @return TwitchUser associated with the provided OAuth2Authentication.
-     * @throws IllegalArgumentException thrown when an invalid OAuth2Authentication is provided.
-     */
-    TwitchUser getTwitchUserFromAuthContext(OAuth2Authentication authentication) throws IllegalArgumentException;
+    TwitchUser getTwitchUserFromRequest(HttpServletRequest httpServletRequest);
 }

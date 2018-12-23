@@ -18,10 +18,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginApiController {
 
+    @NonNull private final LoginService loginService;
+
     @Value("${application.frontEndUrl}")
     private String frontEndUrl;
-
-    @NonNull private final LoginService loginService;
 
     @RequestMapping(method = RequestMethod.GET)
     public void ping(@NonNull final HttpServletRequest request,

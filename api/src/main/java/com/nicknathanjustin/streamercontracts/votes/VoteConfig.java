@@ -7,8 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class VoteConfig {
 
-    @Autowired
-    private VoteModelRepository voteModelRepository;
+    @Autowired private VoteModelRepository voteModelRepository;
 
     @Bean
     public VoteService voteService() {
