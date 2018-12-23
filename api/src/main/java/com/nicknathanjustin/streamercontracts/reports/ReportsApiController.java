@@ -40,7 +40,7 @@ public class ReportsApiController {
         final UUID reportedContractId = createReportRequest.getReportedContractId();
         final ContractModel reportedContract = reportedContractId != null ? contractService.getContract(reportedContractId).orElse(null) : null;
         if (reportedContract == null) {
-            log.warn("Received report for non existant contractID: {}", reportedContractId);
+            log.warn("Received report for non existent contractID: {}", reportedContractId);
         }
 
         reportService.createReport(reportingUser,
