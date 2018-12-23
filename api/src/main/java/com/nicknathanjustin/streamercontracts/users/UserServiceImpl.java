@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
         final Principal principal = httpServletRequest.getUserPrincipal();
         if (jwtToken != null) {
             return getTwitchUserFromJwtToken(jwtToken);
-        } else if (principal != null){
+        } else if (principal instanceof OAuth2Authentication){
             return getTwitchUserFromOAuth((OAuth2Authentication) principal);
         } else {
-            throw new IllegalArgumentException("No jwtToken or principal associated with httpServletRequest: " + httpServletRequest);
+            throw new IllegalArgumentException("No jwtToken or OAuth2Authentication associated with httpServletRequest: " + httpServletRequest);
         }
     }
 
