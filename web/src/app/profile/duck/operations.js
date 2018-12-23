@@ -39,22 +39,24 @@ const testAlert = (alertChannelId) => (dispatch) => {
   });
 };
 
-const voteBounty = (payload) => (dispatch) => {
+const voteBounty = (payload, callback = null) => (dispatch) => {
   dispatch(requestVoteBounty());
 
   RestClient.POST('bounties/vote', payload, (response) => {
     dispatch(receiveVoteBounty());
-    console.log(response);
+    if (callback) {
+      callback();
+    }
   }, (error) => {
     //TODO: handle error
     console.error(error);
   });
 }
 
-const listMyDonations = (page, pageSize) => (dispatch) => {
+const listDonorBounties = (page, pageSize) => (dispatch) => {
   dispatch(requestMyDonations());
 
-  RestClient.GET('donations/listDonations/' + page + '/' + pageSize, (response) => {
+  RestClient.GET('bounties/donorBounties/' + page + '/' + pageSize, (response) => {
     dispatch(receiveMyDonations(response.data));
   }, (error) => {
     //TODO: handle error
@@ -62,10 +64,10 @@ const listMyDonations = (page, pageSize) => (dispatch) => {
   });
 }
 
-const listMyBounties = (page, pageSize, username, state = null) => (dispatch) => {
+const listStreamerBounties = (page, pageSize, username, state = null) => (dispatch) => {
   dispatch(requestMyBounties());
 
-  let url = `bounties/listBounties/${page}/${pageSize}?username=${username}`;
+  let url = `bounties/streamerBounties/${page}/${pageSize}?username=${username}`;
   if (state) {
     url += `&state=${state}`;
   }
@@ -78,22 +80,29 @@ const listMyBounties = (page, pageSize, username, state = null) => (dispatch) =>
   })
 }
 
-const acceptBounty = (contractId) => (dispatch) => {
+const acceptBounty = (contractId, callback = null) => (dispatch) => {
   const payload = { contractId };
   dispatch(requestAcceptBounty());
 
-  RestClient.POST('bounties/accept', payload, (response) => {
+  RestClient.PUT('bounties/accept', payload, (response) => {
     dispatch(receiveAcceptBountySuccess());
+    if (callback) {
+      callback();
+    }
   }, (error) => {
     dispatch(receiveAcceptBountyFailure());
   })
 }
 
-const removeBounty = (contractId) => (dispatch) => {
+const removeBounty = (contractId, callback = null) => (dispatch) => {
+  const payload = { contractId };
   dispatch(requestRemoveBounty());
 
-  RestClient.DELETE(`bounties/remove/${contractId}`, (response) => {
+  RestClient.PUT('bounties/decline', payload, (response) => {
     dispatch(receiveRemoveBountySuccess());
+    if (callback) {
+      callback();
+    }
   }, (error) => {
     dispatch(receiveRemoveBountyFailure());
   })
@@ -103,8 +112,8 @@ export default {
   getUser,
   testAlert,
   voteBounty,
-  listMyDonations,
-  listMyBounties,
+  listDonorBounties,
+  listStreamerBounties,
   acceptBounty,
   removeBounty
 };

@@ -237,7 +237,7 @@ class DonateComponent extends Component {
                 </Row>
                 <Row>
                   <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>
-                    Open Challenge
+                    Open Bounty
                   </Button>
                 </Row>
               </form>

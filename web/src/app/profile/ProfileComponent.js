@@ -45,10 +45,9 @@ class ProfileComponent extends Component {
     return (
       <div>
         <PageHeader>My Profile</PageHeader>
-        <StatBox number={this.props.user.openBounties} label={'Bounties open'}/>
-        <StatBox number={this.props.user.completedBounties} label={'Bounties completed'}/>
-        <StatBox number={this.props.user.failedBounties} label={'Bounties failed'}/>
-        <StatBox number={`$${this.props.user.moneyEarned.toFixed(2)}`} label={'Money earned'}/>
+        <StatBox number={this.props.user.openContracts} label={'Bounties open'}/>
+        <StatBox number={this.props.user.completedContracts} label={'Bounties completed'}/>
+        <StatBox number={this.props.user.failedContracts} label={'Bounties failed'}/>
       </div>
     );
   }
@@ -61,7 +60,7 @@ class ProfileComponent extends Component {
           Bounties to Streamers
         </PageHeader>
         <DonationsComponent
-          listMyDonations={this.props.listMyDonations}
+          listDonorBounties={this.props.listDonorBounties}
           voteBounty={this.props.voteBounty}
           donations={this.props.donations}
           totalDonations={this.props.totalDonations}
@@ -79,7 +78,7 @@ class ProfileComponent extends Component {
         </PageHeader>
         <MyBountiesComponent
           twitchUserName={this.props.user.displayName}
-          listMyBounties={this.props.listMyBounties}
+          listStreamerBounties={this.props.listStreamerBounties}
           bounties={this.props.bounties}
           totalBounties={this.props.totalBounties}
           loading={this.props.showSpinner}
@@ -142,18 +141,11 @@ class ProfileComponent extends Component {
 ProfileComponent.propTypes = {
   user: PropTypes.object.isRequired,
   testAlert: PropTypes.func.isRequired,
-  listMyDonations: PropTypes.func.isRequired,
-  listMyBounties: PropTypes.func.isRequired,
+  listDonorBounties: PropTypes.func.isRequired,
+  listStreamerBounties: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired,
-  donations: PropTypes.arrayOf(
-    PropTypes.shape({
-      streamerName: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      donationAmount: PropTypes.number.isRequired,
-      donationId: PropTypes.string.isRequired
-    }).isRequired
-  ),
-  bounties: PropTypes.array.isRequired, // TODO: validate shape of bounties
+  donations: PropTypes.array.isRequired,
+  bounties: PropTypes.array.isRequired,
   totalBounties: PropTypes.number.isRequired,
   totalDonations: PropTypes.number.isRequired,
   showSpinner: PropTypes.bool.isRequired,

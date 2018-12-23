@@ -9,11 +9,9 @@ import { profileOperations } from './duck';
 
 /* global sessionStorage */
 class ProfileContainer extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const { getUser } = this.props;
-    if (!sessionStorage.getItem('user')) {
-      getUser();
-    }
+    getUser();
   }
 
   render() {
@@ -33,8 +31,8 @@ class ProfileContainer extends Component {
         user={user}
         testAlert={this.props.testAlert}
         alertChannelId={user.alertChannelId}
-        listMyDonations={this.props.listMyDonations}
-        listMyBounties={this.props.listMyBounties}
+        listDonorBounties={this.props.listDonorBounties}
+        listStreamerBounties={this.props.listStreamerBounties}
         voteBounty={this.props.voteBounty}
         bounties={this.props.profile.bounties}
         donations={this.props.profile.donations}
@@ -62,8 +60,8 @@ ProfileContainer.propTypes = {
   getUser: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  listMyDonations: PropTypes.func.isRequired,
-  listMyBounties: PropTypes.func.isRequired,
+  listDonatorBounties: PropTypes.func.isRequired,
+  listStreamerBounties: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired
 };
 

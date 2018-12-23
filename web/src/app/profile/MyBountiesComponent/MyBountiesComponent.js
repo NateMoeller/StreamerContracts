@@ -15,10 +15,14 @@ import {
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import BountyDetails from '../BountyDetails/BountyDetails';
+import cx from 'classnames';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
+import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from '../DonationsComponent/DonationsComponentStyles.scss';
+
+const pageSize = 10;
 
 class MyBountiesComponent extends Component {
   constructor(props) {
@@ -26,34 +30,61 @@ class MyBountiesComponent extends Component {
 
     this.state = {
       curBounty: null,
-      bountyFilter: 'open'
+      curPage: 1,
+      bountyFilter: OPEN
     };
   }
 
   componentDidMount() {
-    this.pageSize = 10;
-
-    this.props.listMyBounties(0, this.pageSize, this.props.twitchUserName, this.state.bountyFilter);
+    this.refreshList();
   }
 
-  pageChange = (page, sizePerPage) => {
-    this.props.listMyBounties(page, sizePerPage, this.props.twitchUserName, this.state.bountyFilter);
+  tableChange = (type, newState) => {
+    if (type === 'pagination') {
+      this.setState({
+        curPage: newState.page
+      }, () => {
+        this.props.listStreamerBounties(newState.page - 1, newState.sizePerPage, this.props.twitchUserName, this.state.bountyFilter);
+      });
+    }
   }
 
   getBounty = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.description} onClick={() => this.setCurBounty(row)}>{row.description}</div>
+      <div className={cx(styles.noOverflow, styles.description)} onClick={() => this.setCurBounty(row)}>{row.description}</div>
     );
 
     return cellWrapper;
   };
 
+  getName = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.noOverflow}>{row.bountyOwnerName}</div>
+    );
+
+    return cellWrapper;
+  }
+
+  getGame = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.noOverflow}>{row.game}</div>
+    );
+    return cellWrapper
+  }
+
+  getMoney = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={cx(styles.noOverflow, styles.money)}>${row.contractAmount.toFixed(2)}</div>
+    )
+    return cellWrapper;
+  }
+
   getAction = (cell, row, rowIndex, formatExtraData) => {
-    if (row.isCompleted) {
+    if (row.state === COMPLETED) {
       return this.getCompletedIcon();
-    } else if (row.isExpired) {
-      return this.getExpiredIcon();
-    } else if (row.isAccepted) {
+    } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
+      return this.getRemoveIcon(row);
+    } else if (row.state === ACCEPTED) {
       return this.getAcceptedDropdownMenu(row);
     }
 
@@ -74,10 +105,17 @@ class MyBountiesComponent extends Component {
     );
   }
 
-  getExpiredIcon() {
+  getRemoveIcon(bounty) {
+    let tooltipText = 'Bounty Declined';
+    if (bounty.state === EXPIRED) {
+      tooltipText = 'This bounty has expired';
+    } else if (bounty.state === FAILED) {
+      tooltipText = 'Bounty Failed';
+    }
+
     const tooltip = (
       <Tooltip id="tooltip">
-        This bounty has expired.
+        {tooltipText}
       </Tooltip>
     );
 
@@ -96,16 +134,16 @@ class MyBountiesComponent extends Component {
     const voteFailedPayload = {
       contractId: row.contractId,
       flagCompleted: false
-    }
+    };
 
     const completedPopover = (
       <Popover id="popover" title="Bounty completed?">
-        <Button bsStyle="success" onClick={() => this.props.voteBounty(voteCompletedPayload)}>I completed this bounty</Button>
+        <Button bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>I completed this bounty</Button>
       </Popover>
     );
     const failedPopover = (
       <Popover id="popover" title="Bounty Failed?">
-        <Button bsStyle="danger" onClick={() => this.props.voteBounty(voteFailedPayload)}>I did not complete this bounty</Button>
+        <Button bsStyle="danger" onClick={() => this.onVoteBounty(voteFailedPayload)}>I did not complete this bounty</Button>
       </Popover>
     );
 
@@ -144,12 +182,12 @@ class MyBountiesComponent extends Component {
     );
     const acceptPopover = (
       <Popover id="popover" title="Accept bounty?">
-        <Button bsStyle="success" onClick={() => this.props.acceptBounty(row.contractId)}>Accept bounty</Button>
+        <Button bsStyle="success" onClick={() => this.onAcceptBounty(row.contractId)}>Accept bounty</Button>
       </Popover>
     );
     const removePopover = (
-      <Popover id="popover" title="Remove bounty?">
-        <Button bsStyle="danger" onClick={() => this.props.removeBounty(row.contractId)}>Remove bounty</Button>
+      <Popover id="popover" title="Decline bounty?">
+        <Button bsStyle="danger" onClick={() => this.onDeclineBounty(row.contractId)}>Decline bounty</Button>
       </Popover>
     );
 
@@ -173,7 +211,7 @@ class MyBountiesComponent extends Component {
             <MenuItem eventKey="1">Accept bounty</MenuItem>
           </OverlayTrigger>
           <OverlayTrigger trigger="focus" placement="left" overlay={removePopover}>
-            <MenuItem eventKey="2">Remove bounty</MenuItem>
+            <MenuItem eventKey="2">Decline bounty</MenuItem>
           </OverlayTrigger>
           <MenuItem divider />
           <OverlayTrigger placement="left" overlay={tooltip}>
@@ -184,13 +222,6 @@ class MyBountiesComponent extends Component {
     );
   }
 
-  pagination = paginationFactory({
-    totalSize: this.props.totalBounties,
-    onPageChange: this.pageChange,
-    sizePerPage: this.pageSize,
-    hideSizePerPage: true
-  });
-
   columns = [{
     dataField: 'description',
     text: 'Bounty',
@@ -199,16 +230,15 @@ class MyBountiesComponent extends Component {
   }, {
     dataField: 'bountyOwnerName',
     text: 'Submitted by',
+    formatter: this.getName
   }, {
     dataField: 'game',
+    formatter: this.getGame,
     text: 'Game'
   }, {
     dataField: 'contractAmount',
     text: 'Amount',
-    formatter: (cell, row, rowIndex) => `$${row.contractAmount.toFixed(2)}`
-  }, {
-    dataField: 'expiresAt',
-    text: 'Expires at'
+    formatter: this.getMoney
   }, {
     dataField: 'action',
     text: '',
@@ -219,8 +249,34 @@ class MyBountiesComponent extends Component {
 
   getEmptyContent() {
     return (
-      <div>Your viewers haven't opened any bounties. Encourage them by putting a banner under your stream. [PUT IN IMAGE OF BANNER]</div>
+      <div className={styles.empty}>
+        {`No ${this.state.bountyFilter.toLowerCase()} bounties`}.
+      </div>
     );
+  }
+
+  getTable() {
+    if (this.props.bounties.length > 0) {
+      const pagOptions = {
+        totalSize: this.props.totalBounties,
+        sizePerPage: pageSize,
+        hideSizePerPage: true,
+        page: this.state.curPage
+      };
+
+      return (
+        <BootstrapTable
+          remote
+          keyField='contractId'
+          data={this.props.bounties}
+          columns={this.columns}
+          pagination={paginationFactory(pagOptions)}
+          onTableChange={this.tableChange}
+        />
+      );
+    }
+
+    return this.getEmptyContent();
   }
 
   setCurBounty = (bounty) => {
@@ -231,41 +287,28 @@ class MyBountiesComponent extends Component {
 
   setBountyFilter = (e) => {
     this.setState({
-      bountyFilter: e.target.value
-    }, () => {
-      this.props.listMyBounties(0, this.pageSize, this.props.twitchUserName, this.state.bountyFilter);
-    });
+      bountyFilter: e.target.value,
+      curPage: 1
+    }, this.refreshList);
   };
 
-  getTable() {
-    return (
-      <div className={styles.table}>
-        <div className={styles.typeDropdown}>
-          <form>
-            <FormGroup controlId="formControlsSelect">
-              <FormControl
-                componentClass="select"
-                placeholder="Type"
-                onChange={this.setBountyFilter}
-                value={this.state.bountyFilter}
-              >
-                <option value="all">All</option>
-                <option value="open">Open</option>
-                <option value="accepted">Accepted</option>
-                <option value="completed">Completed</option>
-                <option value="expired">Expired</option>
-              </FormControl>
-            </FormGroup>
-          </form>
-        </div>
-        <BootstrapTable
-          keyField='contractId'
-          data={this.props.bounties}
-          columns={this.columns}
-          pagination={this.pagination}
-        />
-      </div>
-    );
+  refreshList = () => {
+    this.setState({
+      curBounty: null
+    });
+    this.props.listStreamerBounties(0, pageSize, this.props.twitchUserName, this.state.bountyFilter);
+  }
+
+  onVoteBounty = (payload) => {
+    this.props.voteBounty(payload, this.refreshList);
+  }
+
+  onAcceptBounty = (contractId) => {
+    this.props.acceptBounty(contractId, this.refreshList);
+  }
+
+  onDeclineBounty = (contractId) => {
+    this.props.removeBounty(contractId, this.refreshList);
   }
 
   render() {
@@ -273,23 +316,43 @@ class MyBountiesComponent extends Component {
       return <LoadingComponent />;
     }
 
-    if (this.props.bounties.length > 0) {
-      if (this.state.curBounty === null) {
-        return this.getTable();
-      } else {
-        return (
-          <BountyDetails
-            curBounty={this.state.curBounty}
-            setCurBounty={this.setCurBounty}
-            acceptBounty={this.props.acceptBounty}
-            removeBounty={this.props.removeBounty}
-          />
-        );
-      }
-
+    if (this.state.curBounty === null) {
+      return (
+        <div className={styles.table}>
+          <div className={styles.typeDropdown}>
+            <form>
+              <FormGroup controlId="formControlsSelect">
+                <FormControl
+                  componentClass="select"
+                  placeholder="Type"
+                  onChange={this.setBountyFilter}
+                  value={this.state.bountyFilter}
+                >
+                  <option value="">All</option>
+                  <option value={OPEN}>Open</option>
+                  <option value={ACCEPTED}>Active</option>
+                  <option value={COMPLETED}>Completed</option>
+                  <option value={DECLINED}>Declined</option>
+                  <option value={EXPIRED}>Expired</option>
+                  <option value={FAILED}>Failed</option>
+                </FormControl>
+              </FormGroup>
+            </form>
+          </div>
+          {this.getTable()}
+        </div>
+      );
+    } else {
+      return (
+        <BountyDetails
+          curBounty={this.state.curBounty}
+          setCurBounty={this.setCurBounty}
+          onAcceptBounty={this.onAcceptBounty}
+          onDeclineBounty={this.onDeclineBounty}
+          onVoteBounty={this.onVoteBounty}
+        />
+      );
     }
-
-    return this.getEmptyContent();
   }
 }
 

@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
@@ -115,11 +116,12 @@ public class ContractsApiController {
     @RequestMapping(path = "accept", method = RequestMethod.PUT)
     public ResponseEntity acceptContract(
             @Nullable final OAuth2Authentication authentication,
-            @RequestBody @NonNull final UUID contractId) {
+            @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (authentication == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
+        final UUID contractId = contractStateRequest.getContractId();
         final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
         if (contractModel == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -136,11 +138,12 @@ public class ContractsApiController {
     @RequestMapping(path = "decline", method = RequestMethod.PUT)
     public ResponseEntity declineContract(
             @Nullable final OAuth2Authentication authentication,
-            @RequestBody @NonNull final UUID contractId) {
+            @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (authentication == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
+        final UUID contractId = contractStateRequest.getContractId();
         final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
         if (contractModel == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

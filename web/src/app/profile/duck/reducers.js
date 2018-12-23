@@ -50,9 +50,9 @@ const profileReducer = (state = INITIAL_STATE, action) => {
     case RECEIVE_MY_DONATIONS: {
       return {
         ...state,
-        showSpinner: false,
         donations: action.data.content,
-        totalDonations: action.data.totalElements
+        totalDonations: action.data.totalElements,
+        showSpinner: false
       };
     }
     case RECEIVE_MY_BOUNTIES: {
