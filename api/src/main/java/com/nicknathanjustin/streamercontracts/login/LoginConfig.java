@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LoginConfig {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
     @Bean
     public LoginService loginService() {

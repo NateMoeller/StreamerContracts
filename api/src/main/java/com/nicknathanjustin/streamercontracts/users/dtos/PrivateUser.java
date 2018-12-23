@@ -9,7 +9,7 @@ import lombok.NonNull;
 import java.nio.charset.StandardCharsets;
 
 @Data
-public class PrivateUser extends User{
+public class PrivateUser extends User {
 
     private final String alertChannelId;
 

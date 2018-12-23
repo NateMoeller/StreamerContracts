@@ -86,6 +86,7 @@ export default class App extends React.Component{
                         <p>My opaque ID is {this.Authentication.getOpaqueId()}.</p>
                         <div>{this.Authentication.isModerator() ? <p>I am currently a mod, and here's a special mod button <input value='mod button' type='button'/></p>  : 'I am currently not a mod.'}</div>
                         <p>I have {this.Authentication.hasSharedId() ? `shared my ID, and my user_id is ${this.Authentication.getUserId()}` : 'not shared my ID'}.</p>
+                        <button onClick={()=>{this.Authentication.makeCall('https://localhost:8070/user')}}> clickMe </button>
                     </div>
                 </div>
             )
