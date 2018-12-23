@@ -1,0 +1,72 @@
+@import '../../../colors.scss';
+
+.details {
+  width: 100%;
+
+  .buttons {
+    margin-bottom: 20px;
+
+    .rightButtons {
+      float:right;
+
+      .checkmark {
+        color: $secondary-blue;
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 32px;
+        vertical-align: middle;
+      }
+
+      .failed {
+        color: $error-red;
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 32px;
+        vertical-align: middle;
+      }
+
+      .text {
+        display: inline-block;
+        font-size: 32px;
+      }
+
+      .submit {
+        background: $secondary-blue;
+        color: $true-white;
+      }
+    }
+  }
+  .arrowLeft {
+     margin-right: 10px;
+  }
+
+  .content {
+    width: 100%;
+
+    .description {
+      display: inline-block;
+      width: 65%;
+      margin-right: 15px;
+    }
+
+    .stats {
+      display: inline-block;
+      width: 30%;
+      vertical-align: top;
+
+      .statRow {
+        display: table-row;
+
+        .statHeader {
+          display: table-cell;
+          font-weight: 700;
+          padding-right: 25px;
+        }
+
+        .statCell {
+          display: table-cell;
+        }
+      }
+    }
+  }
+}

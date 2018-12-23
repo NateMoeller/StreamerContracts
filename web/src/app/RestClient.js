@@ -2,6 +2,7 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.put['Content-Type'] = 'application/json';
 
 const BASE_URL = process.env.REACT_APP_API_HOST;
 

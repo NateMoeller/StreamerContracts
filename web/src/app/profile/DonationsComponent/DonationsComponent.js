@@ -1,38 +1,146 @@
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import React, { Component } from 'react';
-import { Button, ButtonToolbar, Col, Grid, Row, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Popover, Button, OverlayTrigger, Tooltip, Glyphicon } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import BountyDetails from '../BountyDetails/BountyDetails';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import cx from 'classnames';
+import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import PropTypes from 'prop-types';
+import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from './DonationsComponentStyles.scss';
 
+const pageSize = 10;
+
 class DonationsComponent extends Component {
-  pageSize = 20;
-  componentWillMount() {
-    this.props.listOpenDonations(0, this.pageSize);
-  }
+  constructor(props){
+    super(props);
 
-  pageChange = (page, sizePerPage) => {
-    this.props.listOpenDonations(page, sizePerPage);
-  }
-
-  pagination = paginationFactory({
-    totalSize: this.props.totalOpenDonations,
-    onPageChange: this.pageChange,
-    sizePerPage: this.pageSize,
-    hideSizePerPage: true
-  })
-
-  handleUpdateContractClick = (donationId, markedCompleted) => {
-    const payload = {
-      donationId: donationId,
-      markedCompleted: markedCompleted
+    this.state = {
+      curBounty: null,
+      curPage: 1
     };
-    this.props.updateContract(payload);
   }
 
-  getDropdownMenu = (cell, row, rowIndex, formatExtraData) => {
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+    this.setState({
+      curBounty: null
+    });
+    this.props.listDonorBounties(0, pageSize);
+  }
+
+  tableChange = (type, newState) => {
+    if (type === 'pagination') {
+      this.setState({
+        curPage: newState.page
+      }, () => {
+        this.props.listDonorBounties(newState.page - 1, newState.sizePerPage);
+      });
+    }
+  }
+
+  onVoteClick = (contractId, markedCompleted) => {
+    const payload = {
+      contractId: contractId,
+      flagCompleted: markedCompleted
+    };
+    this.props.voteBounty(payload);
+  }
+
+  getName = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.noOverflow}>{row.streamerName}</div>
+    );
+
+    return cellWrapper;
+  }
+
+  getGame = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.noOverflow}>{row.game}</div>
+    );
+    return cellWrapper
+  }
+
+  getMoney = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={cx(styles.noOverflow, styles.money)}>${row.contractAmount.toFixed(2)}</div>
+    )
+    return cellWrapper;
+  }
+
+  getBounty = (cell, row, rowIndex, formatExtraData) => {
+    const cellWrapper = (
+      <div className={styles.description} onClick={() => this.setCurBounty(row)}>{row.description}</div>
+    );
+
+    return cellWrapper;
+  };
+
+  getAction = (cell, row, rowIndex, formatExtraData) => {
+    if (row.state === COMPLETED) {
+      return this.getCompletedIcon(row);
+    } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
+      return this.getRemoveIcon(row);
+    } else if (row.state === OPEN || row.state === ACCEPTED) {
+      return this.getDropdownMenu(row);
+    }
+
+    return '';
+  }
+
+  getCompletedIcon(bounty) {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        {bounty.streamerName} completed this bounty.
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={tooltip}>
+        <Glyphicon glyph="ok" className={styles.checkmark} />
+      </OverlayTrigger>
+    );
+  }
+
+  getRemoveIcon(bounty) {
+    let tooltipText = `${bounty.streamerName} declined this bounty`;
+    if (bounty.state === EXPIRED) {
+      tooltipText = `${bounty.streamerName} let this bounty expire`;
+    } else if (bounty.state === FAILED) {
+      tooltipText = `${bounty.streamerName} failed this bounty`;
+    }
+
+    const tooltip = (
+      <Tooltip id="tooltip">
+        {tooltipText}
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={tooltip}>
+        <Glyphicon glyph="remove" className={styles.error} />
+      </OverlayTrigger>
+    );
+  }
+
+  getDropdownMenu = (row) => {
+    const completedPopover = (
+      <Popover id="popover" title="Bounty completed?">
+        <Button bsStyle="success" onClick={() => this.onVoteClick(row.contractId, true)}>{`${row.streamerName} completed bounty`}</Button>
+      </Popover>
+    );
+    const failedPopover = (
+      <Popover id="popover" title="Bounty Failed?">
+        <Button bsStyle="danger" onClick={() => this.onVoteClick(row.contractId, false)}>{`${row.streamerName} failed bounty`}</Button>
+      </Popover>
+    );
+
     const kebab = (
       <div>
         <figure></figure>
@@ -49,90 +157,106 @@ class DonationsComponent extends Component {
           noCaret
           id="dropdown-no-caret"
         >
-          <MenuItem eventKey="1">Accept bounty</MenuItem>
-          <MenuItem eventKey="2">Remove bounty</MenuItem>
-          <MenuItem divider />
-          <MenuItem eventKey="3">Report bounty</MenuItem>
+          <OverlayTrigger trigger="focus" placement="left" overlay={completedPopover}>
+            <MenuItem eventKey="1">{`${row.streamerName} completed bounty`}</MenuItem>
+          </OverlayTrigger>
+          <OverlayTrigger trigger="focus" placement="left" overlay={failedPopover}>
+            <MenuItem eventKey="2">{`${row.streamerName} failed bounty`}</MenuItem>
+          </OverlayTrigger>
         </DropdownButton>
       </ButtonToolbar>
-    );
-  }
-
-  contractActionsFormatter = (cell, row, rowIndex, formatExtraData) => {
-    const donationId = row.donationId;
-    const handleUpdateContractClick = formatExtraData;
-
-    return (
-      <Grid fluid={true}>
-        <Row>
-          <Col sm={12}>
-            <Button
-              bsStyle="success"
-              onClick={() => {handleUpdateContractClick(donationId, true)}}
-              block
-            >Did It</Button>
-          </Col>
-        </Row>
-        <Row className={styles.mt5}>
-          <Col sm={12}>
-            <Button
-              bsStyle="danger"
-              onClick={() => {handleUpdateContractClick(donationId, false)}}
-              block
-            >Failed</Button>
-          </Col>
-        </Row>
-      </Grid>
     );
   }
 
   columns = [{
     dataField: 'description',
     text: 'Bounty',
+    formatter: this.getBounty,
     headerStyle: { width: '50%' }
   }, {
     dataField: 'streamerName',
-    text: 'Submitted by',
-    headerStyle: { width: '25%' }
+    text: 'Streamer Name',
+    formatter: this.getName,
+    headerStyle: { width: '15%' }
   }, {
-    dataField: 'donationAmount',
+    dataField: 'game',
+    text: 'Game',
+    formatter: this.getGame
+  }, {
+    dataField: 'contractAmount',
     text: 'Amount',
-    headerSTyle: { width: '15%' }
+    headerSTyle: { width: '10%' },
+    formatter: this.getMoney
   },{
     dataField: 'action',
     text: '',
     isDummyField : true,
-    formatter: this.getDropdownMenu,
-    formatExtraData: this.handleUpdateContractClick,
+    formatter: this.getAction,
     headerStyle: { width: '10%' }
   }];
 
-  render() {
+  getEmptyContent() {
     return (
-      <div className={styles.table}>
-        <BootstrapTable
-          keyField='donationId'
-          data={this.props.openBounties}
-          columns={this.columns}
-          pagination={this.pagination}
-        />
-      </div>
+      <div className={styles.empty}>You haven't opened any bounties to streamers.</div>
+    );
+  }
+
+  setCurBounty = (bounty) => {
+    this.setState({
+      curBounty: bounty
+    });
+  };
+
+  render() {
+    if (this.props.loading) {
+      return <LoadingComponent />
+    }
+
+    if (this.state.curBounty === null) {
+      if (this.props.totalDonations > 0) {
+        const pagOptions = {
+          totalSize: this.props.totalDonations,
+          sizePerPage: pageSize,
+          hideSizePerPage: true,
+          page: this.state.curPage
+        };
+        return (
+          <div className={styles.table}>
+            <BootstrapTable
+              remote
+              keyField='contractId'
+              data={this.props.donations}
+              columns={this.columns}
+              pagination={paginationFactory(pagOptions)}
+              onTableChange={this.tableChange}
+            />
+          </div>
+        );
+      }
+
+      return this.getEmptyContent();
+    }
+
+    return (
+      <BountyDetails
+        curBounty={this.state.curBounty}
+        setCurBounty={this.setCurBounty}
+        isStreamer={false}
+      />
     );
   }
 }
 
 DonationsComponent.propTypes = {
-  openBounties: PropTypes.arrayOf(
-    PropTypes.shape({
-      streamerName: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      donationAmount: PropTypes.number.isRequired,
-      donationId: PropTypes.string.isRequired
-    }).isRequired
-  ),
-  totalOpenDonations: PropTypes.number.isRequired,
-  listOpenDonations: PropTypes.func.isRequired,
-  updateContract: PropTypes.func.isRequired,
-}
+  donations: PropTypes.array.isRequired,
+  totalDonations: PropTypes.number.isRequired,
+  listDonorBounties: PropTypes.func.isRequired,
+  voteBounty: PropTypes.func.isRequired,
+  loading: PropTypes.bool
+};
+
+DonationsComponent.defaultProps = {
+  loading: false
+};
 
 export default DonationsComponent;
