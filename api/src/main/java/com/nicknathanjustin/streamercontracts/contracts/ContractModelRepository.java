@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
@@ -60,4 +61,7 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donator.twitchUsername = :donator ")
     Page<ContractDto> findAllContractsForDonator(@Param("donator") String donator, Pageable pageable);
+
+    @Query("SELECT SUM(d.donationAmount) FROM DonationModel d WHERE d.contract.state = :state AND d.contract.streamer.twitchUsername = :streamer")
+    BigDecimal getMoneyForStreamerAndState(@Param("streamer") String streamer, @Param("state") ContractState state);
 }

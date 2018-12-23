@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @RestController
@@ -44,6 +45,7 @@ public class UsersApiController {
         final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, userModel);
         final long failedContracts = contractService.countByStateAndStreamer(ContractState.FAILED, userModel);
         final long disputedContracts = contractService.countByStateAndStreamer(ContractState.DISPUTED, userModel);
+        final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(userModel, ContractState.COMPLETED);
         final PrivateUser privateUser = new PrivateUser(
                 twitchUser,
                 userModel,
@@ -53,7 +55,8 @@ public class UsersApiController {
                 expiredContracts,
                 completedContracts,
                 failedContracts,
-                disputedContracts);
+                disputedContracts,
+                moneyEarned);
         return ResponseEntity.ok(privateUser);
     }
 

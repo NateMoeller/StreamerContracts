@@ -6,6 +6,7 @@ import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
 @Data
@@ -27,6 +28,8 @@ public class PrivateUser extends User{
 
     private final long disputedContracts;
 
+    private final BigDecimal moneyEarned;
+
     public PrivateUser(
             @NonNull final TwitchUser twitchUser,
             @NonNull final UserModel userModel,
@@ -36,7 +39,8 @@ public class PrivateUser extends User{
             final long expiredContracts,
             final long completedContracts,
             final long failedContracts,
-            final long disputedContracts) {
+            final long disputedContracts,
+            final BigDecimal moneyEarned) {
         super(twitchUser);
         this.alertChannelId = Hashing.sha256()
                 .hashString(userModel.getId().toString(), StandardCharsets.UTF_8)
@@ -48,5 +52,6 @@ public class PrivateUser extends User{
         this.completedContracts = completedContracts;
         this.failedContracts = failedContracts;
         this.disputedContracts = disputedContracts;
+        this.moneyEarned = moneyEarned;
     }
 }
