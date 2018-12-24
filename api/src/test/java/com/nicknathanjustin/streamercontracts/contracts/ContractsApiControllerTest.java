@@ -68,7 +68,10 @@ public class ContractsApiControllerTest {
     @Test
     public void voteOnContract_validInput_returnsOk() {
         final UserModel userModel = UserModel.builder().build();
-        final ContractModel contractModel = ContractModel.builder().build();
+        final ContractModel contractModel = ContractModel.builder()
+                .proposer(UserModel.builder().id(PROPOSER_ID).build())
+                .streamer(UserModel.builder().id(STREAMER_ID).build())
+                .build();
         when(mockUserService.getUserModelFromRequest(MOCK_HTTP_SERVLET_REQUEST)).thenReturn(userModel);
         when(mockContractService.getContract(CONTRACT_ID)).thenReturn(Optional.of(contractModel));
 
