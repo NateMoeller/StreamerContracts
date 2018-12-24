@@ -7,8 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserSettingsConfig {
 
-    @Autowired
-    private UserSettingsModelRepository userSettingsModelRepository;
+    @Autowired private UserSettingsModelRepository userSettingsModelRepository;
 
     @Bean
     public UserSettingsService userSettingsService() {

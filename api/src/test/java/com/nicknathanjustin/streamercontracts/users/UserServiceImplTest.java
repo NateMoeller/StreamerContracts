@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.users;
 
+import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ public class UserServiceImplTest {
     private static final Timestamp LAST_LOGIN = new Timestamp(System.currentTimeMillis());
     private UserModel userModel;
 
+    @Mock private TwitchService mockTwitchService;
     @Mock private UserModelRepository mockUserModelRepository;
     @InjectMocks private UserServiceImpl userService;
 

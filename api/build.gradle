@@ -1,19 +1,21 @@
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-redis")
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-websocket")
-    compile("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
     compile("org.springframework.cloud:spring-cloud-aws-messaging:2.0.1.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE")
     compile("org.springframework.session:spring-session-data-redis")
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
 
-    compile("com.paypal.sdk:rest-api-sdk:+")
-    compile("org.projectlombok:lombok:1.16.20")
-    compile("org.postgresql:postgresql:42.1.4")
+    compile("com.auth0:java-jwt:3.4.1")
     compile("com.google.guava:guava:23.5-jre")
+    compile("com.paypal.sdk:rest-api-sdk:+")
+    compile("org.postgresql:postgresql:42.1.4")
+    compile("org.projectlombok:lombok:1.16.20")
 
     testCompile("junit:junit")
     testCompile("org.mockito:mockito-core")
+    testCompile("org.springframework:spring-test:2.5")
 }

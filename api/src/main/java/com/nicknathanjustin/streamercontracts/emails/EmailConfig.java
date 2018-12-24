@@ -7,8 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EmailConfig {
 
-    @Autowired
-    private EmailModelRepository emailModelRepository;
+    @Autowired private EmailModelRepository emailModelRepository;
 
     @Bean
     public EmailService emailService(){ return new EmailServiceImpl(emailModelRepository); }

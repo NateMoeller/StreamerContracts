@@ -32,6 +32,14 @@ spring:
           use_jdbc_metadata_defaults: false
         ddl-auto: validate
 
+twitch:
+  # Need both http and https for the twitch devRig
+  frontEndUrls: https://localhost.rig.twitch.tv:8080, http://localhost.rig.twitch.tv:8080
+  extension:
+    client: n79uq3pvee208imhrzr14um2rboiwv
+    secret: ncstDxsrg9Sc872otJT8Z+xt75rW8VpCy9F1rKO/vNU=
+    jwtHeader: Authorization
+
 security:
   # SSL config
   require-ssl: true
@@ -51,7 +59,7 @@ security:
       preferTokenInfo: true
 
 application:
-  frontEndUrl: https://localhost:3000
+  frontEndUrl: https://localhost:3010
   environment: Dev
 
 logging:

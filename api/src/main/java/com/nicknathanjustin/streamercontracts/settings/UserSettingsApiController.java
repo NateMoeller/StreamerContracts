@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.settings;
 
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import com.nicknathanjustin.streamercontracts.settings.requests.UpdateUserSettingsRequest;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
@@ -8,12 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -22,28 +23,29 @@ import java.util.Optional;
 @Slf4j
 public class UserSettingsApiController {
 
-    @NonNull private final UserSettingsService userSettingsService;
+    @NonNull private final SecurityService SecurityService;
     @NonNull private final UserService userService;
+    @NonNull private final UserSettingsService userSettingsService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity updateUserSettings(@Nullable final OAuth2Authentication authentication,
+    public ResponseEntity updateUserSettings(@NonNull final HttpServletRequest httpServletRequest,
                                              @RequestBody @NonNull final UpdateUserSettingsRequest updateUserSettingsRequest) {
-        if (authentication == null) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final UserModel userModel = userService.getUserFromAuthContext(authentication);
+        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
         userSettingsService.updateUserSettings(userModel, updateUserSettingsRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getUserSettings(@Nullable final OAuth2Authentication authentication) {
-        if (authentication == null) {
+    public ResponseEntity getUserSettings(@NonNull final HttpServletRequest httpServletRequest) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final UserModel userModel = userService.getUserFromAuthContext(authentication);
+        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
         final Optional<UserSettingsModel> optionalUserSettingsModel = userSettingsService.getUserSettings(userModel);
         final UserSettingsModel userSettingsModel = optionalUserSettingsModel.orElse(null);
 

@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class TwitchApiController {
 
-    @NonNull
-    private final TwitchService twitchService;
+    @NonNull private final TwitchService twitchService;
 
     @RequestMapping(path = "/topGames", method = RequestMethod.GET)
     public ResponseEntity getTopGames() {

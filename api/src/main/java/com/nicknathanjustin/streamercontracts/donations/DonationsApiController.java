@@ -4,6 +4,7 @@ import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
 import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.paypal.api.payments.Payment;
@@ -23,13 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DonationsApiController {
 
-    @NonNull private final PaymentsService paymentsService;
-
     @NonNull private final ContractService contractService;
-
-    @NonNull private final UserService userService;
-
     @NonNull private final DonationService donationService;
+    @NonNull private final PaymentsService paymentsService;
+    @NonNull private final SecurityService SecurityService;
+    @NonNull private final UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {

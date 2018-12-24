@@ -3,6 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.votes.VoteModel;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,13 +35,14 @@ import java.util.UUID;
 public class ContractsApiController {
 
     @NonNull private final ContractService contractService;
+    @NonNull private final SecurityService SecurityService;
     @NonNull private final UserService userService;
     @NonNull private final VoteService voteService;
 
     @RequestMapping(path = "/vote", method = RequestMethod.POST)
-    public ResponseEntity voteOnContract(@RequestBody @NonNull final ContractVoteRequest contractVoteRequest,
-                                         @Nullable final OAuth2Authentication authentication) {
-        if (authentication == null) {
+    public ResponseEntity voteOnContract(@NonNull final HttpServletRequest httpServletRequest,
+                                         @RequestBody @NonNull final ContractVoteRequest contractVoteRequest) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
@@ -52,7 +54,7 @@ public class ContractsApiController {
         }
 
         final ContractModel contractModel = optionalContractModel.get();
-        final UserModel userModel = userService.getUserFromAuthContext(authentication);
+        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
 
         // TODO: Need to catch the exception here if voting on the contract fails
         voteService.recordVote(userModel, contractModel, contractVoteRequest.getFlagCompleted());
@@ -93,15 +95,15 @@ public class ContractsApiController {
 
     @RequestMapping(path = "donorBounties/{page}/{pageSize}", method = RequestMethod.GET)
     public ResponseEntity listContractsForDonator(
-            @Nullable final OAuth2Authentication authentication,
+            @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state) {
-        if (authentication == null) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
-        final UserModel donor = userService.getUserFromAuthContext(authentication);
+        final UserModel donor = userService.getUserModelFromRequest(httpServletRequest);
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<ContractDto> contracts = null;
         if (state != null) {
@@ -115,9 +117,9 @@ public class ContractsApiController {
 
     @RequestMapping(path = "accept", method = RequestMethod.PUT)
     public ResponseEntity acceptContract(
-            @Nullable final OAuth2Authentication authentication,
+            @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
-        if (authentication == null) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
@@ -137,9 +139,9 @@ public class ContractsApiController {
 
     @RequestMapping(path = "decline", method = RequestMethod.PUT)
     public ResponseEntity declineContract(
-            @Nullable final OAuth2Authentication authentication,
+            @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
-        if (authentication == null) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
