@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @RestController
@@ -60,7 +60,6 @@ public class UsersApiController {
                 failedContracts,
                 disputedContracts,
                 moneyEarned);
-
 
         return ResponseEntity.ok(privateUser);
     }
