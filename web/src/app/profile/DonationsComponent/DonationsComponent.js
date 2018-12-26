@@ -10,6 +10,7 @@ import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../Boun
 import PropTypes from 'prop-types';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from './DonationsComponentStyles.scss';
+import tableStyles from '../../tableStyles.scss';
 
 const pageSize = 10;
 
@@ -54,7 +55,7 @@ class DonationsComponent extends Component {
 
   getName = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.noOverflow}>{row.streamerName}</div>
+      <div className={tableStyles.noOverflow}>{row.streamerName}</div>
     );
 
     return cellWrapper;
@@ -62,21 +63,21 @@ class DonationsComponent extends Component {
 
   getGame = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.noOverflow}>{row.game}</div>
+      <div className={tableStyles.noOverflow}>{row.game}</div>
     );
     return cellWrapper
   }
 
   getMoney = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={cx(styles.noOverflow, styles.money)}>${row.contractAmount.toFixed(2)}</div>
+      <div className={cx(tableStyles.noOverflow, tableStyles.money)}>${row.contractAmount.toFixed(2)}</div>
     )
     return cellWrapper;
   }
 
   getBounty = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.description} onClick={() => this.setCurBounty(row)}>{row.description}</div>
+      <div className={tableStyles.description} onClick={() => this.setCurBounty(row)}>{row.description}</div>
     );
 
     return cellWrapper;
@@ -144,7 +145,7 @@ class DonationsComponent extends Component {
     const kebab = (
       <div>
         <figure></figure>
-        <figure className={styles.middle}></figure>
+        <figure></figure>
         <figure></figure>
       </div>
     );
@@ -221,7 +222,7 @@ class DonationsComponent extends Component {
           page: this.state.curPage
         };
         return (
-          <div className={styles.table}>
+          <div className={tableStyles.table}>
             <BootstrapTable
               remote
               keyField='contractId'
@@ -241,7 +242,7 @@ class DonationsComponent extends Component {
       <BountyDetails
         curBounty={this.state.curBounty}
         setCurBounty={this.setCurBounty}
-        isStreamer={false}
+        isDonor
       />
     );
   }

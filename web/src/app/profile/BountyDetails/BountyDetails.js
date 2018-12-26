@@ -4,6 +4,7 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import styles from './BountyDetails.scss';
 
 class BountyDetails extends Component {
@@ -84,17 +85,19 @@ class BountyDetails extends Component {
 
   getAction() {
     const { curBounty } = this.props;
-    if (curBounty.state === 'COMPLETED') {
+    if (curBounty.state === COMPLETED) {
       return this.getCompletedIcon();
-    } else if (curBounty.state === 'DECLINED') {
+    } else if (curBounty.state === DECLINED) {
       return this.getDeclinedIcon();
-    } else if (curBounty.state === 'EXPIRED' || curBounty.state === 'FAILED') {
+    } else if (curBounty.state === EXPIRED || curBounty.state === FAILED) {
       return this.getFailedIcon();
-    } else if (curBounty.state === 'ACCEPTED') {
+    } else if (curBounty.state === ACCEPTED && (this.props.isStreamer || this.props.isDonor)) {
       return this.getAcceptButtons();
+    } else if (curBounty.state === OPEN && this.props.isStreamer) {
+      return this.getOpenButtons();
     }
 
-    return this.getOpenButtons();
+    return '';
   }
 
   render() {
@@ -139,7 +142,8 @@ BountyDetails.defaultProps = {
   onAcceptBounty: null,
   onDeclineBounty: null,
   onVoteBounty: null,
-  isStreamer: true
+  isStreamer: false,
+  isDonor: false
 };
 
 BountyDetails.propTypes = {
@@ -148,7 +152,8 @@ BountyDetails.propTypes = {
   onAcceptBounty: PropTypes.func,
   onDeclineBounty: PropTypes.func,
   onVoteBounty: PropTypes.func,
-  isStreamer: PropTypes.bool
+  isStreamer: PropTypes.bool,
+  isDonor: PropTypes.bool
 }
 
 export default BountyDetails;
