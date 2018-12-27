@@ -28,7 +28,6 @@ const getPublicBounties = (page, pageSize, twitchUsername, state = null) => (dis
   RestClient.GET(url, (response) => {
     dispatch(receivePublicBountiesSuccess(response.data));
   }, (error) => {
-    console.error(error);
     dispatch(receivePublicBountiesFailure());
   })
 };

@@ -45,7 +45,7 @@ class UserComponent extends Component {
     this.props.getPublicBounties(0, pageSize, this.props.publicUser.displayName, this.state.bountyFilter);
   }
 
-  handleSelect = (key) => {
+  handleBountyFilterChange = (key) => {
     this.setState({
       curBounty: null,
       tabKey: key,
@@ -112,7 +112,6 @@ class UserComponent extends Component {
     dataField: 'action',
     text: '',
     isDummyField : true,
-    // formatter: this.getAction,
     headerStyle: { width: '10%' }
   }];
 
@@ -179,11 +178,11 @@ class UserComponent extends Component {
             <Button bsStyle="primary" className={styles.openBountyButton} href={donateUrl}>Open Bounty</Button>
           </Row>
         </Col>
-        <Col xs={13} md={9}>
+        <Col xs={12} md={9}>
           <div className={styles.mainContent}>
             <Tabs
               activeKey={this.state.tabKey}
-              onSelect={this.handleSelect}
+              onSelect={this.handleBountyFilterChange}
               id="contract-tabs"
             >
               <Tab eventKey={1} title="Open Bounties">
