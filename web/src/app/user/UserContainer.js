@@ -22,6 +22,9 @@ class UserContainer extends Component {
     return (
       <UserComponent
         publicUser={this.props.publicUser.publicUser}
+        publicBounties={this.props.publicUser.publicBounties}
+        totalPublicBounties={this.props.publicUser.totalPublicBounties}
+        getPublicBounties={this.props.getPublicBounties}
       />
     );
   }

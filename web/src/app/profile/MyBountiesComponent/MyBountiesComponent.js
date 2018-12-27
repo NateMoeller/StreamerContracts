@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from '../DonationsComponent/DonationsComponentStyles.scss';
+import tableStyles from '../../tableStyles.scss';
 
 const pageSize = 10;
 
@@ -51,7 +52,7 @@ class MyBountiesComponent extends Component {
 
   getBounty = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={cx(styles.noOverflow, styles.description)} onClick={() => this.setCurBounty(row)}>{row.description}</div>
+      <div className={cx(tableStyles.noOverflow, tableStyles.description)} onClick={() => this.setCurBounty(row)}>{row.description}</div>
     );
 
     return cellWrapper;
@@ -59,7 +60,7 @@ class MyBountiesComponent extends Component {
 
   getName = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.noOverflow}>{row.bountyOwnerName}</div>
+      <div className={tableStyles.noOverflow}>{row.bountyOwnerName}</div>
     );
 
     return cellWrapper;
@@ -67,14 +68,14 @@ class MyBountiesComponent extends Component {
 
   getGame = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={styles.noOverflow}>{row.game}</div>
+      <div className={tableStyles.noOverflow}>{row.game}</div>
     );
     return cellWrapper
   }
 
   getMoney = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={cx(styles.noOverflow, styles.money)}>${row.contractAmount.toFixed(2)}</div>
+      <div className={cx(tableStyles.noOverflow, tableStyles.money)}>${row.contractAmount.toFixed(2)}</div>
     )
     return cellWrapper;
   }
@@ -150,7 +151,7 @@ class MyBountiesComponent extends Component {
     const kebab = (
       <div>
         <figure></figure>
-        <figure className={styles.middle}></figure>
+        <figure></figure>
         <figure></figure>
       </div>
     );
@@ -164,10 +165,10 @@ class MyBountiesComponent extends Component {
           id="dropdown-no-caret"
         >
           <OverlayTrigger trigger="focus" placement="left" overlay={completedPopover}>
-            <MenuItem eventKey="1">Submit as completed</MenuItem>
+            <MenuItem eventKey="1">Mark completed</MenuItem>
           </OverlayTrigger>
           <OverlayTrigger trigger="focus" placement="left" overlay={failedPopover}>
-            <MenuItem eventKey="2">Submit as failed</MenuItem>
+            <MenuItem eventKey="2">Mark failed</MenuItem>
           </OverlayTrigger>
         </DropdownButton>
       </ButtonToolbar>
@@ -318,8 +319,8 @@ class MyBountiesComponent extends Component {
 
     if (this.state.curBounty === null) {
       return (
-        <div className={styles.table}>
-          <div className={styles.typeDropdown}>
+        <div className={tableStyles.table}>
+          <div className={tableStyles.typeDropdown}>
             <form>
               <FormGroup controlId="formControlsSelect">
                 <FormControl
@@ -350,6 +351,7 @@ class MyBountiesComponent extends Component {
           onAcceptBounty={this.onAcceptBounty}
           onDeclineBounty={this.onDeclineBounty}
           onVoteBounty={this.onVoteBounty}
+          isStreamer
         />
       );
     }

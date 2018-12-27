@@ -1,7 +1,10 @@
 import {
   REQUEST_PUBLIC_USER,
   RECEIVE_PUBLIC_USER_SUCCESS,
-  RECEIVE_PUBLIC_USER_FAILURE
+  RECEIVE_PUBLIC_USER_FAILURE,
+  REQUEST_PUBLIC_BOUNTIES,
+  RECEIVE_PUBLIC_BOUNITES_SUCCESS,
+  RECEIVE_PUBLIC_BOUNTIES_FAILURE
 } from './types';
 
 const requestPublicUser = () => ({
@@ -17,8 +20,24 @@ const receivePublicUserFailure = () => ({
   type: RECEIVE_PUBLIC_USER_FAILURE
 });
 
+const requestPublicBounties = () => ({
+  type: REQUEST_PUBLIC_BOUNTIES
+});
+
+const receivePublicBountiesSuccess = (data) => ({
+  type: RECEIVE_PUBLIC_BOUNITES_SUCCESS,
+  data
+});
+
+const receivePublicBountiesFailure = () => ({
+  type: RECEIVE_PUBLIC_BOUNTIES_FAILURE
+});
+
 export {
   requestPublicUser,
   receivePublicUserSuccess,
-  receivePublicUserFailure
+  receivePublicUserFailure,
+  requestPublicBounties,
+  receivePublicBountiesSuccess,
+  receivePublicBountiesFailure
 };

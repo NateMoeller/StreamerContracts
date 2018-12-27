@@ -60,7 +60,7 @@ ProfileContainer.propTypes = {
   getUser: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  listDonatorBounties: PropTypes.func.isRequired,
+  listDonorBounties: PropTypes.func.isRequired,
   listStreamerBounties: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired
 };

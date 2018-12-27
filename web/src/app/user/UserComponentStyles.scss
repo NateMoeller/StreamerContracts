@@ -1,0 +1,24 @@
+@import '../../colors.scss';
+
+.mainContent {
+  margin-top: 40px;
+}
+
+.empty {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+
+.openBountyButton {
+  width: 100%;
+  margin-top: 5px;
+  background: $secondary-blue;
+  color: $true-white;
+
+  &:active, &:focus, &:hover {
+    background: $secondary-blue;
+    color: $true-white;
+  }
+}

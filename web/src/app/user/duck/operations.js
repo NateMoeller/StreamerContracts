@@ -1,7 +1,10 @@
 import {
   requestPublicUser,
   receivePublicUserSuccess,
-  receivePublicUserFailure
+  receivePublicUserFailure,
+  requestPublicBounties,
+  receivePublicBountiesSuccess,
+  receivePublicBountiesFailure
 } from './actions';
 import RestClient from '../../RestClient';
 
@@ -15,6 +18,21 @@ const getPublicUser = (twitchUsername) => (dispatch) => {
   });
 };
 
+const getPublicBounties = (page, pageSize, twitchUsername, state = null) => (dispatch) => {
+  dispatch(requestPublicBounties());
+  let url = `bounties/streamerBounties/${page}/${pageSize}?username=${twitchUsername}`;
+  if (state) {
+    url += `&state=${state}`;
+  }
+
+  RestClient.GET(url, (response) => {
+    dispatch(receivePublicBountiesSuccess(response.data));
+  }, (error) => {
+    dispatch(receivePublicBountiesFailure());
+  })
+};
+
 export default {
-  getPublicUser
+  getPublicUser,
+  getPublicBounties
 };
