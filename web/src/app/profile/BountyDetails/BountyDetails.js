@@ -117,7 +117,7 @@ class BountyDetails extends Component {
           <div className={styles.stats}>
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Submitted by:</div>
-              <div className={styles.statCell}>{this.props.curBounty.bountyOwnerName}</div>
+              <div className={styles.statCell}>{this.props.curBounty.proposerName}</div>
             </div>
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Game:</div>

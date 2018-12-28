@@ -20,7 +20,7 @@
         "proposedAt": "2018-10-10",
         "expiresAt": "2018-10-10",
         "streamerName":"vgame18",
-        "bountyOwnerName": "Justin",
+        "proposerName": "Justin",
         "donations": [{
            "donorUsername": "Justin",
            "donationAmount": 10,
@@ -37,7 +37,7 @@
         "proposedAt": "2018-10-10",
         "expiresAt": "2018-10-10",
         "streamerName":"Ninja",
-        "bountyOwnerName": "Nathan",
+        "proposerName": "Nathan",
         "donations": [{
             "donorUserName": "Nathan",
             "donationAmount": 5,

@@ -30,7 +30,7 @@ public class ContractDto {
     private Timestamp failedAt;
     private Timestamp disputedAt;
     private String streamerName;
-    private String bountyOwnerName;
+    private String proposerName;
     private List<DonationDto> donations;
 
     public ContractDto(
@@ -49,7 +49,7 @@ public class ContractDto {
         failedAt = contract.getFailedAt();
         disputedAt = contract.getDisputedAt();
         streamerName = contract.getStreamer().getTwitchUsername();
-        bountyOwnerName = contract.getProposer().getTwitchUsername();
+        proposerName = contract.getProposer().getTwitchUsername();
         contractAmount = new BigDecimal(0);
         donations = new ArrayList<DonationDto>();
         for (DonationModel donation : contract.getDonations()) {

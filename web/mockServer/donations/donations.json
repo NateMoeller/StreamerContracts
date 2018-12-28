@@ -6,7 +6,7 @@
          "description":"Test message 1",
          "streamerName":"Ninja",
          "isCommunity": false,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       },
       {
          "donationId":"a911e9c4-705b-4380-9efc-ea43f8120d82",
@@ -14,7 +14,7 @@
          "description":"test message 2",
          "streamerName":"FearItself",
          "isCommunity": false,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       },
       {
          "donationId":"8e194d92-cae3-431d-a61f-0ef70fc8340a",
@@ -22,7 +22,7 @@
          "description":"test message 3",
          "streamerName":"NICKMERCS",
          "isCommunity": false,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       },
       {
          "donationId":"6d1d7827-25b1-4650-893b-05ade846a1cb",
@@ -30,7 +30,7 @@
          "description":"test message 4",
          "streamerName":"Tfue",
          "isCommunity": false,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       },
       {
          "donationId":"edefa5a6-9709-4f4e-a82d-6a9f0b2e8722",
@@ -38,7 +38,7 @@
          "description":"test message 5",
          "streamerName":"vgame18",
          "isCommunity": false,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       },
       {
          "donationId":"89681f4f-dcc5-4c59-8c13-5e84258a927a",
@@ -46,7 +46,7 @@
          "description":"test message 6",
          "streamerName":"M1sterC00lguy",
          "isCommunity": true,
-         "bountyOwnerName": "vgame18"
+         "proposerName": "vgame18"
       }
    ],
    "pageable":{
