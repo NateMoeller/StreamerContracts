@@ -60,7 +60,7 @@ class MyBountiesComponent extends Component {
 
   getName = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
-      <div className={tableStyles.noOverflow}>{row.bountyOwnerName}</div>
+      <div className={tableStyles.noOverflow}>{row.proposerName}</div>
     );
 
     return cellWrapper;
@@ -229,7 +229,7 @@ class MyBountiesComponent extends Component {
     formatter: this.getBounty,
     headerStyle: { width: '40%' }
   }, {
-    dataField: 'bountyOwnerName',
+    dataField: 'proposerName',
     text: 'Submitted by',
     formatter: this.getName
   }, {
