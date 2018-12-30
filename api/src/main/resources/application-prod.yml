@@ -10,3 +10,6 @@ application:
 spring:
   redis:
     host: pro-st-nbqxuzgyf1m2.e1fohh.0001.use1.cache.amazonaws.com
+
+paypal:
+  mode: production

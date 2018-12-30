@@ -33,8 +33,7 @@ public class ContractDto {
     private String proposerName;
     private List<DonationDto> donations;
 
-    public ContractDto(
-            @NonNull final ContractModel contract) {
+    public ContractDto(@NonNull final ContractModel contract) {
         contractId = contract.getId();
         state = contract.getState();
         description = contract.getDescription();
@@ -51,7 +50,7 @@ public class ContractDto {
         streamerName = contract.getStreamer().getTwitchUsername();
         proposerName = contract.getProposer().getTwitchUsername();
         contractAmount = new BigDecimal(0);
-        donations = new ArrayList<DonationDto>();
+        donations = new ArrayList<>();
         for (DonationModel donation : contract.getDonations()) {
             // We're re-computing a SUM when we could be just issuing a subquery
             // This is because it is difficult with Spring Pagination to issue a subquery.
@@ -60,7 +59,7 @@ public class ContractDto {
             donations.add(new DonationDto(
                     donation.getDonationAmount(),
                     contract.getProposer().getTwitchUsername(),
-                    donation.getDonatedAt()));
+                    donation.getCreatedAt()));
         }
     }
 }

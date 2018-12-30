@@ -2,7 +2,8 @@ import paypal from 'paypal-checkout';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-const sandboxID = 'AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop';
+const paypalClientID = process.env.PAYPAL_CLIENT_ID;
+const paypalEnv = process.env.PAYPAL_ENV;
 const paypalButtonContainer = 'paypal-button-container';
 
 class PayWithPayPalComponent extends Component {
@@ -10,12 +11,12 @@ class PayWithPayPalComponent extends Component {
 
 
     paypal.Button.render({
-        env: 'sandbox', // sandbox | production
+        env: paypalEnv, // sandbox | production
         // PayPal Client IDs - replace with your own
         // Create a PayPal app: https://developer.paypal.com/developer/applications/create
         client: {
-            sandbox:  sandboxID,
-            production: '<insert production client id>'
+            sandbox:  paypalClientID,
+            production: paypalClientID
         },
         // Show the buyer a 'Pay Now' button in the checkout flow
         commit: true,

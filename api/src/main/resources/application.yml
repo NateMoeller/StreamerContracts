@@ -40,6 +40,11 @@ twitch:
     secret: ncstDxsrg9Sc872otJT8Z+xt75rW8VpCy9F1rKO/vNU=
     jwtHeader: Authorization
 
+paypal:
+  clientId: AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop
+  clientSecret: EBJi9gvGJrKBwWDmIchrgLG2gWUQRAEjbM9jQyojkH16dXm0QUZfZnpMiZPTB1hXF8cFJVxnhUW-te5Q
+  mode: sandbox
+
 security:
   # SSL config
   require-ssl: true

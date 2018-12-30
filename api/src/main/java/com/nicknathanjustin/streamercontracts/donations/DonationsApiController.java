@@ -32,18 +32,18 @@ public class DonationsApiController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
-        final Payment payment = paymentsService.executePayment(createDonationRequest.getPayPalPaymentId()).orElse(null);
-        if(payment == null) {
-            log.warn("Couldn't execute payment for id: {}", createDonationRequest.getPayPalPaymentId());
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
-
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
         final UserModel streamer = userService.getUser(createDonationRequest.getStreamerUsername()).orElse(null);
         final String game = createDonationRequest.getGame();
         if (proposer == null || streamer == null) {
             log.warn("Username: {} or StreamerUsername: {} does not exist.", createDonationRequest.getUsername(), createDonationRequest.getStreamerUsername());
             return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final Payment payment = paymentsService.executePayment(createDonationRequest.getPayPalPaymentId()).orElse(null);
+        if(payment == null) {
+            log.warn("Couldn't execute payment for id: {}", createDonationRequest.getPayPalPaymentId());
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         final ContractModel contract = contractService.createContract(proposer, streamer, game, createDonationRequest.getBounty());
