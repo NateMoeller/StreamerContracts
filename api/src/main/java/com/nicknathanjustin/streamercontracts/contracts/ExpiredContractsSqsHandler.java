@@ -26,6 +26,7 @@ public class ExpiredContractsSqsHandler {
             final VoteModel streamerVote = voteService.getVoteByContractIdAndVoterId(contract.getId(), contract.getStreamer().getId()).orElse(null);
             final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contract);
             contractService.setContractState(contract, voteOutcome);
+            contractService.settlePayments(contract);
         });
     }
 }

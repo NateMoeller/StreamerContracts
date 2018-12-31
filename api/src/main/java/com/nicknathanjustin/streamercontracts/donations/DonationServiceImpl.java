@@ -23,13 +23,15 @@ public class DonationServiceImpl implements  DonationService{
             @NonNull final UserModel donator,
             @NonNull final BigDecimal donationAmount,
             @NonNull final Timestamp contractTimestamp,
-            @NonNull final String paypalPaymentId) {
+            @NonNull final String paypalPaymentId,
+            @NonNull final String paypalAuthorizationId) {
         donationModelRepository.save(DonationModel.builder()
                 .contract(contractModel)
                 .donator(donator)
-                .donatedAt(contractTimestamp)
+                .createdAt(contractTimestamp)
                 .donationAmount(donationAmount)
                 .paypalPaymentId(paypalPaymentId)
+                .paypalAuthorizationId(paypalAuthorizationId)
                 .build());
     }
 
@@ -40,11 +42,11 @@ public class DonationServiceImpl implements  DonationService{
 
     @Override
     public boolean settleDonation(@NonNull final DonationModel donationModel, final boolean releaseDonation) {
-        if (donationModel.getDonatedAt() != null) {
-            throw new IllegalArgumentException("Attempted to settle already settled donation: " + donationModel.getId());
+        if (donationModel.getReleasedAt() != null) {
+            throw new IllegalArgumentException("Attempted to settle already released donation: " + donationModel.getId());
         }
 
-        boolean donationSettled = false;
+        boolean donationSettled;
         if (releaseDonation) {
             donationSettled = paymentsService.capturePayment(donationModel.getPaypalPaymentId());
         } else {
@@ -54,9 +56,10 @@ public class DonationServiceImpl implements  DonationService{
         final DonationState donationState = getDonationState(donationSettled, releaseDonation);
         donationModel.setDonationState(donationState);
         if (donationState != DonationState.ERROR) {
-            donationModel.setDonatedAt(new Timestamp(System.currentTimeMillis()));
+            donationModel.setReleasedAt(new Timestamp(System.currentTimeMillis()));
         }
 
+        donationModelRepository.save(donationModel);
         return donationSettled;
     }
 

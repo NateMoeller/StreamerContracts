@@ -13,11 +13,11 @@ import java.util.Optional;
 public class PaymentsServiceImpl implements PaymentsService {
 
     @Value("${paypal.mode}")
-    private static String MODE;
+    private String MODE;
     @Value("${paypal.clientId}")
-    private static String CLIENT_ID;
+    private String CLIENT_ID;
     @Value("${paypal.clientSecret}")
-    private static String CLIENT_SECRET;
+    private String CLIENT_SECRET;
 
     @Override
     public Optional<Payment> executePayment(@NonNull final String paymentId) {

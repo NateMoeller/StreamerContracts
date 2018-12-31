@@ -61,11 +61,11 @@ public class ContractsApiController {
         final VoteModel proposerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getProposer().getId()).orElse(null);
         final VoteModel streamerVote = voteService.getVoteByContractIdAndVoterId(contractId, contractModel.getStreamer().getId()).orElse(null);
 
-        // TODO: Propagate back to front end that voting on a contract you've already voted on is not
-        // allowed
+        // TODO: Propagate back to front end that voting on a contract you've already voted on is not allowed
         if(voteService.isVotingComplete(proposerVote, streamerVote, contractModel)) {
             final ContractState voteOutcome = voteService.getVoteOutcome(proposerVote, streamerVote, contractModel);
             contractService.setContractState(contractModel, voteOutcome);
+            contractService.settlePayments(contractModel);
         }
 
         return new ResponseEntity(HttpStatus.OK);
@@ -156,6 +156,7 @@ public class ContractsApiController {
         }
 
         contractService.setContractState(contractModel, ContractState.DECLINED);
+        contractService.settlePayments(contractModel);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

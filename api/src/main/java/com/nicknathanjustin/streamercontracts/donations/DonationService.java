@@ -18,8 +18,14 @@ public interface DonationService {
      * @param donationAmount The amount of money donated.
      * @param contractTimestamp The creation timestamp of the contract.
      * @param paypalPaymentId The paypal payment id of the transaction.
+     * @param authorizationId The authorizationId used to void or capture payment.
      */
-    void createDonation(ContractModel contractModel, UserModel donator, BigDecimal donationAmount, Timestamp contractTimestamp, String paypalPaymentId);
+    void createDonation(ContractModel contractModel,
+                        UserModel donator,
+                        BigDecimal donationAmount,
+                        Timestamp contractTimestamp,
+                        String paypalPaymentId,
+                        String authorizationId);
 
     /**
      * Gets a donation from the database given the donationId.

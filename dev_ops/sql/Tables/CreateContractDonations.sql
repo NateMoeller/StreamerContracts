@@ -5,6 +5,7 @@ CREATE TABLE contract_donations (
 	donation_amount MONEY CONSTRAINT positive_donation CHECK (donation_amount > 0::money) NOT NULL,
 	created_at TIMESTAMP NOT NULL,
 	paypal_payment_id VARCHAR(128) NOT NULL,
-	donated_at TIMESTAMP,
-	donation_state SMALLINT,
+	paypal_authorization_id VARCHAR(128) NOT NULL,
+	released_at TIMESTAMP,
+	donation_state SMALLINT
 );

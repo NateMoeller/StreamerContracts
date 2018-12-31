@@ -45,7 +45,9 @@ public class DonationModel {
 
     private String paypalPaymentId;
 
-    private Timestamp donatedAt;
+    private String paypalAuthorizationId;
+
+    private Timestamp releasedAt;
 
     private DonationState donationState;
 }
