@@ -48,9 +48,9 @@ public class DonationServiceImpl implements  DonationService{
 
         boolean donationSettled;
         if (releaseDonation) {
-            donationSettled = paymentsService.capturePayment(donationModel.getPaypalPaymentId());
+            donationSettled = paymentsService.capturePayment(donationModel.getPaypalAuthorizationId());
         } else {
-            donationSettled = paymentsService.voidPayment(donationModel.getPaypalPaymentId());
+            donationSettled = paymentsService.voidPayment(donationModel.getPaypalAuthorizationId());
         }
 
         final DonationState donationState = getDonationState(donationSettled, releaseDonation);
