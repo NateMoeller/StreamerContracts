@@ -60,13 +60,13 @@ public class DonationsApiController {
         final int numberTransactions = payment.getTransactions().size();
         if (numberTransactions != 1) {
             log.error("payment had {} number of transactions. Unable to extract authorizationId", numberTransactions);
-            return null;
+            throw new IllegalStateException("Malformed transaction inside payment object for paymentId: " + payment.getId());
         }
 
         final int numberRelatedResources = payment.getTransactions().get(0).getRelatedResources().size();
         if (numberRelatedResources != 1) {
             log.error("payment had {} number of related resources. Unable to extract authorizationId", numberTransactions);
-            return null;
+            throw new IllegalStateException("Malformed related resources inside payment object for paymentId: " + payment.getId());
         }
 
         return payment.getTransactions().get(0).getRelatedResources().get(0).getAuthorization().getId();

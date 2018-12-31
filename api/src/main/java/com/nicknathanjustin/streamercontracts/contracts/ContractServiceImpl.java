@@ -22,6 +22,8 @@ import java.util.UUID;
 public class ContractServiceImpl implements ContractService {
 
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
+    private static final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
+    private static final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
 
     @NonNull final ContractModelRepository contractModelRepository;
     @NonNull final DonationService donationService;
@@ -71,8 +73,6 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void settlePayments(@NonNull final ContractModel contractModel) {
-        final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
-        final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
         final ContractState contractState = contractModel.getState();
 
         if (payStreamerStates.contains(contractState)) {

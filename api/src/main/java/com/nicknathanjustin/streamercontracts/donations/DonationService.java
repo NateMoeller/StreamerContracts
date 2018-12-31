@@ -39,9 +39,9 @@ public interface DonationService {
      * Settles a donation by either releasing money to streamer or returning money to donor.
      *
      * @param donationModel the donation to settle.
-     * @param releaseDonation flag indicating if the donation should be released and the streamed paid. Or if the
-     *                        donation should be returned to the donator.
-     * @return true if donation was setteled correctly. False otherwise.
+     * @param releaseDonation flag indicating if the donation should be released and the streamer paid. Or if the
+     *                        donation should be returned to the donor.
+     * @return true if donation was settled correctly. False otherwise.
      * @throws IllegalArgumentException Thrown when donation has already been settled.
      */
     boolean settleDonation(DonationModel donationModel, boolean releaseDonation) throws IllegalArgumentException;

@@ -46,30 +46,23 @@ public class DonationServiceImpl implements  DonationService{
             throw new IllegalArgumentException("Attempted to settle already released donation: " + donationModel.getId());
         }
 
-        boolean donationSettled;
+        DonationState donationState;
         if (releaseDonation) {
-            donationSettled = paymentsService.capturePayment(donationModel.getPaypalAuthorizationId());
+            donationState = paymentsService.capturePayment(donationModel.getPaypalAuthorizationId()) ?
+                    DonationState.PAID_TO_STREAMER :
+                    DonationState.ERROR;
         } else {
-            donationSettled = paymentsService.voidPayment(donationModel.getPaypalAuthorizationId());
+            donationState = paymentsService.voidPayment(donationModel.getPaypalAuthorizationId()) ?
+                    DonationState.RETURNED_TO_DONOR :
+                    DonationState.ERROR;
         }
 
-        final DonationState donationState = getDonationState(donationSettled, releaseDonation);
         donationModel.setDonationState(donationState);
         if (donationState != DonationState.ERROR) {
             donationModel.setReleasedAt(new Timestamp(System.currentTimeMillis()));
         }
 
         donationModelRepository.save(donationModel);
-        return donationSettled;
-    }
-
-    private DonationState getDonationState(final boolean donationSettled, final boolean releaseDonation) {
-        if (!donationSettled) {
-            return DonationState.ERROR;
-        } else if (releaseDonation) {
-            return DonationState.PAID_TO_STREAMER;
-        } else {
-            return DonationState.RETURNED_TO_DONOR;
-        }
+        return donationState != DonationState.ERROR;
     }
 }

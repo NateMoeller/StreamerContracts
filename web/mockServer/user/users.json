@@ -24,7 +24,7 @@
              "donations": [{
                 "donorUsername": "Justin",
                 "donationAmount": 10,
-                "donatedAt": "2018-10-10"
+                "createdAt": "2018-10-10"
               }
              ],
           },
@@ -41,7 +41,7 @@
              "donations": [{
                  "donorUserName": "Nathan",
                  "donationAmount": 5,
-                 "donatedAt": "2018-10-10"
+                 "createdAt": "2018-10-10"
                }
              ],
           }
@@ -71,7 +71,7 @@
              "donations": [{
                 "donorUsername": "Justin",
                 "donationAmount": 10,
-                "donatedAt": "2018-10-10"
+                "createdAt": "2018-10-10"
               }
              ],
           },
@@ -88,7 +88,7 @@
              "donations": [{
                  "donorUserName": "Nathan",
                  "donationAmount": 5,
-                 "donatedAt": "2018-10-10"
+                 "createdAt": "2018-10-10"
                }
              ],
           }
