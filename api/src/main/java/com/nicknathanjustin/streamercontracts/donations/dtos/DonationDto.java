@@ -15,5 +15,5 @@ import java.sql.Timestamp;
 public class DonationDto {
     private BigDecimal donationAmount;
     private String donorUsername;
-    private Timestamp donatedAt;
+    private Timestamp createdAt;
 }

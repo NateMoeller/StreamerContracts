@@ -42,10 +42,17 @@ public interface ContractService {
      * Changes the state of a contract. All contract state transitions are expected to use this function.
      * Do not explicitly set the state.
      *
-     * @param contractModel contract to settle payment for
-     * @param newContractState The new contract state after the result of a vote.
+     * @param contractModel contract to set state on
+     * @param newContractState New contract state.
      */
     void setContractState(ContractModel contractModel, ContractState newContractState);
+
+    /**
+     * Settles payments for a contract by releasing each donation to either the donator or the streamer.
+     *
+     * @param contractModel the contract to settle payment for.
+     */
+    void settlePayments(ContractModel contractModel);
 
     /**
      * Gets all contracts in the given state for the given user.

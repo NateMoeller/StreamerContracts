@@ -18,8 +18,14 @@ public interface DonationService {
      * @param donationAmount The amount of money donated.
      * @param contractTimestamp The creation timestamp of the contract.
      * @param paypalPaymentId The paypal payment id of the transaction.
+     * @param authorizationId The authorizationId used to void or capture payment.
      */
-    void createDonation(ContractModel contractModel, UserModel donator, BigDecimal donationAmount, Timestamp contractTimestamp, String paypalPaymentId);
+    void createDonation(ContractModel contractModel,
+                        UserModel donator,
+                        BigDecimal donationAmount,
+                        Timestamp contractTimestamp,
+                        String paypalPaymentId,
+                        String authorizationId);
 
     /**
      * Gets a donation from the database given the donationId.
@@ -28,4 +34,15 @@ public interface DonationService {
      * @return An Optional<DonationModel> for the user.
      */
     Optional<DonationModel> getDonation(UUID donationId);
+
+    /**
+     * Settles a donation by either releasing money to streamer or returning money to donor.
+     *
+     * @param donationModel the donation to settle.
+     * @param releaseDonation flag indicating if the donation should be released and the streamer paid. Or if the
+     *                        donation should be returned to the donor.
+     * @return true if donation was settled correctly. False otherwise.
+     * @throws IllegalArgumentException Thrown when donation has already been settled.
+     */
+    boolean settleDonation(DonationModel donationModel, boolean releaseDonation) throws IllegalArgumentException;
 }

@@ -17,11 +17,11 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 10,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }, {
              "donorUserName": "Nathan",
              "donationAmount": 17.82,
-             "donatedAt": "2018-10-10"
+             "createdAt": "2018-10-10"
            }
          ]
       },
@@ -42,7 +42,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 10,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -63,7 +63,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 30,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -84,11 +84,11 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 1,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }, {
              "donorUserName": "Nathan",
              "donationAmount": 1,
-             "donatedAt": "2018-10-10"
+             "createdAt": "2018-10-10"
            }
          ]
       },
@@ -109,7 +109,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 10,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -130,7 +130,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 30,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -151,11 +151,11 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 1,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }, {
              "donorUserName": "Nathan",
              "donationAmount": 1,
-             "donatedAt": "2018-10-10"
+             "createdAt": "2018-10-10"
            }
          ]
       },
@@ -176,7 +176,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 10,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -197,7 +197,7 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 50,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }
          ]
       },
@@ -218,11 +218,11 @@
          "donations": [{
             "donorUsername": "Justin",
             "donationAmount": 1,
-            "donatedAt": "2018-10-10"
+            "createdAt": "2018-10-10"
           }, {
              "donorUserName": "Nathan",
              "donationAmount": 1,
-             "donatedAt": "2018-10-10"
+             "createdAt": "2018-10-10"
            }
          ]
       }

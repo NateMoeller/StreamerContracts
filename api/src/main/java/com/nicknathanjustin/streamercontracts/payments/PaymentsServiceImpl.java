@@ -5,18 +5,19 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
 
 @Slf4j
 public class PaymentsServiceImpl implements PaymentsService {
 
-    /**
-     * Client and secret are for paypal sandbox. Change these values later.
-     */
-    private static final String CLIENT_ID = "AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop";
-    private static final String CLIENT_SECRET = "EBJi9gvGJrKBwWDmIchrgLG2gWUQRAEjbM9jQyojkH16dXm0QUZfZnpMiZPTB1hXF8cFJVxnhUW-te5Q";
-    private static final String MODE = "sandbox";
+    @Value("${paypal.mode}")
+    private String MODE;
+    @Value("${paypal.clientId}")
+    private String CLIENT_ID;
+    @Value("${paypal.clientSecret}")
+    private String CLIENT_SECRET;
 
     @Override
     public Optional<Payment> executePayment(@NonNull final String paymentId) {

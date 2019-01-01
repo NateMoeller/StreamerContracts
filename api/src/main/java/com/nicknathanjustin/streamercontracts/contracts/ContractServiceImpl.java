@@ -1,6 +1,8 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.google.common.collect.ImmutableList;
 import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.donations.DonationService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.lang.Nullable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -19,8 +22,11 @@ import java.util.UUID;
 public class ContractServiceImpl implements ContractService {
 
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
+    private static final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
+    private static final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
 
     @NonNull final ContractModelRepository contractModelRepository;
+    @NonNull final DonationService donationService;
 
     @Override
     public ContractModel createContract(@NonNull final UserModel proposer, @NonNull final UserModel streamer, @Nullable final String game, @NonNull final String description) {
@@ -61,10 +67,22 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void setContractState(@NonNull final ContractModel contractModel, final ContractState newContractState) {
-        // TODO: loop through donations for the contract and either void or capture payPalPayments when the contract
-        // transitions to a "payable" state
         contractModel.setContractState(newContractState);
         contractModelRepository.save(contractModel);
+    }
+
+    @Override
+    public void settlePayments(@NonNull final ContractModel contractModel) {
+        final ContractState contractState = contractModel.getState();
+
+        if (payStreamerStates.contains(contractState)) {
+            contractModel.getDonations().forEach(donation -> donationService.settleDonation(donation, true));
+        } else if (payDonorStates.contains(contractState)) {
+            contractModel.getDonations().forEach(donation -> donationService.settleDonation(donation, false));
+        } else {
+            throw new IllegalStateException("Attempted to settle payments for contractId: " + contractModel.getId() +
+                    " when contract was in an illegal state: " + contractState);
+        }
     }
 
     @Override
