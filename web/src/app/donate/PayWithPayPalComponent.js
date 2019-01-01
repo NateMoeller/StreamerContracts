@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 const paypalSandboxClientID = process.env.REACT_APP_PAYPAL_SANDBOX_CLIENT_ID;
 const paypalProductionClientID = process.env.REACT_APP_PAYPAL_SANDBOX_CLIENT_ID;
-const paypalEnv = process.env.REACT_APP_PAYPAL_ENV + '';
+const paypalEnv = process.env.REACT_APP_PAYPAL_ENV;
 const paypalButtonContainer = 'paypal-button-container';
 
 class PayWithPayPalComponent extends Component {
