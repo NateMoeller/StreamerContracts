@@ -12,5 +12,5 @@ spring:
     host: bet-st-x776hjs3fk4j.e1fohh.0001.use1.cache.amazonaws.com
 
 paypal:
-  clientId: AV1uglYayHqWC42h0U24puljHEfM6qA6wLm0_ZxrTb2vw7nLQCqKXCUCEebvc5cso8CcAnBtncTLVitj
-  mode: live
+  clientId: AVbr-mNnSiaEKeAa97MPVerIi_G18U8GMqq8XyjXvAfRKH2bLhMy_Ue3XOtdNyjWScSalu8JoN3YJrnP
+  mode: sandbox
