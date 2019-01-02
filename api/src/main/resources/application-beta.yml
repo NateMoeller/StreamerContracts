@@ -13,4 +13,4 @@ spring:
 
 paypal:
   clientId: AV1uglYayHqWC42h0U24puljHEfM6qA6wLm0_ZxrTb2vw7nLQCqKXCUCEebvc5cso8CcAnBtncTLVitj
-  mode: production
+  mode: live
