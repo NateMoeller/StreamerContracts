@@ -41,8 +41,9 @@ twitch:
     jwtHeader: Authorization
 
 paypal:
-  clientId: AV_VKTQQlMAB8Fq58souv8_CazzqdHZS5pDF_H9L4eZIIH65I6LjvoSQVBHmgCk9-uJwtpsKxfOX9bop
-  clientSecret: EBJi9gvGJrKBwWDmIchrgLG2gWUQRAEjbM9jQyojkH16dXm0QUZfZnpMiZPTB1hXF8cFJVxnhUW-te5Q
+  clientId: AVbr-mNnSiaEKeAa97MPVerIi_G18U8GMqq8XyjXvAfRKH2bLhMy_Ue3XOtdNyjWScSalu8JoN3YJrnP
+  # Sandbox secret that wont have ill effects if leaked
+  clientSecret: EO77mhHNz4RQ0G3cY46jJ4uIvDBjDzr23ha8R7ewniXaF4FYV9Jd3uFZVwcArUXWwquapgv4zjX4xv0T
   mode: sandbox
 
 security:
