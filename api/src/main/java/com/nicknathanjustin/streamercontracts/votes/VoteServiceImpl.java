@@ -22,7 +22,10 @@ public class VoteServiceImpl implements VoteService{
     public void recordVote(@NonNull final UserModel voter,
                            @NonNull final ContractModel contractModel,
                            final boolean flaggedCompleted) {
-        assertContractIsVotable(contractModel);
+    	if (isContractPastSettleTimestamp(contractModel)) {
+            throw new IllegalStateException(String.format("Cannot vote on a contract that is past the settlement timestamp. Contract Id: %s Settles At: %s", contractModel.getId(), contractModel.getSettlesAt().toString()));
+        }
+        assertContractIsSettleable(contractModel);
         assertUserCanVoteOnContract(voter, contractModel);
 
         final VoteModel voteModel = VoteModel.builder()
@@ -65,12 +68,11 @@ public class VoteServiceImpl implements VoteService{
             log.info("Streamer has marked contract: {} as failed", contractId);
             voteOutcome = ContractState.FAILED;
         } else if(proposerVote == null && streamerVote == null) {
-            // If we get here we have already validated that the contract is in the ACCEPTED state and that the contract needs to be settled.
-            // If there are no votes on the contract, we will default to paying the streamer.
+            // If there are no votes on the contract, we will expire the contract.
             log.info("Neither Streamer nor Proposer voted on contract: {}. contractModel.getState(): {}",
                     contractId,
                     contractModel.getState());
-            voteOutcome = ContractState.COMPLETED;
+            voteOutcome = ContractState.EXPIRED;
         } else if(streamerVote == null) {
             log.info("Streamer did not vote on contract: {} and proposer did not mark contract complete. ProposerVote.isViewerFlaggedComplete(): {}",
                     contractModel.getId(),
@@ -82,6 +84,7 @@ public class VoteServiceImpl implements VoteService{
                     streamerVote.isViewerFlaggedComplete());
             voteOutcome = ContractState.COMPLETED;
         } else {
+        	// TODO: Implement community voting logic.
             log.info("Disputed outcome detected when completing contract: {}", contractId);
         }
         
@@ -140,25 +143,14 @@ public class VoteServiceImpl implements VoteService{
         }
     }
 
-    private void assertContractIsVotable(@NonNull final ContractModel contractModel) {
-        final UUID contractId = contractModel.getId();
-        if (contractModel.getState() != ContractState.ACCEPTED) {
-            throw new IllegalStateException(String.format("Cannot vote on a contract that has not been accepted. Contract Id: %s", contractId));
-        }
-
-        if (isContractPastSettleTimestamp(contractModel)) {
-            throw new IllegalStateException(String.format("Cannot vote on a contract that is past the settlement timestamp. Contract Id: %s Settles At: %s", contractId, contractModel.getSettlesAt().toString()));
-        }
-    }
-
     private void assertContractIsSettleable(@NonNull final ContractModel contractModel) {
         final UUID contractId = contractModel.getId();
         if (contractModel.isCommunityContract()) {
-            throw new IllegalStateException(String.format("Cannot settle a community contract because the logic has not yet been implemented. Contract Id: %s", contractId));
+            throw new IllegalStateException(String.format("Cannot operate on a community contract because the logic has not yet been implemented. Contract Id: %s", contractId));
         }
 
-        if (contractModel.getState() != ContractState.ACCEPTED) {
-            throw new IllegalStateException(String.format("Cannot settle a contract that has not been accepted. Contract Id: %s", contractId));
+        if (contractModel.getState() != ContractState.ACTIVE && contractModel.getState() != ContractState.OPEN) {
+            throw new IllegalStateException(String.format("Cannot operate on a contract that is not active or open. Contract Id: %s", contractId));
         }
     }
 

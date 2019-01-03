@@ -42,7 +42,7 @@ public class UsersApiController {
         final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
         final TwitchUser twitchUser = userService.getTwitchUserFromRequest(httpServletRequest);
         final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, userModel);
-        final long acceptedContracts = contractService.countByStateAndStreamer(ContractState.ACCEPTED, userModel);
+        final long activeContracts = contractService.countByStateAndStreamer(ContractState.ACTIVE, userModel);
         final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, userModel);
         final long expiredContracts = contractService.countByStateAndStreamer(ContractState.EXPIRED, userModel);
         final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, userModel);
@@ -53,7 +53,7 @@ public class UsersApiController {
                 twitchUser,
                 userModel,
                 openContracts,
-                acceptedContracts,
+                activeContracts,
                 declinedContracts,
                 expiredContracts,
                 completedContracts,

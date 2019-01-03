@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ContractsApiController {
-
+	
     @NonNull private final ContractService contractService;
     @NonNull private final SecurityService SecurityService;
     @NonNull private final UserService userService;
@@ -115,8 +117,8 @@ public class ContractsApiController {
         return ResponseEntity.ok(contracts);
     }
 
-    @RequestMapping(path = "accept", method = RequestMethod.PUT)
-    public ResponseEntity acceptContract(
+    @RequestMapping(path = "activate", method = RequestMethod.PUT)
+    public ResponseEntity activateContract(
             @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (SecurityService.isAnonymousRequest(httpServletRequest)) {
@@ -132,8 +134,8 @@ public class ContractsApiController {
         if (!contractModel.getState().equals(ContractState.OPEN)) {
             throw new IllegalStateException(String.format("Cannot accept a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
-
-        contractService.setContractState(contractModel, ContractState.ACCEPTED);
+        
+        contractService.activeContract(contractModel);
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -11,14 +11,17 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Repository
 public interface ContractModelRepository extends CrudRepository<ContractModel, UUID> {
+	
+	List<ContractModel> findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState state, UserModel streamer);
 
     long countByStateAndStreamer(ContractState state, UserModel streamer);
-
+    
     @Query("SELECT contractModel " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.settlesAt < :currentTimestamp " +

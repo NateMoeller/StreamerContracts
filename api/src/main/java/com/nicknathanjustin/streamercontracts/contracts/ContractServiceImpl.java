@@ -8,6 +8,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
@@ -24,6 +26,7 @@ public class ContractServiceImpl implements ContractService {
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
     private static final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
     private static final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
+    private static final int MAX_ACTIVE_CONTRACTS = 1;
 
     @NonNull final ContractModelRepository contractModelRepository;
     @NonNull final DonationService donationService;
@@ -42,7 +45,8 @@ public class ContractServiceImpl implements ContractService {
                 .game(game)
                 .description(description)
                 .proposedAt(creationTimestamp)
-                .acceptedAt(null)
+                .activatedAt(null)
+                .deactivatedAt(null)
                 .declinedAt(null)
                 .settlesAt(settlesTimestamp)
                 .expiredAt(null)
@@ -126,5 +130,21 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public BigDecimal getMoneyForStreamerAndState(UserModel streamer, ContractState state) {
         return contractModelRepository.getMoneyForStreamerAndState(streamer.getTwitchUsername(), state);
+    }
+    
+    @Override
+    public void activeContract(@NonNull final ContractModel contractModel) {
+    	List<ContractModel> activeContracts = contractModelRepository.findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState.ACTIVE, contractModel.getStreamer());
+        if (activeContracts.size() > MAX_ACTIVE_CONTRACTS) {
+        	throw new IllegalStateException(String.format("Cannot have more than %s active contracts. Streamer Id: %s", MAX_ACTIVE_CONTRACTS, contractModel.getStreamer().getId()));
+        } else if (activeContracts.size() + 1 < MAX_ACTIVE_CONTRACTS) {
+        	this.setContractState(contractModel, ContractState.ACTIVE);
+        } else {
+        	// We will employ a LIFO policy for active contracts. The least recently active contract
+        	// will be deactivated.
+        	ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
+        	this.setContractState(oldestActiveContract, ContractState.OPEN);
+        	this.setContractState(contractModel, ContractState.ACTIVE);
+        }
     }
 }

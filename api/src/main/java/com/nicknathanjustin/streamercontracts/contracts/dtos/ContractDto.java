@@ -22,7 +22,8 @@ public class ContractDto {
     private boolean isCommunity;
     private String game;
     private Timestamp proposedAt;
-    private Timestamp acceptedAt;
+    private Timestamp activatedAt;
+    private Timestamp deactivatedAt;
     private Timestamp declinedAt;
     private Timestamp settlesAt;
     private Timestamp expiredAt;
@@ -40,7 +41,8 @@ public class ContractDto {
         isCommunity = contract.isCommunityContract();
         game = contract.getGame();
         proposedAt = contract.getProposedAt();
-        acceptedAt = contract.getAcceptedAt();
+        activatedAt = contract.getActivatedAt();
+        deactivatedAt = contract.getDeactivatedAt();
         declinedAt = contract.getDeclinedAt();
         settlesAt = contract.getSettlesAt();
         expiredAt = contract.getExpiredAt();

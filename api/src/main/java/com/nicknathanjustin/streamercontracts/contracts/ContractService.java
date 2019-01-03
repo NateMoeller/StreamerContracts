@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -128,4 +129,11 @@ public interface ContractService {
      * @return the total amount of money the streamer has earned.
      */
     BigDecimal getMoneyForStreamerAndState(UserModel streamer, ContractState state);
+    
+    /**
+     * Activates the contract.
+     *
+     * @param contractModel The contract to activate.
+     */
+    void activeContract(ContractModel contractModel);
 }
