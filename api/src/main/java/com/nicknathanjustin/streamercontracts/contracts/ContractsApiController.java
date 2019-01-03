@@ -35,7 +35,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class ContractsApiController {
-	
+
     @NonNull private final ContractService contractService;
     @NonNull private final SecurityService SecurityService;
     @NonNull private final UserService userService;
@@ -134,7 +134,7 @@ public class ContractsApiController {
         if (!contractModel.getState().equals(ContractState.OPEN)) {
             throw new IllegalStateException(String.format("Cannot accept a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
-        
+ 
         contractService.activeContract(contractModel);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -84,7 +84,7 @@ public class VoteServiceImpl implements VoteService{
                     streamerVote.isViewerFlaggedComplete());
             voteOutcome = ContractState.COMPLETED;
         } else {
-        	// TODO: Implement community voting logic.
+            // TODO: Implement community voting logic.
             log.info("Disputed outcome detected when completing contract: {}", contractId);
         }
         
