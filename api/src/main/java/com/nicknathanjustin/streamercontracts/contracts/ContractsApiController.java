@@ -135,7 +135,7 @@ public class ContractsApiController {
             throw new IllegalStateException(String.format("Cannot accept a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
  
-        contractService.activeContract(contractModel);
+        contractService.activateContract(contractModel);
         return new ResponseEntity(HttpStatus.OK);
     }
 
