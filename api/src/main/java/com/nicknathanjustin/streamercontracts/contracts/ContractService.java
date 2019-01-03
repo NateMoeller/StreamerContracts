@@ -135,5 +135,5 @@ public interface ContractService {
      *
      * @param contractModel The contract to activate.
      */
-    void activeContract(ContractModel contractModel);
+    void activateContract(ContractModel contractModel);
 }

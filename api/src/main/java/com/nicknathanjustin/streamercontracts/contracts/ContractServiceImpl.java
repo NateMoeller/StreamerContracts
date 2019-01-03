@@ -133,7 +133,7 @@ public class ContractServiceImpl implements ContractService {
     }
     
     @Override
-    public void activeContract(@NonNull final ContractModel contractModel) {
+    public void activateContract(@NonNull final ContractModel contractModel) {
         List<ContractModel> activeContracts = contractModelRepository.findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState.ACTIVE, contractModel.getStreamer());
         if (activeContracts.size() > MAX_ACTIVE_CONTRACTS) {
             throw new IllegalStateException(String.format("Cannot have more than %s active contracts. Streamer Id: %s", MAX_ACTIVE_CONTRACTS, contractModel.getStreamer().getId()));
