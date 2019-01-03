@@ -4,7 +4,7 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
+import { OPEN, ACTIVE, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import styles from './BountyDetails.scss';
 
 class BountyDetails extends Component {
@@ -91,7 +91,7 @@ class BountyDetails extends Component {
       return this.getDeclinedIcon();
     } else if (curBounty.state === EXPIRED || curBounty.state === FAILED) {
       return this.getFailedIcon();
-    } else if (curBounty.state === ACCEPTED && (this.props.isStreamer || this.props.isDonor)) {
+    } else if (curBounty.state === ACTIVE && (this.props.isStreamer || this.props.isDonor)) {
       return this.getAcceptButtons();
     } else if (curBounty.state === OPEN && this.props.isStreamer) {
       return this.getOpenButtons();
