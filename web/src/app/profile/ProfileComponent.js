@@ -1,5 +1,6 @@
-import { Alert, Button, Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
+import { Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
 import React, { Component } from 'react';
+import MyActiveBountyContainer from '../common/activeBounty/MyActiveBountyContainer';
 import AlertComponent from './AlertComponent/AlertComponent';
 import DonationsComponent from './DonationsComponent/DonationsComponent';
 import MyBountiesComponent from './MyBountiesComponent/MyBountiesComponent';
@@ -108,6 +109,9 @@ class ProfileComponent extends Component {
 
     return (
       <Grid className="content">
+        <MyActiveBountyContainer
+          twitchUserName={this.props.user.displayName}
+        />
         <Col xs={3} md={2} className={styles.sidebar}>
           <Row>
             <Image src={this.props.user.profileImageUrl} thumbnail />

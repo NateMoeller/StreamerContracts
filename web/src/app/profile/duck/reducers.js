@@ -6,6 +6,7 @@ import {
   RECEIVE_MY_DONATIONS,
   REQUEST_MY_BOUNTIES,
   RECEIVE_MY_BOUNTIES,
+  RECEIVE_ACTIVE_BOUNTIES
 } from './types';
 
 const INITIAL_STATE = {
@@ -15,7 +16,8 @@ const INITIAL_STATE = {
   donations: [],
   bounties: [],
   totalBounties: 0,
-  totalDonations: 0
+  totalDonations: 0,
+  activeBounties: []
 };
 
 /* global sessionStorage */
@@ -61,6 +63,12 @@ const profileReducer = (state = INITIAL_STATE, action) => {
         showSpinner: false,
         bounties: action.data.content,
         totalBounties: action.data.totalElements
+      }
+    }
+    case RECEIVE_ACTIVE_BOUNTIES: {
+      return {
+        ...state,
+        activeBounties: action.data.content
       }
     }
     default: {

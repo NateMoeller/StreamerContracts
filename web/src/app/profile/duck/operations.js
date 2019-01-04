@@ -15,7 +15,9 @@ import {
   receiveRemoveBountySuccess,
   receiveRemoveBountyFailure,
   requestVoteBounty,
-  receiveVoteBounty
+  receiveVoteBounty,
+  requestActiveBounties,
+  receiveActiveBounties
 } from './actions';
 import RestClient from '../../RestClient';
 
@@ -108,6 +110,17 @@ const removeBounty = (contractId, callback = null) => (dispatch) => {
   })
 }
 
+const getMyActiveBounties = (username) => (dispatch) => {
+  dispatch(requestActiveBounties());
+  const page = 0;
+  const pageSize = 10;
+
+  let url = `bounties/streamerBounties/${page}/${pageSize}?username=${username}&state=ACCEPTED`; // TODO: change to "ACTIVE"
+  RestClient.GET(url, (response) => {
+    dispatch(receiveActiveBounties(response.data));
+  }); // front end does nothing on error
+}
+
 export default {
   getUser,
   testAlert,
@@ -115,5 +128,6 @@ export default {
   listDonorBounties,
   listStreamerBounties,
   acceptBounty,
-  removeBounty
+  removeBounty,
+  getMyActiveBounties
 };
