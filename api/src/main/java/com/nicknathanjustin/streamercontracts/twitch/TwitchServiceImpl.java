@@ -28,6 +28,12 @@ public class TwitchServiceImpl implements TwitchService {
     }
 
     @Override
+    public Map<String, List<Map<String, Object>>> getGame(@NonNull final String gameName) {
+        final ResponseEntity<Map> response = queryTwitch("https://api.twitch.tv/helix/games?name=" + gameName);
+        return response.getBody();
+    }
+
+    @Override
     public Optional<TwitchUser> getTwitchUserFromUsername(@NonNull final String twitchUsername) {
         final ResponseEntity<Map> response = queryTwitch(userInfoUri + "?login=" + twitchUsername);
         final Map<String, List<Map<String, Object>>> details = response.getBody();

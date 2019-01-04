@@ -17,6 +17,14 @@ public interface TwitchService {
     Map<String, List<Map<String, Object>>> getTopGames();
 
     /**
+     * Get the a game from the twitch api
+     *
+     * @return A Map with 1 field, data.
+     * data contains the game
+     */
+    Map<String, List<Map<String, Object>>> getGame(String gameName);
+
+    /**
      * Gets the TwitchUser object from Twitch API
      *
      * @param twitchUsername The username of the twitch user
