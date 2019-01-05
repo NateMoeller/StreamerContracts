@@ -22,8 +22,8 @@ import java.util.UUID;
 public class ContractServiceImpl implements ContractService {
 
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
-    private static final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
-    private static final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
+    private static final List PAY_STREAMER_STATES = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
+    private static final List PAY_DONOR_STATES = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
 
     @NonNull final ContractModelRepository contractModelRepository;
     @NonNull final DonationService donationService;
@@ -75,9 +75,9 @@ public class ContractServiceImpl implements ContractService {
     public void settlePayments(@NonNull final ContractModel contractModel) {
         final ContractState contractState = contractModel.getState();
 
-        if (payStreamerStates.contains(contractState)) {
+        if (PAY_STREAMER_STATES.contains(contractState)) {
             contractModel.getDonations().forEach(donation -> donationService.settleDonation(donation, true));
-        } else if (payDonorStates.contains(contractState)) {
+        } else if (PAY_DONOR_STATES.contains(contractState)) {
             contractModel.getDonations().forEach(donation -> donationService.settleDonation(donation, false));
         } else {
             throw new IllegalStateException("Attempted to settle payments for contractId: " + contractModel.getId() +
