@@ -4,6 +4,7 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { OPEN, ACTIVE, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import RestClient from '../../RestClient';
@@ -43,11 +44,11 @@ class BountyDetails extends Component {
     );
   }
 
-  getFailedIcon() {
+  getFailedIcon(text) {
     return (
       <div className={styles.rightButtons}>
         <div className={styles.failed}><Glyphicon glyph="remove" /></div>
-        <div className={styles.text}>Failed</div>
+        <div className={styles.text}>{text}</div>
       </div>
     );
   }
@@ -112,11 +113,16 @@ class BountyDetails extends Component {
     } else if (curBounty.state === DECLINED) {
       return this.getDeclinedIcon();
     } else if (curBounty.state === EXPIRED || curBounty.state === FAILED) {
-      return this.getFailedIcon();
+      const text = curBounty.state === EXPIRED ? 'Expired' : 'Failed';
+      return this.getFailedIcon(text);
     } else if (curBounty.state === ACTIVE && (this.props.isStreamer || this.props.isDonor)) {
       return this.getAcceptButtons();
-    } else if (curBounty.state === OPEN && this.props.isStreamer) {
-      return this.getOpenButtons();
+    } else if (curBounty.state === OPEN) {
+      if (this.props.isStreamer) {
+        return this.getOpenButtons();
+      } else if (this.props.isDonor) {
+        return this.getAcceptButtons();
+      }
     }
 
     return '';
@@ -168,7 +174,7 @@ class BountyDetails extends Component {
             </div>
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Amount:</div>
-              <div className={styles.statCell}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
+              <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
             </div>
           </div>
         </div>

@@ -79,6 +79,11 @@
         .statCell {
           display: table-cell;
         }
+
+        .money {
+          color: $money-green;
+          font-weight: 500;
+        }
       }
     }
   }
