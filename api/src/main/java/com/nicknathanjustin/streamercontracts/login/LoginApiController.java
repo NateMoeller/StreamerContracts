@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.login;
 
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.io.IOException;
 public class LoginApiController {
 
     @NonNull private final LoginService loginService;
+    @NonNull private final SecurityService securityService;
 
     @Value("${application.frontEndUrl}")
     private String frontEndUrl;
@@ -33,7 +35,9 @@ public class LoginApiController {
         // Since its difficult to move the redirect, we'll have "/" function as the OauthSuccessRedirect when we see
         // a request from our Oauth login flow
         if(isOauthSuccessRedirect(auth, request)) {
-            loginService.logUserIn(auth);
+            if (!securityService.isAnonymousRequest(request)) {
+                loginService.logUserIn(auth);
+            }
             response.sendRedirect(frontEndUrl + "/profile");
         }
     }
