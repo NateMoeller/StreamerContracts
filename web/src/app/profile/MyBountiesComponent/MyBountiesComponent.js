@@ -20,6 +20,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
 import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import LoadingComponent from '../../common/loading/LoadingComponent';
+import ReportBounty from '../ReportBounty/ReportBounty';
 import styles from '../DonationsComponent/DonationsComponentStyles.scss';
 import tableStyles from '../../tableStyles.scss';
 
@@ -32,6 +33,7 @@ class MyBountiesComponent extends Component {
     this.state = {
       curBounty: null,
       curPage: 1,
+      reportBounty: null,
       bountyFilter: OPEN
     };
   }
@@ -178,7 +180,7 @@ class MyBountiesComponent extends Component {
   getOpenDropdownMenu(row) {
     const tooltip = (
       <Tooltip id="tooltip">
-        Offensive content? We'll review the bounty
+        Something we should look at? Let us know
       </Tooltip>
     );
     const acceptPopover = (
@@ -216,7 +218,7 @@ class MyBountiesComponent extends Component {
           </OverlayTrigger>
           <MenuItem divider />
           <OverlayTrigger placement="left" overlay={tooltip}>
-            <MenuItem eventKey="3">Report bounty</MenuItem>
+            <MenuItem eventKey="3" onClick={() => this.setState({ reportBounty: row.contractId })}>Report bounty</MenuItem>
           </OverlayTrigger>
         </DropdownButton>
       </ButtonToolbar>
@@ -320,6 +322,7 @@ class MyBountiesComponent extends Component {
     if (this.state.curBounty === null) {
       return (
         <div className={tableStyles.table}>
+          <ReportBounty contractId={this.state.reportBounty} visible={this.state.reportBounty !== null} close={() => this.setState({ reportBounty: null })} />
           <div className={tableStyles.typeDropdown}>
             <form>
               <FormGroup controlId="formControlsSelect">

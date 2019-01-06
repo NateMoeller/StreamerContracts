@@ -15,7 +15,9 @@ import {
   receiveRemoveBountySuccess,
   receiveRemoveBountyFailure,
   requestVoteBounty,
-  receiveVoteBounty
+  receiveVoteBounty,
+  requestReportBounty,
+  receiveReportBounty
 } from './actions';
 import RestClient from '../../RestClient';
 
@@ -108,6 +110,19 @@ const removeBounty = (contractId, callback = null) => (dispatch) => {
   })
 }
 
+const reportBounty = (contactEmail, report, reportedContractId = null) => (dispatch) => {
+  const payload = {
+    report,
+    contactEmail,
+    reportedContractId
+  };
+  dispatch(requestReportBounty());
+
+  RestClient.POST('report', payload, (response) => {
+    dispatch(receiveReportBounty());
+  });
+}
+
 export default {
   getUser,
   testAlert,
@@ -115,5 +130,6 @@ export default {
   listDonorBounties,
   listStreamerBounties,
   acceptBounty,
-  removeBounty
+  removeBounty,
+  reportBounty
 };
