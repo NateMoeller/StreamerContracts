@@ -14,6 +14,3 @@ spring:
 paypal:
   clientId: AVbr-mNnSiaEKeAa97MPVerIi_G18U8GMqq8XyjXvAfRKH2bLhMy_Ue3XOtdNyjWScSalu8JoN3YJrnP
   mode: sandbox
-
-twitch:
-  whiteListedAccounts: nckackerman, M1sterc001guy, vgame18
