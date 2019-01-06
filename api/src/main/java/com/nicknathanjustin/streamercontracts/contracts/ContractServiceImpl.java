@@ -1,15 +1,13 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.google.common.collect.ImmutableList;
-import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.donations.DonationService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
@@ -90,35 +88,50 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<ContractDto> getContractsForStreamerAndState(@NonNull final UserModel user, @NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForStreamerAndState(
-                user.getTwitchUsername(),
-                state,
-                pageable);
+    public Page<Contract> getContractsForStreamerAndState(
+            @NonNull final UserModel user, 
+            @NonNull final ContractState state, 
+            @NonNull final Pageable pageable, 
+            final boolean isLoggedIn) {
+        return isLoggedIn ? 
+                contractModelRepository.findAllPrivateContractsForStreamerAndState(user.getTwitchUsername(), state, pageable) :
+                contractModelRepository.findAllPublicContractsForStreamerAndState(user.getTwitchUsername(), state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForStreamer(@NonNull final UserModel user, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForStreamer(user.getTwitchUsername(), pageable);
+    public Page<Contract> getContractsForStreamer(
+            @NonNull final UserModel user, 
+            @NonNull final Pageable pageable,
+            final boolean isLoggedIn) {
+        return isLoggedIn ? 
+                contractModelRepository.findAllPrivateContractsForStreamer(user.getTwitchUsername(), pageable) :
+                contractModelRepository.findAllPublicContractsForStreamer(user.getTwitchUsername(), pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForState(@NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForState(state, pageable);
+    public Page<Contract> getContractsForState(
+            @NonNull final ContractState state,
+            @NonNull final Pageable pageable,
+            final boolean isLoggedIn) {
+        return isLoggedIn ? 
+                contractModelRepository.findAllPrivateContractsForState(state, pageable) :
+                contractModelRepository.findAllPublicContractsForState(state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getAllContracts(@NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContracts(pageable);
+    public Page<Contract> getAllContracts(@NonNull final Pageable pageable, final boolean isLoggedIn) {
+        return isLoggedIn ? 
+                contractModelRepository.findAllPrivateContracts(pageable) :
+                contractModelRepository.findAllPublicContracts(pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForDonatorAndState(@NonNull final UserModel donator, @NonNull final ContractState state, @NonNull final Pageable pageable) {
+    public Page<Contract> getContractsForDonatorAndState(@NonNull final UserModel donator, @NonNull final ContractState state, @NonNull final Pageable pageable) {
         return contractModelRepository.findAllContractsForDonatorAndState(donator.getTwitchUsername(), state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForDonator(@NonNull final UserModel donator, @NonNull final Pageable pageable) {
+    public Page<Contract> getContractsForDonator(@NonNull final UserModel donator, @NonNull final Pageable pageable) {
         return contractModelRepository.findAllContractsForDonator(donator.getTwitchUsername(), pageable);
     }
 

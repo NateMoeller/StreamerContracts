@@ -2,6 +2,8 @@ package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.donations.DonationModel;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -79,6 +81,9 @@ public class ContractModel {
 
     @OneToMany(mappedBy = "contract")
     private List<DonationModel> donations;
+    
+    @OneToMany(mappedBy = "contract")
+    private List<VoteModel> votes;
 
     public void setContractState(final ContractState newContractState) {
         state = newContractState;

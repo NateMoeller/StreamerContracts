@@ -1,6 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
-import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
@@ -75,21 +75,28 @@ public class ContractsApiController {
 
     @RequestMapping(path = "streamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
     public ResponseEntity listContractsForStreamer(
+            @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state,
             @RequestParam("username") @Nullable final String username) {
+        final UserModel user = userService.getUserModelFromRequest(httpServletRequest);
         final Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ContractDto> contracts = null;
-        final UserModel streamer = userService.getUser(username).orElse(null);
+        Page<Contract> contracts = null;
+        final UserModel streamer = username != null ? userService.getUser(username).orElse(null) : null;
+        boolean isLoggedIn = false;
+        if (streamer != null && user != null) {
+            isLoggedIn = user.getTwitchUsername().equals(streamer.getTwitchUsername());
+        }
+
         if (streamer != null && state != null) {
-            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable);
+            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable, isLoggedIn);
         } else if (streamer != null) {
-            contracts = contractService.getContractsForStreamer(streamer, pageable);
+            contracts = contractService.getContractsForStreamer(streamer, pageable, isLoggedIn);
         } else if (state != null) {
-            contracts = contractService.getContractsForState(state, pageable);
+            contracts = contractService.getContractsForState(state, pageable, isLoggedIn);
         } else {
-            contracts = contractService.getAllContracts(pageable);
+            contracts = contractService.getAllContracts(pageable, isLoggedIn);
         }
 
         return ResponseEntity.ok(contracts);
@@ -107,7 +114,7 @@ public class ContractsApiController {
 
         final UserModel donor = userService.getUserModelFromRequest(httpServletRequest);
         final Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ContractDto> contracts = null;
+        Page<Contract> contracts = null;
         if (state != null) {
             contracts = contractService.getContractsForDonatorAndState(donor, state, pageable);
         } else {
@@ -153,8 +160,8 @@ public class ContractsApiController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        if (!contractModel.getState().equals(ContractState.OPEN)) {
-            throw new IllegalStateException(String.format("Cannot decline a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
+        if (!contractModel.getState().equals(ContractState.OPEN) && !contractModel.getState().equals(ContractState.ACTIVE)) {
+            throw new IllegalStateException(String.format("Cannot decline a contract that is not OPEN or ACTIVE. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
 
         contractService.setContractState(contractModel, ContractState.DECLINED);

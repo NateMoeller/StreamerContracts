@@ -1,6 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
-import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,35 +61,39 @@ public interface ContractService {
      * @param streamer The user to retrieve contracts by.
      * @param state The state to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
+     * @param isLoggedIn flag that indicates if the user is logged in.
      * @return a set of all contracts in the given state for the given user.
      */
-    Page<ContractDto> getContractsForStreamerAndState(UserModel streamer, ContractState state, Pageable pageable);
+    Page<Contract> getContractsForStreamerAndState(UserModel streamer, ContractState state, Pageable pageable, boolean isLoggedIn);
 
     /**
      * Gets all contracts for the given user.
      *
      * @param streamer The user to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
+     * @param isLoggedIn flag that indicates if the user is logged in.
      * @return a set of all contracts for the given user.
      */
-    Page<ContractDto> getContractsForStreamer(UserModel streamer, Pageable pageable);
+    Page<Contract> getContractsForStreamer(UserModel streamer, Pageable pageable, boolean isLoggedIn);
 
     /**
      * Gets all contracts in the given state.
      *
      * @param state The state to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
+     * @param isLoggedIn flag that indicates if the user is logged in.
      * @return a set of all contracts in the given state for the given user.
      */
-    Page<ContractDto> getContractsForState(ContractState state, Pageable pageable);
+    Page<Contract> getContractsForState(ContractState state, Pageable pageable, boolean isLoggedIn);
 
     /**
      * Gets all contracts.
      *
      * @param pageable identifies the page number and pagesize to retrieve
+     * @param isLoggedIn flag that indicates if the user is logged in.
      * @return all of the contracts.
      */
-    Page<ContractDto> getAllContracts(Pageable pageable);
+    Page<Contract> getAllContracts(Pageable pageable, boolean isLoggedIn);
 
     /**
      * Gets all contracts where the contract contains a donation from the given proposer
@@ -101,7 +105,7 @@ public interface ContractService {
      * @return all contracts where the contract contains a donation from the given proposer
      * and is in the given state.
      */
-    Page<ContractDto> getContractsForDonatorAndState(UserModel donator, ContractState state, Pageable pageable);
+    Page<Contract> getContractsForDonatorAndState(UserModel donator, ContractState state, Pageable pageable);
 
     /**
      * Gets all contracts where the contract contains a donation from the given proposer.
@@ -110,7 +114,7 @@ public interface ContractService {
      * @param pageable identifies the page number and pagesize to retrieve
      * @return a set of all contracts in the given state for the given user.
      */
-    Page<ContractDto> getContractsForDonator(UserModel donator, Pageable pageable);
+    Page<Contract> getContractsForDonator(UserModel donator, Pageable pageable);
 
     /**
      * Counts the contracts given the state and the streamer.
