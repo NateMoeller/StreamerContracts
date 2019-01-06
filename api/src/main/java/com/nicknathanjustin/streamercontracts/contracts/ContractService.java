@@ -49,7 +49,7 @@ public interface ContractService {
     void setContractState(ContractModel contractModel, ContractState newContractState);
 
     /**
-     * Settles payments for a contract by releasing each donation to either the donator or the streamer.
+     * Settles payments for a contract by releasing each donation to either the donor or the streamer.
      *
      * @param contractModel the contract to settle payment for.
      */
@@ -99,22 +99,22 @@ public interface ContractService {
      * Gets all contracts where the contract contains a donation from the given proposer
      * and is in the given state.
      *
-     * @param donator The user to retrieve contracts by.
+     * @param donor The user to retrieve contracts by.
      * @param state The state to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
      * @return all contracts where the contract contains a donation from the given proposer
      * and is in the given state.
      */
-    Page<Contract> getContractsForDonatorAndState(UserModel donator, ContractState state, Pageable pageable);
+    Page<Contract> getContractsForDonorAndState(UserModel donor, ContractState state, Pageable pageable);
 
     /**
      * Gets all contracts where the contract contains a donation from the given proposer.
      *
-     * @param donator The user to retrieve contracts by.
+     * @param donor The user to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
      * @return a set of all contracts in the given state for the given user.
      */
-    Page<Contract> getContractsForDonator(UserModel donator, Pageable pageable);
+    Page<Contract> getContractsForDonor(UserModel donor, Pageable pageable);
 
     /**
      * Counts the contracts given the state and the streamer.

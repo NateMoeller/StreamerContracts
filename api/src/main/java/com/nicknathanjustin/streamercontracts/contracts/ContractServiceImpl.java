@@ -126,13 +126,13 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<Contract> getContractsForDonatorAndState(@NonNull final UserModel donator, @NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForDonatorAndState(donator.getTwitchUsername(), state, pageable);
+    public Page<Contract> getContractsForDonorAndState(@NonNull final UserModel donor, @NonNull final ContractState state, @NonNull final Pageable pageable) {
+        return contractModelRepository.findAllContractsForDonorAndState(donor.getTwitchUsername(), state, pageable);
     }
 
     @Override
-    public Page<Contract> getContractsForDonator(@NonNull final UserModel donator, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForDonator(donator.getTwitchUsername(), pageable);
+    public Page<Contract> getContractsForDonor(@NonNull final UserModel donor, @NonNull final Pageable pageable) {
+        return contractModelRepository.findAllContractsForDonor(donor.getTwitchUsername(), pageable);
     }
 
     @Override

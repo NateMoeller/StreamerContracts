@@ -116,9 +116,9 @@ public class ContractsApiController {
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<Contract> contracts = null;
         if (state != null) {
-            contracts = contractService.getContractsForDonatorAndState(donor, state, pageable);
+            contracts = contractService.getContractsForDonorAndState(donor, state, pageable);
         } else {
-            contracts = contractService.getContractsForDonator(donor, pageable);
+            contracts = contractService.getContractsForDonor(donor, pageable);
         }
 
         return ResponseEntity.ok(contracts);
