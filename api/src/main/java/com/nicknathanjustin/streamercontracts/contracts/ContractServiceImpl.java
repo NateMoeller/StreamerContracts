@@ -147,7 +147,7 @@ public class ContractServiceImpl implements ContractService {
     
     @Override
     public void activateContract(@NonNull final ContractModel contractModel) {
-        List<ContractModel> activeContracts = contractModelRepository.findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState.ACTIVE, contractModel.getStreamer());
+        final List<ContractModel> activeContracts = contractModelRepository.findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState.ACTIVE, contractModel.getStreamer());
         if (activeContracts.size() > MAX_ACTIVE_CONTRACTS) {
             throw new IllegalStateException(String.format("Cannot have more than %s active contracts. Streamer Id: %s", MAX_ACTIVE_CONTRACTS, contractModel.getStreamer().getId()));
         } else if (activeContracts.size() < MAX_ACTIVE_CONTRACTS) {
@@ -155,7 +155,7 @@ public class ContractServiceImpl implements ContractService {
         } else {
             // We will employ a LIFO policy for active contracts. The least recently active contract
             // will be deactivated.
-            ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
+            final ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
             this.setContractState(oldestActiveContract, ContractState.OPEN);
             this.setContractState(contractModel, ContractState.ACTIVE);
         }

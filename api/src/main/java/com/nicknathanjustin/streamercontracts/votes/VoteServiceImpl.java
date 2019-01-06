@@ -68,7 +68,6 @@ public class VoteServiceImpl implements VoteService{
             log.info("Streamer has marked contract: {} as failed", contractId);
             voteOutcome = ContractState.FAILED;
         } else if(proposerVote == null && streamerVote == null) {
-            // If there are no votes on the contract, we will expire the contract.
             log.info("Neither Streamer nor Proposer voted on contract: {}. contractModel.getState(): {}",
                     contractId,
                     contractModel.getState());
