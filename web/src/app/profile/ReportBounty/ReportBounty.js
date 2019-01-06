@@ -26,6 +26,8 @@ class ReportBounty extends Component {
       emailError: null,
       reportError: null
     }
+
+    this.reportBountyDiv = React.createRef();
   }
 
   validateEmail() {
@@ -78,25 +80,27 @@ class ReportBounty extends Component {
   }
 
   submit = () => {
-    this.props.close();
     this.props.reportBounty(this.state.email, this.state.reportText, this.props.contractId);
+    this.props.close();
     this.setState({
       email: '',
       reportText: ''
-    })
+    });
   }
 
   render() {
     if (this.props.contractId === null) {
-      // TODO: slitOut
-      return <div className={cx(styles.reportBounty, styles.slitOut)}></div>;
+      if (this.reportBountyDiv.current) {
+        return <div className={cx(styles.reportBounty, styles.slitOut)}></div>;
+      }
+      return null;
     }
 
     const emailErrorMessage = this.state.emailError !== null ? this.state.emailError.message : '';
     const reportErrorMessage = this.state.reportError !== null ? this.state.reportError.message : '';
 
     return (
-      <div className={cx(styles.reportBounty, styles.slitIn)}>
+      <div className={cx(styles.reportBounty, styles.slitIn)} ref={this.reportBountyDiv}>
         <FormGroup validationState={this.state.emailError ? this.state.emailError.type : null}>
           <ControlLabel>Report Bounty</ControlLabel>
           <div className={styles.row}>
