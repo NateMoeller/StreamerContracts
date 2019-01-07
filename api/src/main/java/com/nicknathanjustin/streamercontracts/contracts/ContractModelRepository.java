@@ -44,19 +44,6 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
            "ORDER BY contractModel.proposedAt DESC")
     Page<Contract> findAllPrivateContractsForStreamer(@Param("streamer") String streamer, Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
-                "contractModel) " +
-           "FROM ContractModel contractModel " +
-           "WHERE contractModel.state = :state " +
-           "ORDER BY contractModel.proposedAt DESC")
-    Page<Contract> findAllPrivateContractsForState(@Param("state") ContractState state, Pageable pageable);
-
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
-                "contractModel) " +
-           "FROM ContractModel contractModel  " +
-           "ORDER BY contractModel.proposedAt DESC")
-    Page<Contract> findAllPrivateContracts(Pageable pageable);
-    
     @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PublicContract(" +
                 "contractModel) " +
            "FROM ContractModel contractModel " +

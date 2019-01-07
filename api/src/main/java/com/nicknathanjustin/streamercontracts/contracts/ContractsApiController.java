@@ -84,19 +84,15 @@ public class ContractsApiController {
         final Pageable pageable = PageRequest.of(page, pageSize);
         Page<Contract> contracts = null;
         final UserModel streamer = username != null ? userService.getUser(username).orElse(null) : null;
-        boolean isLoggedIn = false;
-        if (streamer != null && user != null) {
-            isLoggedIn = user.getTwitchUsername().equals(streamer.getTwitchUsername());
-        }
 
         if (streamer != null && state != null) {
-            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable, isLoggedIn);
+            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable, user.getTwitchUsername());
         } else if (streamer != null) {
-            contracts = contractService.getContractsForStreamer(streamer, pageable, isLoggedIn);
+            contracts = contractService.getContractsForStreamer(streamer, pageable, user.getTwitchUsername());
         } else if (state != null) {
-            contracts = contractService.getContractsForState(state, pageable, isLoggedIn);
+            contracts = contractService.getContractsForState(state, pageable);
         } else {
-            contracts = contractService.getAllContracts(pageable, isLoggedIn);
+            contracts = contractService.getAllContracts(pageable);
         }
 
         return ResponseEntity.ok(contracts);

@@ -22,9 +22,6 @@ public class VoteServiceImpl implements VoteService{
     public void recordVote(@NonNull final UserModel voter,
                            @NonNull final ContractModel contractModel,
                            final boolean flaggedCompleted) {
-    	if (isContractPastSettleTimestamp(contractModel)) {
-            throw new IllegalStateException(String.format("Cannot vote on a contract that is past the settlement timestamp. Contract Id: %s Settles At: %s", contractModel.getId(), contractModel.getSettlesAt().toString()));
-        }
         assertContractIsSettleable(contractModel);
         assertUserCanVoteOnContract(voter, contractModel);
 
@@ -115,6 +112,10 @@ public class VoteServiceImpl implements VoteService{
     }
 
     private void assertUserCanVoteOnContract(@NonNull final UserModel voter, @NonNull final ContractModel contractModel) {
+        if (isContractPastSettleTimestamp(contractModel)) {
+            throw new IllegalStateException(String.format("Cannot vote on a contract that is past the settlement timestamp. Contract Id: %s Settles At: %s", contractModel.getId(), contractModel.getSettlesAt().toString()));
+        }
+
         final UUID contractId = contractModel.getId();
 
         final UUID proposerId = contractModel.getProposer().getId();
