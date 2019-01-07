@@ -27,7 +27,7 @@ public class DonationServiceImpl implements  DonationService{
             @NonNull final String paypalAuthorizationId) {
         donationModelRepository.save(DonationModel.builder()
                 .contract(contractModel)
-                .donator(donator)
+                .donor(donator)
                 .createdAt(contractTimestamp)
                 .donationAmount(donationAmount)
                 .paypalPaymentId(paypalPaymentId)

@@ -84,7 +84,7 @@ const acceptBounty = (contractId, callback = null) => (dispatch) => {
   const payload = { contractId };
   dispatch(requestAcceptBounty());
 
-  RestClient.PUT('bounties/accept', payload, (response) => {
+  RestClient.PUT('bounties/activate', payload, (response) => {
     dispatch(receiveAcceptBountySuccess());
     if (callback) {
       callback();

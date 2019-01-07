@@ -1,6 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
-import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,63 +11,81 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Repository
 public interface ContractModelRepository extends CrudRepository<ContractModel, UUID> {
+	
+    List<ContractModel> findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState state, UserModel streamer);
 
     long countByStateAndStreamer(ContractState state, UserModel streamer);
-
+ 
     @Query("SELECT contractModel " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.settlesAt < :currentTimestamp " +
-           "AND contractModel.state = 'ACCEPTED' " +
+           "AND contractModel.state = 'ACTIVE' OR contractModel.state = 'OPEN' " +
            "ORDER BY contractModel.proposedAt DESC")
     Set<ContractModel> findAllSettleableContracts(@Param("currentTimestamp") Timestamp now);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
                 "contractModel) " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.state = :state " +
            "AND contractModel.streamer.twitchUsername = :streamer " +
            "ORDER BY contractModel.proposedAt DESC")
-    Page<ContractDto> findAllContractsForStreamerAndState(@Param("streamer") String streamer, @Param("state") ContractState state, Pageable pageable);
+    Page<Contract> findAllPrivateContractsForStreamerAndState(@Param("streamer") String streamer, @Param("state") ContractState state, Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
                 "contractModel) " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.streamer.twitchUsername = :streamer " +
            "ORDER BY contractModel.proposedAt DESC")
-    Page<ContractDto> findAllContractsForStreamer(@Param("streamer") String streamer, Pageable pageable);
+    Page<Contract> findAllPrivateContractsForStreamer(@Param("streamer") String streamer, Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PublicContract(" +
+                "contractModel) " +
+           "FROM ContractModel contractModel " +
+           "WHERE contractModel.state = :state " +
+           "AND contractModel.streamer.twitchUsername = :streamer " +
+           "ORDER BY contractModel.proposedAt DESC")
+    Page<Contract> findAllPublicContractsForStreamerAndState(@Param("streamer") String streamer, @Param("state") ContractState state, Pageable pageable);
+
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PublicContract(" +
+                "contractModel) " +
+           "FROM ContractModel contractModel " +
+           "WHERE contractModel.streamer.twitchUsername = :streamer " +
+           "ORDER BY contractModel.proposedAt DESC")
+    Page<Contract> findAllPublicContractsForStreamer(@Param("streamer") String streamer, Pageable pageable);
+
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PublicContract(" +
                 "contractModel) " +
            "FROM ContractModel contractModel " +
            "WHERE contractModel.state = :state " +
            "ORDER BY contractModel.proposedAt DESC")
-    Page<ContractDto> findAllContractsForState(@Param("state") ContractState state, Pageable pageable);
+    Page<Contract> findAllPublicContractsForState(@Param("state") ContractState state, Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PublicContract(" +
                 "contractModel) " +
-           "FROM ContractModel contractModel  " +
+           "FROM ContractModel contractModel " +
            "ORDER BY contractModel.proposedAt DESC")
-    Page<ContractDto> findAllContracts(Pageable pageable);
+    Page<Contract> findAllPublicContracts(Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
                 "donationModel.contract) " +
            "FROM DonationModel donationModel " +
-           "WHERE donationModel.donator.twitchUsername = :donator " +
+           "WHERE donationModel.donor.twitchUsername = :donor " +
            "AND donationModel.contract.state = :state " +
            "ORDER BY donationModel.contract.proposedAt DESC")
-    Page<ContractDto> findAllContractsForDonatorAndState(@Param("donator") String donator, @Param("state") ContractState state, Pageable pageable);
+    Page<Contract> findAllContractsForDonorAndState(@Param("donor") String donor, @Param("state") ContractState state, Pageable pageable);
 
-    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto(" +
+    @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
                 "donationModel.contract) " +
            "FROM DonationModel donationModel " +
-           "WHERE donationModel.donator.twitchUsername = :donator " +
+           "WHERE donationModel.donor.twitchUsername = :donor " +
            "ORDER BY donationModel.contract.proposedAt DESC")
-    Page<ContractDto> findAllContractsForDonator(@Param("donator") String donator, Pageable pageable);
+    Page<Contract> findAllContractsForDonor(@Param("donor") String donor, Pageable pageable);
 
     @Query("SELECT SUM(d.donationAmount) " +
            "FROM DonationModel d " +

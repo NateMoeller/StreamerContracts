@@ -1,5 +1,5 @@
 export const OPEN = 'OPEN';
-export const ACCEPTED = 'ACCEPTED';
+export const ACTIVE = 'ACTIVE';
 export const DECLINED = 'DECLINED';
 export const EXPIRED = 'EXPIRED';
 export const COMPLETED = 'COMPLETED';

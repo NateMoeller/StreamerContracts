@@ -1,7 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.google.common.collect.ImmutableList;
-import com.nicknathanjustin.streamercontracts.contracts.dtos.ContractDto;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.donations.DonationService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
@@ -24,6 +24,7 @@ public class ContractServiceImpl implements ContractService {
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
     private static final List payStreamerStates = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
     private static final List payDonorStates = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
+    private static final int MAX_ACTIVE_CONTRACTS = 1;
 
     @NonNull final ContractModelRepository contractModelRepository;
     @NonNull final DonationService donationService;
@@ -42,7 +43,8 @@ public class ContractServiceImpl implements ContractService {
                 .game(game)
                 .description(description)
                 .proposedAt(creationTimestamp)
-                .acceptedAt(null)
+                .activatedAt(null)
+                .deactivatedAt(null)
                 .declinedAt(null)
                 .settlesAt(settlesTimestamp)
                 .expiredAt(null)
@@ -86,36 +88,56 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<ContractDto> getContractsForStreamerAndState(@NonNull final UserModel user, @NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForStreamerAndState(
-                user.getTwitchUsername(),
-                state,
-                pageable);
+    public Page<Contract> getContractsForStreamerAndState(
+            @NonNull final UserModel user, 
+            @NonNull final ContractState state, 
+            @NonNull final Pageable pageable, 
+            @Nullable final String username) {
+        boolean requestedByStreamer = false;
+        if (username != null) {
+            requestedByStreamer = username.equals(user.getTwitchUsername());
+        }
+
+        return requestedByStreamer ?
+                contractModelRepository.findAllPrivateContractsForStreamerAndState(user.getTwitchUsername(), state, pageable) :
+                contractModelRepository.findAllPublicContractsForStreamerAndState(user.getTwitchUsername(), state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForStreamer(@NonNull final UserModel user, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForStreamer(user.getTwitchUsername(), pageable);
+    public Page<Contract> getContractsForStreamer(
+            @NonNull final UserModel user, 
+            @NonNull final Pageable pageable,
+            @Nullable final String username) {
+        boolean requestedByStreamer = false;
+        if (username != null) {
+            requestedByStreamer = username.equals(user.getTwitchUsername());
+        }
+
+        return requestedByStreamer ?
+                contractModelRepository.findAllPrivateContractsForStreamer(user.getTwitchUsername(), pageable) :
+                contractModelRepository.findAllPublicContractsForStreamer(user.getTwitchUsername(), pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForState(@NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForState(state, pageable);
+    public Page<Contract> getContractsForState(
+            @NonNull final ContractState state,
+            @NonNull final Pageable pageable) {
+        return contractModelRepository.findAllPublicContractsForState(state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getAllContracts(@NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContracts(pageable);
+    public Page<Contract> getAllContracts(@NonNull final Pageable pageable) {
+        return contractModelRepository.findAllPublicContracts(pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForDonatorAndState(@NonNull final UserModel donator, @NonNull final ContractState state, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForDonatorAndState(donator.getTwitchUsername(), state, pageable);
+    public Page<Contract> getContractsForDonorAndState(@NonNull final UserModel donor, @NonNull final ContractState state, @NonNull final Pageable pageable) {
+        return contractModelRepository.findAllContractsForDonorAndState(donor.getTwitchUsername(), state, pageable);
     }
 
     @Override
-    public Page<ContractDto> getContractsForDonator(@NonNull final UserModel donator, @NonNull final Pageable pageable) {
-        return contractModelRepository.findAllContractsForDonator(donator.getTwitchUsername(), pageable);
+    public Page<Contract> getContractsForDonor(@NonNull final UserModel donor, @NonNull final Pageable pageable) {
+        return contractModelRepository.findAllContractsForDonor(donor.getTwitchUsername(), pageable);
     }
 
     @Override
@@ -126,5 +148,21 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public BigDecimal getMoneyForStreamerAndState(UserModel streamer, ContractState state) {
         return contractModelRepository.getMoneyForStreamerAndState(streamer.getTwitchUsername(), state);
+    }
+    
+    @Override
+    public void activateContract(@NonNull final ContractModel contractModel) {
+        final List<ContractModel> activeContracts = contractModelRepository.findAllByStateAndStreamerOrderByActivatedAtDesc(ContractState.ACTIVE, contractModel.getStreamer());
+        if (activeContracts.size() > MAX_ACTIVE_CONTRACTS) {
+            throw new IllegalStateException(String.format("Cannot have more than %s active contracts. Streamer Id: %s", MAX_ACTIVE_CONTRACTS, contractModel.getStreamer().getId()));
+        } else if (activeContracts.size() < MAX_ACTIVE_CONTRACTS) {
+            this.setContractState(contractModel, ContractState.ACTIVE);
+        } else {
+            // We will employ a LIFO policy for active contracts. The least recently active contract
+            // will be deactivated.
+            final ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
+            this.setContractState(oldestActiveContract, ContractState.OPEN);
+            this.setContractState(contractModel, ContractState.ACTIVE);
+        }
     }
 }
