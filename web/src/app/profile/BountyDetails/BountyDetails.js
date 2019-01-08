@@ -26,7 +26,7 @@ class BountyDetails extends Component {
     RestClient.GET(`twitch/game/${gameName}`, (response) => {
       this.setState({
         loading: false,
-        image: response.data.data[0]
+        image: response.data.boxArtUrl
       });
     });
   }
@@ -135,7 +135,7 @@ class BountyDetails extends Component {
 
     const width = 100;
     const height = 150;
-    const url = this.state.image ? this.state.image.box_art_url.replace('{width}', width).replace('{height}', height) : null;
+    const url = this.state.image ? this.state.image.replace('{width}', width).replace('{height}', height) : null;
 
     return (
       <div className={styles.details}>

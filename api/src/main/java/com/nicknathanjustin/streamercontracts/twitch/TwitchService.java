@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
+import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 
 import java.util.List;
@@ -19,10 +20,9 @@ public interface TwitchService {
     /**
      * Get the a game from the twitch api
      *
-     * @return A Map with 1 field, data.
-     * data contains the game
+     * @return A game object
      */
-    Map<String, List<Map<String, Object>>> getGame(String gameName);
+    Game getGame(String gameName);
 
     /**
      * Gets the TwitchUser object from Twitch API
