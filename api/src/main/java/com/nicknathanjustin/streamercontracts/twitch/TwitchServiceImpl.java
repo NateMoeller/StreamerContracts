@@ -1,10 +1,12 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
+import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -25,6 +27,20 @@ public class TwitchServiceImpl implements TwitchService {
         final int numGames = 100;
         final ResponseEntity<Map> response = queryTwitch("https://api.twitch.tv/helix/games/top?first=" + numGames);
         return response.getBody();
+    }
+
+    @Override
+    public Game getGame(@NonNull final String gameName) {
+        final ResponseEntity<Map> response = queryTwitch("https://api.twitch.tv/helix/games?name=" + gameName);
+        final Map<String, List<Map<String, Object>>> details = response.getBody();
+        final List<Map<String, Object>> data = details.get("data");
+        Game game = new Game();
+        if(!CollectionUtils.isEmpty(data)) {
+            final String boxArtUrl = (String) data.get(0).get("box_art_url");
+            game = new Game(gameName, boxArtUrl);
+        }
+
+        return game;
     }
 
     @Override

@@ -4,10 +4,33 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { OPEN, ACTIVE, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
+import LoadingComponent from '../../common/loading/LoadingComponent';
+import RestClient from '../../RestClient';
 import styles from './BountyDetails.scss';
 
 class BountyDetails extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: false,
+      image: null
+    };
+  }
+
+  componentDidMount() {
+    const gameName = this.props.curBounty.game;
+    this.setState({ loading: true });
+    RestClient.GET(`twitch/game/${gameName}`, (response) => {
+      this.setState({
+        loading: false,
+        image: response.data.boxArtUrl
+      });
+    });
+  }
+
   goBack = () => {
     this.props.setCurBounty(null)
   }
@@ -21,11 +44,11 @@ class BountyDetails extends Component {
     );
   }
 
-  getFailedIcon() {
+  getFailedIcon(text) {
     return (
       <div className={styles.rightButtons}>
         <div className={styles.failed}><Glyphicon glyph="remove" /></div>
-        <div className={styles.text}>Failed</div>
+        <div className={styles.text}>{text}</div>
       </div>
     );
   }
@@ -90,17 +113,30 @@ class BountyDetails extends Component {
     } else if (curBounty.state === DECLINED) {
       return this.getDeclinedIcon();
     } else if (curBounty.state === EXPIRED || curBounty.state === FAILED) {
-      return this.getFailedIcon();
+      const text = curBounty.state === EXPIRED ? 'Expired' : 'Failed';
+      return this.getFailedIcon(text);
     } else if (curBounty.state === ACTIVE && (this.props.isStreamer || this.props.isDonor)) {
       return this.getAcceptButtons();
-    } else if (curBounty.state === OPEN && this.props.isStreamer) {
-      return this.getOpenButtons();
+    } else if (curBounty.state === OPEN) {
+      if (this.props.isStreamer) {
+        return this.getOpenButtons();
+      } else if (this.props.isDonor) {
+        return this.getAcceptButtons();
+      }
     }
 
     return '';
   }
 
   render() {
+    if (this.state.loading) {
+      return <LoadingComponent />;
+    }
+
+    const width = 100;
+    const height = 150;
+    const url = this.state.image ? this.state.image.replace('{width}', width).replace('{height}', height) : null;
+
     return (
       <div className={styles.details}>
         <div className={styles.buttons}>
@@ -111,25 +147,34 @@ class BountyDetails extends Component {
           {this.getAction()}
         </div>
         <div className={styles.content}>
+          {this.state.image &&
+            <div className={styles.image}>
+              <img src={url} alt={this.state.image.name} width={width} height={height} />
+            </div>
+          }
           <div className={styles.description}>
+            <div className={styles.title}>Bounty Description</div>
             {this.props.curBounty.description}
           </div>
           <div className={styles.stats}>
+            <div className={styles.title}>Statistics</div>
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Submitted by:</div>
               <div className={styles.statCell}>{this.props.curBounty.proposerName}</div>
             </div>
-            <div className={styles.statRow}>
-              <div className={styles.statHeader}>Game:</div>
-              <div className={styles.statCell}>{this.props.curBounty.game}</div>
-            </div>
+            {this.props.curBounty.game &&
+              <div className={styles.statRow}>
+                <div className={styles.statHeader}>Game:</div>
+                <div className={styles.statCell}>{this.props.curBounty.game}</div>
+              </div>
+            }
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Expires at:</div>
               <div className={styles.statCell}>{new Date(this.props.curBounty.settlesAt).toLocaleString()}</div>
             </div>
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Amount:</div>
-              <div className={styles.statCell}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
+              <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
             </div>
           </div>
         </div>

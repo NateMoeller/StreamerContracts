@@ -29,7 +29,7 @@ class DonateComponent extends Component {
     this.state = {
       amount: '',
       bounty: '',
-      game: {},
+      game: null,
       showPaymentOptions: false,
       amountError: null,
       bountyError: null
