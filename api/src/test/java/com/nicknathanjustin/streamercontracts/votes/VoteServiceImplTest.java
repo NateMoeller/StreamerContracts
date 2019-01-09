@@ -64,15 +64,6 @@ public class VoteServiceImplTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void recordVote_contractIsOpen_throwsException() {
-        voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
-                createContractModel(getValidContractModelBuilder().state(ContractState.OPEN),
-                        createUserModel(PROPOSER_ID),
-                        createUserModel(STREAMER_ID)),
-                true);
-    }
-
-    @Test(expected = IllegalStateException.class)
     public void recordVote_contractIsCompleted_throwsException() {
         voteServiceImpl.recordVote(createUserModel(PROPOSER_ID),
                 createContractModel(
@@ -105,8 +96,8 @@ public class VoteServiceImplTest {
         voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void isVotingComplete_contractIsOpen_throwsException() {
+    @Test
+    public void isVotingComplete_contractIsOpen_returnsFalse() {
         final ContractModel contractModel = createContractModel(
                 getValidContractModelBuilder().state(ContractState.OPEN),
                 createUserModel(PROPOSER_ID),
@@ -115,7 +106,9 @@ public class VoteServiceImplTest {
         final VoteModel proposerVote = null;
         final VoteModel streamerVote = null;
 
-        voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
+        boolean isVotingComplete = voteServiceImpl.isVotingComplete(proposerVote, streamerVote, contractModel);
+        
+        Assert.assertFalse(isVotingComplete);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -262,7 +255,7 @@ public class VoteServiceImplTest {
             getValidContractModelBuilder(),
             createUserModel(PROPOSER_ID),
             createUserModel(STREAMER_ID));
-        contractModel.setContractState(ContractState.ACCEPTED);
+        contractModel.setContractState(ContractState.ACTIVE);
         final VoteModel proposerVote = VoteModel.builder().contract(contractModel).viewerFlaggedComplete(true).build();
         final VoteModel streamerVote = null;
 
@@ -354,30 +347,17 @@ public class VoteServiceImplTest {
     }
 
     @Test
-    public void getVoteOutcome_noVotesButContractWasAccepted_returnsCompleted() {
+    public void getVoteOutcome_noVotes_returnsExpired() {
         final VoteModel proposerVote = null;
         final VoteModel streamerVote = null;
 
         final ContractState voteOutcome = voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
-                getValidContractModelBuilder().state(ContractState.ACCEPTED).settlesAt(SETTLE_CONTRACT_TIMESTAMP),
+                getValidContractModelBuilder().state(ContractState.ACTIVE).settlesAt(SETTLE_CONTRACT_TIMESTAMP),
                 createUserModel(PROPOSER_ID),
                 createUserModel(STREAMER_ID))
         );
 
-        Assert.assertEquals(ContractState.COMPLETED, voteOutcome);
-    }
-
-    // TODO: This test will need to change when the expiration logic has been implemented
-    @Test(expected = IllegalStateException.class)
-    public void getVoteOutcome_noVotesAndContractIsOpen_throwsException() {
-        final VoteModel proposerVote = null;
-        final VoteModel streamerVote = null;
-
-        voteServiceImpl.getVoteOutcome(proposerVote, streamerVote, createContractModel(
-                getValidContractModelBuilder().state(ContractState.OPEN).settlesAt(SETTLE_CONTRACT_TIMESTAMP),
-                createUserModel(PROPOSER_ID),
-                createUserModel(STREAMER_ID))
-        );
+        Assert.assertEquals(ContractState.EXPIRED, voteOutcome);
     }
 
     @Test
@@ -437,7 +417,7 @@ public class VoteServiceImplTest {
 
         return ContractModel.builder()
                 .settlesAt(settlesTimestamp)
-                .state(ContractState.ACCEPTED)
+                .state(ContractState.ACTIVE)
                 .isCommunityContract(false);
     }
 

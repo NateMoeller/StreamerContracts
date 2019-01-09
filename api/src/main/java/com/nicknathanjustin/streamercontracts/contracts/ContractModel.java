@@ -2,6 +2,8 @@ package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.donations.DonationModel;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
+import com.nicknathanjustin.streamercontracts.votes.VoteModel;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +49,10 @@ public class ContractModel {
     private Timestamp proposedAt;
 
     @Setter(AccessLevel.NONE)
-    private Timestamp acceptedAt;
+    private Timestamp activatedAt;
+    
+    @Setter(AccessLevel.NONE)
+    private Timestamp deactivatedAt;
 
     @Setter(AccessLevel.NONE)
     private Timestamp declinedAt;
@@ -76,13 +81,16 @@ public class ContractModel {
 
     @OneToMany(mappedBy = "contract")
     private List<DonationModel> donations;
+    
+    @OneToMany(mappedBy = "contract")
+    private List<VoteModel> votes;
 
     public void setContractState(final ContractState newContractState) {
         state = newContractState;
         final Timestamp transitionTimestamp = new Timestamp(System.currentTimeMillis());
         switch (newContractState) {
-            case ACCEPTED:
-                acceptedAt = transitionTimestamp;
+            case ACTIVE:
+                activatedAt = transitionTimestamp;
                 break;
             case DECLINED:
                 declinedAt = transitionTimestamp;
@@ -99,6 +107,9 @@ public class ContractModel {
             case DISPUTED:
                 disputedAt = transitionTimestamp;
                 break;
+            case OPEN:
+            	deactivatedAt = transitionTimestamp;
+            	break;
             default:
                 throw new IllegalStateException(String.format("Error. Attempting to transition a contract to an invalid state. Contract Id: %s State: %s",
                         id,

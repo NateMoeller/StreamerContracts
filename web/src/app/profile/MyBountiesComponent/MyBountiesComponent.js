@@ -18,7 +18,7 @@ import BountyDetails from '../BountyDetails/BountyDetails';
 import cx from 'classnames';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
-import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
+import { OPEN, ACTIVE, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from '../DonationsComponent/DonationsComponentStyles.scss';
 import tableStyles from '../../tableStyles.scss';
@@ -85,7 +85,7 @@ class MyBountiesComponent extends Component {
       return this.getCompletedIcon();
     } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
       return this.getRemoveIcon(row);
-    } else if (row.state === ACCEPTED) {
+    } else if (row.state === ACTIVE) {
       return this.getAcceptedDropdownMenu(row);
     }
 
@@ -331,7 +331,7 @@ class MyBountiesComponent extends Component {
                 >
                   <option value="">All</option>
                   <option value={OPEN}>Open</option>
-                  <option value={ACCEPTED}>Active</option>
+                  <option value={ACTIVE}>Active</option>
                   <option value={COMPLETED}>Completed</option>
                   <option value={DECLINED}>Declined</option>
                   <option value={EXPIRED}>Expired</option>

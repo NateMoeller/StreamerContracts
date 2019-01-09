@@ -37,7 +37,7 @@ public class DonationModel {
     private ContractModel contract;
 
     @OneToOne
-    private UserModel donator;
+    private UserModel donor;
 
     private BigDecimal donationAmount;
 

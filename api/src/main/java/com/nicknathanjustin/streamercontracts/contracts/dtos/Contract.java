@@ -1,20 +1,22 @@
 package com.nicknathanjustin.streamercontracts.contracts.dtos;
 
-import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
-import com.nicknathanjustin.streamercontracts.contracts.ContractState;
-import com.nicknathanjustin.streamercontracts.donations.DonationModel;
-import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
-import lombok.Data;
-import lombok.NonNull;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
+import com.nicknathanjustin.streamercontracts.donations.DonationModel;
+import com.nicknathanjustin.streamercontracts.donations.dtos.DonationDto;
+
+import lombok.Data;
+import lombok.NonNull;
+
 @Data
-public class ContractDto {
+public abstract class Contract {
+
     private UUID contractId;
     private ContractState state;
     private BigDecimal contractAmount;
@@ -22,7 +24,8 @@ public class ContractDto {
     private boolean isCommunity;
     private String game;
     private Timestamp proposedAt;
-    private Timestamp acceptedAt;
+    private Timestamp activatedAt;
+    private Timestamp deactivatedAt;
     private Timestamp declinedAt;
     private Timestamp settlesAt;
     private Timestamp expiredAt;
@@ -32,15 +35,16 @@ public class ContractDto {
     private String streamerName;
     private String proposerName;
     private List<DonationDto> donations;
-
-    public ContractDto(@NonNull final ContractModel contract) {
+    
+    public Contract(@NonNull final ContractModel contract) {
         contractId = contract.getId();
         state = contract.getState();
         description = contract.getDescription();
         isCommunity = contract.isCommunityContract();
         game = contract.getGame();
         proposedAt = contract.getProposedAt();
-        acceptedAt = contract.getAcceptedAt();
+        activatedAt = contract.getActivatedAt();
+        deactivatedAt = contract.getDeactivatedAt();
         declinedAt = contract.getDeclinedAt();
         settlesAt = contract.getSettlesAt();
         expiredAt = contract.getExpiredAt();

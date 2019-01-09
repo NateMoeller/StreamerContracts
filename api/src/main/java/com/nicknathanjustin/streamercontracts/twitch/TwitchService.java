@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
+import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 
 import java.util.List;
@@ -15,6 +16,13 @@ public interface TwitchService {
      * data contains a list of games, and pagination contains a cursor value to specify the starting point of the next set of results.
      */
     Map<String, List<Map<String, Object>>> getTopGames();
+
+    /**
+     * Get the a game from the twitch api
+     *
+     * @return A game object
+     */
+    Game getGame(String gameName);
 
     /**
      * Gets the TwitchUser object from Twitch API

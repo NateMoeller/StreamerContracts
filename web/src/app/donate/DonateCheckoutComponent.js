@@ -41,7 +41,7 @@ class DonateCheckoutComponent extends Component {
                 Game:
               </Col>
               <Col xs={8} md={6}>
-                {this.props.game}
+                {this.props.game.name}
               </Col>
             </Row>
           }
@@ -81,6 +81,10 @@ class DonateCheckoutComponent extends Component {
   }
 }
 
+DonateCheckoutComponent.defaultProps = {
+  game: null
+};
+
 DonateCheckoutComponent.propTypes = {
   goBack: PropTypes.func.isRequired,
   amount: PropTypes.string.isRequired,
@@ -89,7 +93,7 @@ DonateCheckoutComponent.propTypes = {
   username: PropTypes.string.isRequired,
   insertBounty: PropTypes.func.isRequired,
   streamerUsername: PropTypes.string.isRequired,
-  game: PropTypes.string.isRequired,
+  game: PropTypes.object,
 };
 
 export default DonateCheckoutComponent;

@@ -6,7 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import BountyDetails from '../BountyDetails/BountyDetails';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cx from 'classnames';
-import { OPEN, ACCEPTED, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
+import { OPEN, ACTIVE, DECLINED, EXPIRED, COMPLETED, FAILED } from '../../BountyState';
 import PropTypes from 'prop-types';
 import LoadingComponent from '../../common/loading/LoadingComponent';
 import styles from './DonationsComponentStyles.scss';
@@ -88,7 +88,7 @@ class DonationsComponent extends Component {
       return this.getCompletedIcon(row);
     } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
       return this.getRemoveIcon(row);
-    } else if (row.state === OPEN || row.state === ACCEPTED) {
+    } else if (row.state === OPEN || row.state === ACTIVE) {
       return this.getDropdownMenu(row);
     }
 

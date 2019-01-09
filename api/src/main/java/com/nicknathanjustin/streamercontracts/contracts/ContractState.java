@@ -2,7 +2,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 
 public enum ContractState {
     OPEN,
-    ACCEPTED,
+    ACTIVE,
     DECLINED,
     EXPIRED,
     COMPLETED,
