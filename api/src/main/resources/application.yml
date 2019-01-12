@@ -55,7 +55,7 @@ security:
   oauth2:
     client:
       clientId: asuomro2120fbgjzwimsunv4fl9hqw
-      clientSecret: z6jff6u1x1ukpsicv6cmgdnd7tcuy4
+      clientSecret: a9mszhzfgby7x479gxmt38zv5l18in
       accessTokenUri: https://api.twitch.tv/api/oauth2/token
       userAuthorizationUri: https://id.twitch.tv/oauth2/authorize
       clientAuthenticationScheme: form
