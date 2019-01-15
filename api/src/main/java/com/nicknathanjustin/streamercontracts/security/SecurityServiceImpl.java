@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.List;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,10 +22,10 @@ public class SecurityServiceImpl implements SecurityService {
     private String jwtHeader;
 
     @Value("${twitch.whiteListedAccounts}")
-    private List<String> whiteListedAccounts;
+    private String[] whiteListedAccounts;
 
     @Value("${application.blackListedAccounts}")
-    private List<String> blackListedAccounts;
+    private String[] blackListedAccounts;
 
     @Value("${application.environment}")
     private String environment;
@@ -57,10 +57,10 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private boolean isUserWhiteListed(@NonNull final UserModel userModel) {
-        return whiteListedAccounts.contains(userModel.getTwitchUsername());
+        return Arrays.asList(whiteListedAccounts).contains(userModel.getTwitchUsername());
     }
 
     private boolean isUserBlackListed(@NonNull final UserModel userModel) {
-        return blackListedAccounts.contains(userModel.getTwitchUsername());
+        return Arrays.asList(blackListedAccounts).contains(userModel.getTwitchUsername());
     }
 }
