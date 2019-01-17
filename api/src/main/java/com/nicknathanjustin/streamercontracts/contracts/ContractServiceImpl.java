@@ -162,8 +162,13 @@ public class ContractServiceImpl implements ContractService {
             // We will employ a LIFO policy for active contracts. The least recently active contract
             // will be deactivated.
             final ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
-            this.setContractState(oldestActiveContract, ContractState.OPEN);
+            this.deactivateContract(oldestActiveContract);
             this.setContractState(contractModel, ContractState.ACTIVE);
         }
+    }
+
+    @Override
+    public void deactivateContract(ContractModel contractModel) {
+        this.setContractState(contractModel, ContractState.OPEN);
     }
 }

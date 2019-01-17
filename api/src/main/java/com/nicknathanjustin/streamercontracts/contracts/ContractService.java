@@ -138,4 +138,11 @@ public interface ContractService {
      * @param contractModel The contract to activate.
      */
     void activateContract(ContractModel contractModel);
+
+    /**
+     * Deactivates the contract.
+     *
+     * @param contractModel The contract to deactivate.
+     */
+    void deactivateContract(ContractModel contractModel);
 }
