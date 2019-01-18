@@ -132,7 +132,10 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<Contract> getContractsForDonorAndState(@NonNull final UserModel donor, @NonNull final ContractState state, @NonNull final Pageable pageable) {
+    public Page<Contract> getContractsForDonorAndState(
+            @NonNull final UserModel donor,
+            @NonNull final ContractState state,
+            @NonNull final Pageable pageable) {
         return contractModelRepository.findAllContractsForDonorAndState(donor.getTwitchUsername(), state, pageable);
     }
 
@@ -162,8 +165,13 @@ public class ContractServiceImpl implements ContractService {
             // We will employ a LIFO policy for active contracts. The least recently active contract
             // will be deactivated.
             final ContractModel oldestActiveContract = activeContracts.get(activeContracts.size() - 1);
-            this.setContractState(oldestActiveContract, ContractState.OPEN);
+            this.deactivateContract(oldestActiveContract);
             this.setContractState(contractModel, ContractState.ACTIVE);
         }
+    }
+
+    @Override
+    public void deactivateContract(ContractModel contractModel) {
+        this.setContractState(contractModel, ContractState.OPEN);
     }
 }

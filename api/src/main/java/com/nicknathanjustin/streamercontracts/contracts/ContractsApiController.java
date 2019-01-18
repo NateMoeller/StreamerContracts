@@ -135,10 +135,32 @@ public class ContractsApiController {
         }
 
         if (!contractModel.getState().equals(ContractState.OPEN)) {
-            throw new IllegalStateException(String.format("Cannot accept a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
+            throw new IllegalStateException(String.format("Cannot activate a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
  
         contractService.activateContract(contractModel);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "deactivate", method = RequestMethod.PUT)
+    public ResponseEntity deactivateContract(
+            @NonNull final HttpServletRequest httpServletRequest,
+            @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
+        if (SecurityService.isAnonymousRequest(httpServletRequest)) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        final UUID contractId = contractStateRequest.getContractId();
+        final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
+        if (contractModel == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        if (!contractModel.getState().equals(ContractState.ACTIVE)) {
+            throw new IllegalStateException(String.format("Cannot deactivate a contract that is not ACTIVE. Contract Id: %s Contract STate: %s", contractId, contractModel.getState().name()));
+        }
+
+        contractService.deactivateContract(contractModel);
         return new ResponseEntity(HttpStatus.OK);
     }
 

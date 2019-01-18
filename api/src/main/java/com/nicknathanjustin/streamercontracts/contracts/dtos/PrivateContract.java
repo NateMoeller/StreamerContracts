@@ -11,11 +11,25 @@ import java.util.stream.Stream;
 @Data
 public class PrivateContract extends Contract {
 
-    private boolean userHasVoted;
+    private String userVote;
     
+    public PrivateContract(@NonNull final ContractModel contract, final String donorUsername) {
+        super(contract);
+        this.userVote = null;
+        this.setUserVote(contract, donorUsername);
+    }
+
     public PrivateContract(@NonNull final ContractModel contract) {
         super(contract);
-        Stream<VoteModel> userVotes = contract.getVotes().stream().filter(voteModel -> voteModel.getVoter().getTwitchUsername().equals(contract.getStreamer().getTwitchUsername()));
-        this.userHasVoted = userVotes.count() > 0;
+        this.userVote = null;
+        this.setUserVote(contract, contract.getStreamer().getTwitchUsername());
+    }
+
+    private void setUserVote(ContractModel contract, String username) {
+        for (VoteModel voteModel : contract.getVotes()) {
+            if (voteModel.getVoter().getTwitchUsername().equals(username)) {
+                this.userVote = voteModel.isViewerFlaggedComplete() ? "COMPLETED" : "FAILED";
+            }
+        }
     }
 }
