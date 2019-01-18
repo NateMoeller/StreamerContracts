@@ -73,7 +73,8 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
     Page<Contract> findAllPublicContracts(Pageable pageable);
 
     @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
-                "donationModel.contract) " +
+                "donationModel.contract, " +
+                "donationModel.donor.twitchUsername) " +
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donor.twitchUsername = :donor " +
            "AND donationModel.contract.state = :state " +
@@ -81,7 +82,8 @@ public interface ContractModelRepository extends CrudRepository<ContractModel, U
     Page<Contract> findAllContractsForDonorAndState(@Param("donor") String donor, @Param("state") ContractState state, Pageable pageable);
 
     @Query("SELECT new com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract(" +
-                "donationModel.contract) " +
+                "donationModel.contract, " +
+                "donationModel.donor.twitchUsername) " +
            "FROM DonationModel donationModel " +
            "WHERE donationModel.donor.twitchUsername = :donor " +
            "ORDER BY donationModel.contract.proposedAt DESC")
