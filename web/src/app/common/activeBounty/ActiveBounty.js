@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Countdown from 'react-countdown-now';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
-import { COMPLETED } from '../../BountyState';
 import styles from './ActiveBounty.scss';
 
 class ActiveBounty extends Component {

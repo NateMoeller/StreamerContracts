@@ -7,8 +7,6 @@
   margin-top: 20px;
   margin-bottom: 20px;
 
-
-
   .left {
     display: inline-block;
     width: 75%;
@@ -22,7 +20,7 @@
       font-weight: bold;
       text-shadow:
       -1px -1px 1px $light-gray,
-      2px 2px 1px #363636;
+      2px 2px 1px $black-shadow;
     }
 
     .description {

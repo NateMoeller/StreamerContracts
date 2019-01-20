@@ -138,6 +138,11 @@ public class ContractsApiController {
         if (!contractModel.getState().equals(ContractState.OPEN)) {
             throw new IllegalStateException(String.format("Cannot activate a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
+
+        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
+        if (contractModel.getStreamer().getTwitchUsername() != userModel.getTwitchUsername()) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
  
         contractService.activateContract(contractModel);
         final PrivateContract activatedContract = new PrivateContract(contractModel);

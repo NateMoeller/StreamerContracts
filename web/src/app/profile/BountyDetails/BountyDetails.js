@@ -151,7 +151,7 @@ class BountyDetails extends Component {
   getMarkedFailed() {
     const tooltip = (
       <Tooltip id="tooltip">
-        You have marked this bounty failed. This bounty will be completed when voting has finished
+        You have marked this bounty failed. The transaction will be canceled if the streamer agrees the bounty was failed.
       </Tooltip>
     );
 
