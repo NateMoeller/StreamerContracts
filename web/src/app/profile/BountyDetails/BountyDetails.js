@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {
   Button,
-  Glyphicon
+  Glyphicon,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
@@ -66,14 +68,14 @@ class BountyDetails extends Component {
     return (
       <div className={styles.rightButtons}>
         <Button bsStyle="link" className={styles.remove} onClick={() => this.props.onDeclineBounty(this.props.curBounty.contractId)}>Decline bounty</Button>
-        <Button className={styles.submit} onClick={() => this.props.onAcceptBounty(this.props.curBounty.contractId)}>Accept bounty</Button>
+        <Button className={styles.submit} onClick={() => this.props.onActivateBounty(this.props.curBounty.contractId)}>Activate bounty</Button>
       </div>
     );
   }
 
   getAcceptButtons() {
     const fail = this.props.isStreamer ? 'Mark failed' : `${this.props.curBounty.streamerName} failed bounty`;
-    const success = this.props.isStreamer ? 'Mark success' : `${this.props.curBounty.streamerName} completed bounty`;
+    const success = this.props.isStreamer ? 'Mark completed' : `${this.props.curBounty.streamerName} completed bounty`;
 
     return (
       <div className={styles.rightButtons}>
@@ -82,7 +84,7 @@ class BountyDetails extends Component {
           className={styles.remove}
           onClick={() => {
             const voteFailedPayload = {
-              contractId: this.props.curBounty.contractId,
+              contract: this.props.curBounty,
               flagCompleted: false
             };
             this.props.onVoteBounty(voteFailedPayload);
@@ -94,7 +96,7 @@ class BountyDetails extends Component {
           className={styles.submit}
           onClick={() => {
             const voteCompletedPayload = {
-              contractId: this.props.curBounty.contractId,
+              contract: this.props.curBounty,
               flagCompleted: true
             };
             this.props.onVoteBounty(voteCompletedPayload);
@@ -119,13 +121,48 @@ class BountyDetails extends Component {
       return this.getAcceptButtons();
     } else if (curBounty.state === OPEN) {
       if (this.props.isStreamer) {
-        return this.getOpenButtons();
+        return curBounty.userVote === COMPLETED ? this.getMarkedCompleted() : this.getOpenButtons();
       } else if (this.props.isDonor) {
-        return this.getAcceptButtons();
+        return curBounty.userVote === FAILED ? this.getMarkedFailed() : this.getAcceptButtons();
       }
     }
 
     return '';
+  }
+
+  getMarkedCompleted() {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        You have marked this bounty complete. This bounty will be completed when voting has finished
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="bottom" overlay={tooltip}>
+        <div className={cx(styles.rightButtons, styles.voted)}>
+
+            <div className={styles.checkmark}><Glyphicon glyph="ok" /></div>
+            <div className={styles.text}>Marked Completed</div>
+        </div>
+      </OverlayTrigger>
+    );
+  }
+
+  getMarkedFailed() {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        You have marked this bounty failed. The transaction will be canceled if the streamer agrees the bounty was failed.
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="bottom" overlay={tooltip}>
+        <div className={cx(styles.rightButtons, styles.voted)}>
+          <div className={styles.failed}><Glyphicon glyph="remove" /></div>
+          <div className={styles.text}>Marked failed</div>
+        </div>
+      </OverlayTrigger>
+    );
   }
 
   render() {
@@ -184,7 +221,7 @@ class BountyDetails extends Component {
 }
 
 BountyDetails.defaultProps = {
-  onAcceptBounty: null,
+  onActivateBounty: null,
   onDeclineBounty: null,
   onVoteBounty: null,
   isStreamer: false,
@@ -194,7 +231,7 @@ BountyDetails.defaultProps = {
 BountyDetails.propTypes = {
   curBounty: PropTypes.object.isRequired,
   setCurBounty: PropTypes.func.isRequired,
-  onAcceptBounty: PropTypes.func,
+  onActivateBounty: PropTypes.func,
   onDeclineBounty: PropTypes.func,
   onVoteBounty: PropTypes.func,
   isStreamer: PropTypes.bool,

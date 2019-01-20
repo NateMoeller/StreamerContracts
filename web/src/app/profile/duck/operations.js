@@ -8,17 +8,23 @@ import {
   receiveMyDonations,
   requestMyBounties,
   receiveMyBounties,
-  requestAcceptBounty,
-  receiveAcceptBountySuccess,
-  receiveAcceptBountyFailure,
+  requestActivateBounty,
+  receiveActivateBountySuccess,
+  receiveActivateBountyFailure,
   requestRemoveBounty,
   receiveRemoveBountySuccess,
   receiveRemoveBountyFailure,
   requestVoteBounty,
-  receiveVoteBounty
+  receiveVoteBounty,
+  requestActiveBounty,
+  receiveActiveBounty,
+  requestDeactivateBounty,
+  receiveDeactivateBounty
 } from './actions';
+import { ACTIVE } from '../../BountyState';
 import RestClient from '../../RestClient';
 
+/* global sessionStorage */
 const getUser = () => (dispatch) => {
   dispatch(requestUserInfo());
 
@@ -40,17 +46,35 @@ const testAlert = (alertChannelId) => (dispatch) => {
 };
 
 const voteBounty = (payload, callback = null) => (dispatch) => {
-  dispatch(requestVoteBounty());
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  const votePayload = { contractId: payload.contract.contractId, flagCompleted: payload.flagCompleted };
 
-  RestClient.POST('bounties/vote', payload, (response) => {
-    dispatch(receiveVoteBounty());
-    if (callback) {
-      callback();
-    }
-  }, (error) => {
-    //TODO: handle error
-    console.error(error);
-  });
+  if (payload.contract.state === ACTIVE && user.displayName === payload.contract.streamerName) {
+    dispatch(requestDeactivateBounty());
+    RestClient.PUT('bounties/deactivate', { contractId: payload.contract.contractId }, () => {
+      dispatch(receiveDeactivateBounty());
+      dispatch(requestVoteBounty());
+
+      RestClient.POST('bounties/vote', votePayload, (response) => {
+        dispatch(receiveVoteBounty());
+        if (callback) {
+          callback();
+        }
+      }, (error) => {
+        console.error(error);
+      });
+    });
+  } else {
+    dispatch(requestVoteBounty());
+    RestClient.POST('bounties/vote', votePayload, (response) => {
+      dispatch(receiveVoteBounty());
+      if (callback) {
+        callback();
+      }
+    }, (error) => {
+      console.error(error);
+    });
+  }
 }
 
 const listDonorBounties = (page, pageSize) => (dispatch) => {
@@ -73,28 +97,28 @@ const listStreamerBounties = (page, pageSize, username, state = null) => (dispat
   }
 
   RestClient.GET(url, (response) => {
-    dispatch(receiveMyBounties(response.data));
+    dispatch(receiveMyBounties(state, response.data));
   }, (error) => {
     // TODO handle error
     console.error(error);
   })
 }
 
-const acceptBounty = (contractId, callback = null) => (dispatch) => {
+const activateBounty = (contractId, callback = null) => (dispatch) => {
   const payload = { contractId };
-  dispatch(requestAcceptBounty());
+  dispatch(requestActivateBounty());
 
   RestClient.PUT('bounties/activate', payload, (response) => {
-    dispatch(receiveAcceptBountySuccess());
+    dispatch(receiveActivateBountySuccess(response.data));
     if (callback) {
       callback();
     }
   }, (error) => {
-    dispatch(receiveAcceptBountyFailure());
+    dispatch(receiveActivateBountyFailure());
   })
 }
 
-const removeBounty = (contractId, callback = null) => (dispatch) => {
+const declineBounty = (contractId, callback = null) => (dispatch) => {
   const payload = { contractId };
   dispatch(requestRemoveBounty());
 
@@ -108,12 +132,24 @@ const removeBounty = (contractId, callback = null) => (dispatch) => {
   })
 }
 
+const getMyActiveBounties = (username) => (dispatch) => {
+  dispatch(requestActiveBounty());
+  const page = 0;
+  const pageSize = 10;
+  const url = `bounties/streamerBounties/${page}/${pageSize}?username=${username}&state=ACTIVE`;
+
+  RestClient.GET(url, (response) => {
+    dispatch(receiveActiveBounty(response.data.content[0]));
+  }); // do nothing on error
+}
+
 export default {
   getUser,
   testAlert,
   voteBounty,
   listDonorBounties,
   listStreamerBounties,
-  acceptBounty,
-  removeBounty
+  activateBounty,
+  declineBounty,
+  getMyActiveBounties
 };

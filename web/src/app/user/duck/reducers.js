@@ -2,8 +2,8 @@ import {
   REQUEST_PUBLIC_USER,
   RECEIVE_PUBLIC_USER_SUCCESS,
   RECEIVE_PUBLIC_USER_FAILURE,
-  REQUEST_PUBLIC_BOUNTIES,
-  RECEIVE_PUBLIC_BOUNITES_SUCCESS
+  RECEIVE_PUBLIC_BOUNITES_SUCCESS,
+  RECEIVE_PUBLIC_ACTIVE_BOUNTY
 } from './types';
 
 const INITIAL_STATE = {
@@ -11,7 +11,8 @@ const INITIAL_STATE = {
   publicUser: null,
   publicBountiesLoading: false,
   publicBounties: [],
-  totalPublicBounties: 0
+  totalPublicBounties: 0,
+  activeBounty: null
 };
 
 const commonReducer = (state = INITIAL_STATE, action) => {
@@ -41,6 +42,12 @@ const commonReducer = (state = INITIAL_STATE, action) => {
         ...state,
         publicBounties: action.data.content,
         totalPublicBounties: action.data.totalElements
+      }
+    }
+    case RECEIVE_PUBLIC_ACTIVE_BOUNTY: {
+      return {
+        ...state,
+        activeBounty: action.activeBounty
       }
     }
     default: {

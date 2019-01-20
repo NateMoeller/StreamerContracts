@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
@@ -137,9 +138,16 @@ public class ContractsApiController {
         if (!contractModel.getState().equals(ContractState.OPEN)) {
             throw new IllegalStateException(String.format("Cannot activate a contract that is not OPEN. Contract Id: %s Contract State: %s", contractId, contractModel.getState().name()));
         }
+
+        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
+        if (contractModel.getStreamer().getTwitchUsername() != userModel.getTwitchUsername()) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
  
         contractService.activateContract(contractModel);
-        return new ResponseEntity(HttpStatus.OK);
+        final PrivateContract activatedContract = new PrivateContract(contractModel);
+
+        return ResponseEntity.ok(activatedContract);
     }
 
     @RequestMapping(path = "deactivate", method = RequestMethod.PUT)

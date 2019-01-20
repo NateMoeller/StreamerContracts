@@ -7,6 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import BountyDetails from '../profile/BountyDetails/BountyDetails';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import PropTypes from 'prop-types';
+import PublicActiveBountyContainer from '../common/activeBounty/PublicActiveBountyContainer';
 import { OPEN, COMPLETED, FAILED } from '../BountyState';
 import profileStyles from '../profile/ProfileStyles.scss';
 import styles from './UserComponentStyles.scss';
@@ -169,6 +170,9 @@ class UserComponent extends Component {
 
     return (
       <Grid className="content">
+        <PublicActiveBountyContainer
+          twitchUserName={this.props.publicUser.displayName}
+        />
         <Col xs={3} md={2} className={profileStyles.sidebar}>
           <Row>
             <Image src={this.props.publicUser.profileImageUrl} thumbnail />

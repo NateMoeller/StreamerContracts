@@ -39,8 +39,8 @@ class ProfileContainer extends Component {
         totalBounties={this.props.profile.totalBounties}
         totalDonations={this.props.profile.totalDonations}
         showSpinner={this.props.profile.showSpinner}
-        acceptBounty={this.props.acceptBounty}
-        removeBounty={this.props.removeBounty}
+        activateBounty={this.props.activateBounty}
+        declineBounty={this.props.declineBounty}
       />
     );
   }

@@ -8,14 +8,18 @@ import {
   RECEIVE_MY_DONATIONS,
   REQUEST_MY_BOUNTIES,
   RECEIVE_MY_BOUNTIES,
-  REQUEST_ACCEPT_BOUNTY,
-  RECEIVE_ACCEPT_BOUNTY_SUCCESS,
-  RECEIVE_ACCEPT_BOUNTY_FAILURE,
+  REQUEST_ACTIVATE_BOUNTY,
+  RECEIVE_ACTIVATE_BOUNTY_SUCCESS,
+  RECEIVE_ACTIVATE_BOUNTY_FAILURE,
   REQUEST_REMOVE_BOUNTY,
   RECEIVE_REMOVE_BOUNTY_SUCCESS,
   RECEIVE_REMOVE_BOUNTY_FAILURE,
   REQUEST_VOTE_BOUNTY,
   RECEIVE_VOTE_BOUNTY,
+  REQUEST_ACTIVE_BOUNTY,
+  RECEIVE_ACTIVE_BOUNTY,
+  REQUEST_DEACTIVATE_BOUNTY,
+  RECEIVE_DEACTIVATE_BOUNTY
 } from './types';
 
 const requestUserInfo = () => ({
@@ -54,21 +58,23 @@ const requestMyBounties = () => ({
   type: REQUEST_MY_BOUNTIES
 });
 
-const receiveMyBounties = (data) => ({
+const receiveMyBounties = (bountyState, data) => ({
   type: RECEIVE_MY_BOUNTIES,
-  data
+  data,
+  bountyState
 });
 
-const requestAcceptBounty = () => ({
-  type: REQUEST_ACCEPT_BOUNTY
+const requestActivateBounty = () => ({
+  type: REQUEST_ACTIVATE_BOUNTY
 });
 
-const receiveAcceptBountySuccess = () => ({
-  type: RECEIVE_ACCEPT_BOUNTY_SUCCESS
+const receiveActivateBountySuccess = (activeBounty) => ({
+  type: RECEIVE_ACTIVATE_BOUNTY_SUCCESS,
+  activeBounty
 });
 
-const receiveAcceptBountyFailure = () => ({
-  type: RECEIVE_ACCEPT_BOUNTY_FAILURE
+const receiveActivateBountyFailure = () => ({
+  type: RECEIVE_ACTIVATE_BOUNTY_FAILURE
 });
 
 const requestRemoveBounty = () => ({
@@ -91,6 +97,23 @@ const receiveVoteBounty = () => ({
   type: RECEIVE_VOTE_BOUNTY
 });
 
+const requestActiveBounty = () => ({
+  type: REQUEST_ACTIVE_BOUNTY
+});
+
+const receiveActiveBounty = (activeBounty) => ({
+  type: RECEIVE_ACTIVE_BOUNTY,
+  activeBounty
+});
+
+const requestDeactivateBounty = () => ({
+  type: REQUEST_DEACTIVATE_BOUNTY
+});
+
+const receiveDeactivateBounty = () => ({
+  type: RECEIVE_DEACTIVATE_BOUNTY
+});
+
 export {
   requestUserInfo,
   receiveUserInfoSuccess,
@@ -101,12 +124,16 @@ export {
   receiveMyDonations,
   requestMyBounties,
   receiveMyBounties,
-  requestAcceptBounty,
-  receiveAcceptBountySuccess,
-  receiveAcceptBountyFailure,
+  requestActivateBounty,
+  receiveActivateBountySuccess,
+  receiveActivateBountyFailure,
   requestRemoveBounty,
   receiveRemoveBountySuccess,
   receiveRemoveBountyFailure,
   requestVoteBounty,
-  receiveVoteBounty
+  receiveVoteBounty,
+  requestActiveBounty,
+  receiveActiveBounty,
+  requestDeactivateBounty,
+  receiveDeactivateBounty
 };
