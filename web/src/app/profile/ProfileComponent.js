@@ -4,6 +4,7 @@ import MyActiveBountyContainer from '../common/activeBounty/MyActiveBountyContai
 import AlertComponent from './AlertComponent/AlertComponent';
 import DonationsComponent from './DonationsComponent/DonationsComponent';
 import MyBountiesComponent from './MyBountiesComponent/MyBountiesComponent';
+import { OPEN, COMPLETED, FAILED } from '../BountyState';
 import PropTypes from 'prop-types';
 import StatBox from './StatBox/StatBox';
 import styles from './ProfileStyles.scss'
@@ -18,14 +19,22 @@ class ProfileComponent extends Component {
     super(props);
 
     this.state = {
-      activeTab: ACCOUNT_TAB
+      activeTab: ACCOUNT_TAB,
+      initialBountyFilter: null
     };
   }
 
-  onTabClick(newActiveTab) {
-    this.setState({
-      activeTab: newActiveTab
-    });
+  onTabClick(newActiveTab, bountyFilter = null) {
+    if (bountyFilter) {
+      this.setState({
+        activeTab: newActiveTab,
+        initialBountyFilter: bountyFilter
+      });
+    } else {
+      this.setState({
+        activeTab: newActiveTab
+      });
+    }
   }
 
   getContent() {
@@ -46,9 +55,10 @@ class ProfileComponent extends Component {
     return (
       <div>
         <PageHeader>My Profile</PageHeader>
-        <StatBox number={this.props.user.openContracts} label={'Bounties open'}/>
-        <StatBox number={this.props.user.completedContracts} label={'Bounties completed'}/>
-        <StatBox number={this.props.user.failedContracts} label={'Bounties failed'}/>
+        <StatBox number={`$${Number(this.props.user.moneyEarned).toFixed(2)}`} label={'Money earned'} />
+        <StatBox number={this.props.user.openContracts} label={'Bounties open'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, OPEN)}/>
+        <StatBox number={this.props.user.completedContracts} label={'Bounties completed'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, COMPLETED)}/>
+        <StatBox number={this.props.user.failedContracts} label={'Bounties failed'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, FAILED)}/>
       </div>
     );
   }
@@ -83,9 +93,10 @@ class ProfileComponent extends Component {
           bounties={this.props.bounties}
           totalBounties={this.props.totalBounties}
           loading={this.props.showSpinner}
-          acceptBounty={this.props.acceptBounty}
-          removeBounty={this.props.removeBounty}
+          activateBounty={this.props.activateBounty}
+          declineBounty={this.props.declineBounty}
           voteBounty={this.props.voteBounty}
+          bountyFilter={this.state.initialBountyFilter}
         />
       </div>
 
@@ -153,8 +164,8 @@ ProfileComponent.propTypes = {
   totalBounties: PropTypes.number.isRequired,
   totalDonations: PropTypes.number.isRequired,
   showSpinner: PropTypes.bool.isRequired,
-  acceptBounty: PropTypes.func.isRequired,
-  removeBounty: PropTypes.func.isRequired,
+  activateBounty: PropTypes.func.isRequired,
+  declineBounty: PropTypes.func.isRequired,
 };
 
 export default ProfileComponent;

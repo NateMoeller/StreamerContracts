@@ -13,7 +13,7 @@ class MyActiveBountyContainer extends Component {
   render() {
     return (
       <ActiveBounty
-        activeBounty={this.props.profile.activeBounties[0]}
+        activeBounty={this.props.profile.activeBounty}
         voteBounty={this.props.voteBounty}
       />
     );

@@ -6,8 +6,12 @@ import {
   RECEIVE_MY_DONATIONS,
   REQUEST_MY_BOUNTIES,
   RECEIVE_MY_BOUNTIES,
-  RECEIVE_ACTIVE_BOUNTIES
+  RECEIVE_ACTIVATE_BOUNTY_SUCCESS,
+  RECEIVE_ACTIVE_BOUNTY,
+  RECEIVE_DEACTIVATE_BOUNTY
 } from './types';
+
+import { ACTIVE } from '../../BountyState';
 
 const INITIAL_STATE = {
   showSpinner: false,
@@ -17,7 +21,7 @@ const INITIAL_STATE = {
   bounties: [],
   totalBounties: 0,
   totalDonations: 0,
-  activeBounties: []
+  activeBounty: null
 };
 
 /* global sessionStorage */
@@ -58,17 +62,30 @@ const profileReducer = (state = INITIAL_STATE, action) => {
       };
     }
     case RECEIVE_MY_BOUNTIES: {
-      return {
+      const stateObj = {
         ...state,
         showSpinner: false,
         bounties: action.data.content,
         totalBounties: action.data.totalElements
       }
+
+      if (action.bountyState === ACTIVE) {
+        stateObj.activeBounty = action.data.content[0]
+      }
+
+      return stateObj;
     }
-    case RECEIVE_ACTIVE_BOUNTIES: {
+    case RECEIVE_ACTIVE_BOUNTY:
+    case RECEIVE_ACTIVATE_BOUNTY_SUCCESS: {
       return {
         ...state,
-        activeBounties: action.data.content
+        activeBounty: action.activeBounty
+      }
+    }
+    case RECEIVE_DEACTIVATE_BOUNTY: {
+      return {
+        ...state,
+        activeBounty: null
       }
     }
     default: {

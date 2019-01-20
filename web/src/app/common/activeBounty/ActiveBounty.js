@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Glyphicon } from 'react-bootstrap';
 import Countdown from 'react-countdown-now';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
+import { COMPLETED } from '../../BountyState';
 import styles from './ActiveBounty.scss';
 
 class ActiveBounty extends Component {
@@ -12,15 +13,13 @@ class ActiveBounty extends Component {
     this.activeBountyDiv = React.createRef();
   }
 
-  voteActiveBounty(contractId, completed) {
-    console.log('vote active bounty');
-
+  voteActiveBounty(contract, completed) {
     const votePayload = {
-      contractId,
+      contract,
       flagCompleted: completed
     }
 
-    // this.props.voteBounty(votePayload);
+    this.props.voteBounty(votePayload);
   }
 
   render() {
@@ -43,14 +42,19 @@ class ActiveBounty extends Component {
       }
     };
 
+    const twitchLink = `twitch.tv/${activeBounty.streamerName}`;
+
     return (
       <div className={cx(styles.activeBounty, styles.slitIn)} ref={this.activeBountyDiv}>
         <div className={styles.left}>
           <div className={styles.moneyBox}>
-            ${activeBounty.contractAmount}
+            ${activeBounty.contractAmount.toFixed(2)}
           </div>
           <div className={styles.description}>
             {activeBounty.description}
+          </div>
+          <div className={styles.link}>
+            <i className="fa fa-twitch" /> <a href={`https://www.${twitchLink}`} target="_blank" rel='noreferrer noopener'>{twitchLink}</a>
           </div>
         </div>
         <div className={styles.right}>
@@ -61,18 +65,16 @@ class ActiveBounty extends Component {
             <div className={styles.buttons}>
               <Button
                 bsStyle="link"
-                // disabled={!this.state.voteButtonsEnabled}
                 onClick={() => {
-                  this.voteActiveBounty(activeBounty.contractId, false);
+                  this.voteActiveBounty(activeBounty, false);
                 }}
               >
                 Mark failed
               </Button>
               <Button
                 className={styles.submit}
-                // disabled={!this.state.voteButtonsEnabled}
                 onClick={() => {
-                  this.voteActiveBounty(activeBounty.contractId, true);
+                  this.voteActiveBounty(activeBounty, true);
                 }}
               >
                   Mark completed

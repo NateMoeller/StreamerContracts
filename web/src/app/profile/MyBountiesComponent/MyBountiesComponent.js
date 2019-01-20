@@ -32,7 +32,7 @@ class MyBountiesComponent extends Component {
     this.state = {
       curBounty: null,
       curPage: 1,
-      bountyFilter: OPEN
+      bountyFilter: props.bountyFilter ? props.bountyFilter : OPEN
     };
   }
 
@@ -85,11 +85,16 @@ class MyBountiesComponent extends Component {
       return this.getCompletedIcon();
     } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
       return this.getRemoveIcon(row);
-    } else if (row.state === ACTIVE) {
-      return this.getAcceptedDropdownMenu(row);
+    } else if (row.state === ACTIVE || row.state === OPEN) {
+      if (row.userVote === COMPLETED) {
+        return this.getVotedCompletedIcon();
+      } else if (row.state === ACTIVE) {
+        return this.getAcceptedDropdownMenu(row);
+      }
+      return this.getOpenDropdownMenu(row);
     }
 
-    return this.getOpenDropdownMenu(row);
+    return '';
   };
 
   getCompletedIcon() {
@@ -101,7 +106,21 @@ class MyBountiesComponent extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
-        <Glyphicon glyph="ok" className={styles.checkmark} />
+        <Glyphicon glyph="ok-circle" className={styles.checkmark} />
+      </OverlayTrigger>
+    );
+  }
+
+  getVotedCompletedIcon() {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        You have marked this bounty complete. The icon will fill in when voting has finished.
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={tooltip}>
+        <Glyphicon glyph="ok-circle" className={cx(styles.checkmark, styles.voted)} />
       </OverlayTrigger>
     );
   }
@@ -122,18 +141,18 @@ class MyBountiesComponent extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
-        <Glyphicon glyph="remove" className={styles.error} />
+        <Glyphicon glyph="remove-circle" className={styles.error} />
       </OverlayTrigger>
     );
   }
 
   getAcceptedDropdownMenu(row) {
     const voteCompletedPayload = {
-      contractId: row.contractId,
+      contract: row,
       flagCompleted: true
     };
     const voteFailedPayload = {
-      contractId: row.contractId,
+      contract: row,
       flagCompleted: false
     };
 
@@ -155,6 +174,16 @@ class MyBountiesComponent extends Component {
         <figure></figure>
       </div>
     );
+    const markCompleted = (
+      <OverlayTrigger trigger="focus" placement="left" overlay={completedPopover}>
+        <MenuItem eventKey="1">Mark completed</MenuItem>
+      </OverlayTrigger>
+    );
+    const markFailed = (
+      <OverlayTrigger trigger="focus" placement="left" overlay={failedPopover}>
+        <MenuItem eventKey="2">Mark failed</MenuItem>
+      </OverlayTrigger>
+    );
 
     return (
       <ButtonToolbar>
@@ -164,31 +193,31 @@ class MyBountiesComponent extends Component {
           noCaret
           id="dropdown-no-caret"
         >
-          <OverlayTrigger trigger="focus" placement="left" overlay={completedPopover}>
-            <MenuItem eventKey="1">Mark completed</MenuItem>
-          </OverlayTrigger>
-          <OverlayTrigger trigger="focus" placement="left" overlay={failedPopover}>
-            <MenuItem eventKey="2">Mark failed</MenuItem>
-          </OverlayTrigger>
+          {markCompleted}
+          {markFailed}
         </DropdownButton>
       </ButtonToolbar>
     );
   }
 
   getOpenDropdownMenu(row) {
-    const tooltip = (
-      <Tooltip id="tooltip">
-        Offensive content? We'll review the bounty
-      </Tooltip>
-    );
+    const voteCompletedPayload = {
+      contract: row,
+      flagCompleted: true
+    };
     const acceptPopover = (
-      <Popover id="popover" title="Accept bounty?">
-        <Button bsStyle="success" onClick={() => this.onAcceptBounty(row.contractId)}>Accept bounty</Button>
+      <Popover id="popover" title="Activate bounty?">
+        <Button bsStyle="success" onClick={() => this.onActivateBounty(row.contractId)}>Activate bounty</Button>
       </Popover>
     );
     const removePopover = (
       <Popover id="popover" title="Decline bounty?">
         <Button bsStyle="danger" onClick={() => this.onDeclineBounty(row.contractId)}>Decline bounty</Button>
+      </Popover>
+    );
+    const markComplete = (
+      <Popover id="popover" title="Mark complete?">
+        <Button bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>Mark complete</Button>
       </Popover>
     );
 
@@ -209,14 +238,14 @@ class MyBountiesComponent extends Component {
           id="dropdown-no-caret"
         >
           <OverlayTrigger trigger="focus" placement="left" overlay={acceptPopover}>
-            <MenuItem eventKey="1">Accept bounty</MenuItem>
+            <MenuItem eventKey="1"><span className={tableStyles.activate}>Activate bounty</span></MenuItem>
           </OverlayTrigger>
           <OverlayTrigger trigger="focus" placement="left" overlay={removePopover}>
-            <MenuItem eventKey="2">Decline bounty</MenuItem>
+            <MenuItem eventKey="4"><span className={tableStyles.error}>Decline bounty</span></MenuItem>
           </OverlayTrigger>
           <MenuItem divider />
-          <OverlayTrigger placement="left" overlay={tooltip}>
-            <MenuItem eventKey="3">Report bounty</MenuItem>
+          <OverlayTrigger trigger="focus" placement="left" overlay={markComplete}>
+            <MenuItem eventKey="2"><span className={tableStyles.complete}>Mark complete</span></MenuItem>
           </OverlayTrigger>
         </DropdownButton>
       </ButtonToolbar>
@@ -304,12 +333,12 @@ class MyBountiesComponent extends Component {
     this.props.voteBounty(payload, this.refreshList);
   }
 
-  onAcceptBounty = (contractId) => {
-    this.props.acceptBounty(contractId, this.refreshList);
+  onActivateBounty = (contractId) => {
+    this.props.activateBounty(contractId, this.refreshList);
   }
 
   onDeclineBounty = (contractId) => {
-    this.props.removeBounty(contractId, this.refreshList);
+    this.props.declineBounty(contractId, this.refreshList);
   }
 
   render() {
@@ -348,7 +377,7 @@ class MyBountiesComponent extends Component {
         <BountyDetails
           curBounty={this.state.curBounty}
           setCurBounty={this.setCurBounty}
-          onAcceptBounty={this.onAcceptBounty}
+          onActivateBounty={this.onActivateBounty}
           onDeclineBounty={this.onDeclineBounty}
           onVoteBounty={this.onVoteBounty}
           isStreamer
@@ -363,13 +392,15 @@ MyBountiesComponent.propTypes = {
   loading: PropTypes.bool,
   bounties: PropTypes.array.isRequired,
   totalBounties: PropTypes.number.isRequired,
-  acceptBounty: PropTypes.func.isRequired,
-  removeBounty: PropTypes.func.isRequired,
+  activateBounty: PropTypes.func.isRequired,
+  declineBounty: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired,
+  bountyFilter: PropTypes.string
 }
 
 MyBountiesComponent.defaultProps = {
-  loading: false
+  loading: false,
+  bountyFilter: null
 }
 
 export default MyBountiesComponent;

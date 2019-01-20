@@ -45,14 +45,6 @@ class DonationsComponent extends Component {
     }
   }
 
-  onVoteClick = (contractId, markedCompleted) => {
-    const payload = {
-      contractId: contractId,
-      flagCompleted: markedCompleted
-    };
-    this.props.voteBounty(payload);
-  }
-
   getName = (cell, row, rowIndex, formatExtraData) => {
     const cellWrapper = (
       <div className={tableStyles.noOverflow}>{row.streamerName}</div>
@@ -89,6 +81,9 @@ class DonationsComponent extends Component {
     } else if (row.state === EXPIRED || row.state === DECLINED || row.state === FAILED) {
       return this.getRemoveIcon(row);
     } else if (row.state === OPEN || row.state === ACTIVE) {
+      if (row.userVote === FAILED) {
+        return this.getVotedFailedIcon(row);
+      }
       return this.getDropdownMenu(row);
     }
 
@@ -104,7 +99,7 @@ class DonationsComponent extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
-        <Glyphicon glyph="ok" className={styles.checkmark} />
+        <Glyphicon glyph="ok-circle" className={styles.checkmark} />
       </OverlayTrigger>
     );
   }
@@ -125,20 +120,43 @@ class DonationsComponent extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
-        <Glyphicon glyph="remove" className={styles.error} />
+        <Glyphicon glyph="remove-circle" className={styles.error} />
+      </OverlayTrigger>
+    );
+  }
+
+  getVotedFailedIcon(bounty) {
+    const tooltipText = `You marked that ${bounty.streamerName} failed this bounty. This bounty will be resolved when ${bounty.streamerName} responds`;
+    const tooltip = (
+      <Tooltip id="tooltip">
+         {tooltipText}
+      </Tooltip>
+    );
+
+    return (
+      <OverlayTrigger placement="top" overlay={tooltip}>
+        <Glyphicon glyph="remove-circle" className={cx(styles.error, styles.voted)} />
       </OverlayTrigger>
     );
   }
 
   getDropdownMenu = (row) => {
+    const voteCompletedPayload = {
+      contract: row,
+      flagCompleted: true
+    };
+    const voteFailedPayload = {
+      contract: row,
+      flagCompleted: false
+    };
     const completedPopover = (
       <Popover id="popover" title="Bounty completed?">
-        <Button bsStyle="success" onClick={() => this.onVoteClick(row.contractId, true)}>{`${row.streamerName} completed bounty`}</Button>
+        <Button bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>{`${row.streamerName} completed bounty`}</Button>
       </Popover>
     );
     const failedPopover = (
       <Popover id="popover" title="Bounty Failed?">
-        <Button bsStyle="danger" onClick={() => this.onVoteClick(row.contractId, false)}>{`${row.streamerName} failed bounty`}</Button>
+        <Button bsStyle="danger" onClick={() => this.onVoteBounty(voteFailedPayload)}>{`${row.streamerName} failed bounty`}</Button>
       </Popover>
     );
 
@@ -208,6 +226,10 @@ class DonationsComponent extends Component {
     });
   };
 
+  onVoteBounty = (payload) => {
+    this.props.voteBounty(payload, this.refreshList);
+  }
+
   render() {
     if (this.props.loading) {
       return <LoadingComponent />
@@ -242,6 +264,7 @@ class DonationsComponent extends Component {
       <BountyDetails
         curBounty={this.state.curBounty}
         setCurBounty={this.setCurBounty}
+        onVoteBounty={this.onVoteBounty}
         isDonor
       />
     );

@@ -7,11 +7,17 @@
 .checkmark {
   margin-left: 7px;
   color: $secondary-blue;
+  font-size: 22px;
 }
 
 .error {
   margin-left: 7px;
   color: $error-red;
+  font-size: 22px;
+}
+
+.voted {
+  opacity: .15;
 }
 
 .empty {

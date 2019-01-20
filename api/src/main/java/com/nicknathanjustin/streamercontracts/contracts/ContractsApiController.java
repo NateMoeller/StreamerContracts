@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
@@ -139,7 +140,9 @@ public class ContractsApiController {
         }
  
         contractService.activateContract(contractModel);
-        return new ResponseEntity(HttpStatus.OK);
+        final PrivateContract activatedContract = new PrivateContract(contractModel);
+
+        return ResponseEntity.ok(activatedContract);
     }
 
     @RequestMapping(path = "deactivate", method = RequestMethod.PUT)

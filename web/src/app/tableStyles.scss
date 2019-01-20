@@ -43,6 +43,18 @@
     }
   }
 
+  .activate {
+    color: $money-green;
+  }
+
+  .complete {
+    color: $secondary-blue;
+  }
+
+  .error {
+    color: $error-red;
+  }
+
   .noOverflow {
     white-space: nowrap;
     overflow: hidden;
