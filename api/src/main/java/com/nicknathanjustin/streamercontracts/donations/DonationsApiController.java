@@ -1,5 +1,7 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
+import com.google.common.hash.Hashing;
+import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
 import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
+
 @RestController
 @RequestMapping("/donations")
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class DonationsApiController {
     @NonNull private final DonationService donationService;
     @NonNull private final PaymentsService paymentsService;
     @NonNull private final UserService userService;
+    @NonNull private final AlertService alertService;
+
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
@@ -53,6 +59,16 @@ public class DonationsApiController {
 
         final ContractModel contract = contractService.createContract(proposer, streamer, game, createDonationRequest.getBounty());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), paypalPaymentId, authorizationId);
+
+        // send notification to FE
+        final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
+        final String description = contract.getDescription();
+        final String alertChannelId = Hashing.sha256()
+                .hashString(streamer.getId().toString(), StandardCharsets.UTF_8)
+                .toString();
+        alertService.sendAlert(alertChannelId, title, description);
+
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
