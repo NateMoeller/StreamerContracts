@@ -65,7 +65,8 @@ class Notification extends Component {
         {content}
       </Popover>
     );
-    const number = this.props.notification.notifications.length > 99 ? '99+' : this.props.notification.notifications.length;
+    const MAX_NOTIFICATION = 99;
+    const number = this.props.notification.notifications.length > MAX_NOTIFICATION ? '99+' : this.props.notification.notifications.length;
 
     return (
       <OverlayTrigger

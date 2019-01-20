@@ -11,9 +11,9 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public void sendAlert(@NonNull final String alertChannelId, @NonNull final String title, @NonNull final String description) {
-        final AlertMessage testMessage = new AlertMessage(title, description);
+        final AlertMessage message = new AlertMessage(title, description);
         final String url = "/alert/" + alertChannelId;
 
-        messagingTemplate.convertAndSend(url, testMessage);
+        messagingTemplate.convertAndSend(url, message);
     }
 }
