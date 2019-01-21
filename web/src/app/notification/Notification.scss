@@ -1,0 +1,75 @@
+@import '../../colors.scss';
+
+:global {
+  .popover-content {
+    padding: 0px;
+    max-height: 700px;
+    overflow: auto;
+  }
+}
+
+.number {
+  color: $error-red;
+  font-size: 26px;
+  right: 15px;
+  top: -10px;
+}
+
+.notification {
+  float: left;
+  padding-top: 12px;
+  height: 43px;
+
+  .bellIcon {
+    font-size: 26px;
+    color: $true-white;
+    cursor: pointer;
+  }
+
+  .active {
+    color: $error-red;
+  }
+
+  .redCircle {
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+    background-color: $notification-red;
+    position: relative;
+    top: -37px;
+    left: 13px;
+    font-size: 12px;
+    line-height: 20px;
+    color: $true-white;
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+
+.item {
+  width: 250px;
+  padding: 10px;
+  cursor: pointer;
+
+  &Gray {
+    background: $table-gray1;
+  }
+
+  &:hover {
+    background: $table-gray2;
+  }
+
+  .title {
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+}
+
+.noNotifications {
+  width: 250px;
+  padding: 10px;
+  text-align: center;
+}

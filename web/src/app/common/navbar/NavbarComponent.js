@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { connect } from 'react-redux';
 import cx from 'classnames';
+import Notification from '../../notification/Notification';
 import logo from '../../../resources/logo_light.png';
 import styles from './NavBarStyles.scss';
 
@@ -37,12 +38,41 @@ class NavbarComponent extends Component {
     return null;
   }
 
+  getRightMenu() {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const userTitle = this.getUserTitle(user);
+    const logoutLink = process.env.REACT_APP_API_HOST + 'logout';
+
+    if (user === null) {
+      return (
+        <LinkContainer to="/login" className={styles.tab}>
+          <NavItem href="/login">Login</NavItem>
+        </LinkContainer>
+      );
+    }
+
+    return (
+      <NavDropdown eventKey={3} title={userTitle} id="basic-nav-dropdown" className={styles.dropdownMenu}>
+        <LinkContainer exact to="/profile" onClick={() => this.setActiveItem('profile')}>
+          <MenuItem eventKey={3.1}>My Profile</MenuItem>
+        </LinkContainer>
+        <LinkContainer exact to="/settings">
+          <MenuItem eventKey={3.2}>Settings</MenuItem>
+        </LinkContainer>
+        <MenuItem divider />
+        <MenuItem eventKey={3.4} href={logoutLink} onClick={() => {
+          sessionStorage.removeItem('user');
+          //TODO: switch to POST once CSRF is working
+          //RestClient.POST('logout');
+        }}>Logout</MenuItem>
+      </NavDropdown>
+    );
+  }
+
   render() {
     const aboutClassname = this.state.activeItem === 'about' ? cx([styles.tab, styles.activeTab]) : styles.tab;
     const profileClassname = this.state.activeItem === 'profile' ? cx([styles.tab, styles.activeTab]) : styles.tab;
     const user = JSON.parse(sessionStorage.getItem('user'));
-    const userTitle = this.getUserTitle(user);
-    const logoutLink = process.env.REACT_APP_API_HOST + 'logout';
 
     return (
       <Navbar fluid collapseOnSelect className={styles.navBar}>
@@ -65,24 +95,12 @@ class NavbarComponent extends Component {
               </LinkContainer>
             </Nav>
             <Nav pullRight>
-              {user === null ?
-                <LinkContainer to="/login" className={styles.tab}>
-                  <NavItem href="/login">Login</NavItem>
-                </LinkContainer> :
-                <NavDropdown eventKey={3} title={userTitle} id="basic-nav-dropdown" className={styles.dropdownMenu}>
-                  <LinkContainer exact to="/profile" onClick={() => this.setActiveItem('profile')}>
-                    <MenuItem eventKey={3.1}>My Profile</MenuItem>
-                  </LinkContainer>
-                  <LinkContainer exact to="/settings">
-                    <MenuItem eventKey={3.2}>Settings</MenuItem>
-                  </LinkContainer>
-                  <MenuItem divider />
-                  <MenuItem eventKey={3.4} href={logoutLink} onClick={() => {
-                    sessionStorage.removeItem('user');
-                    //TODO: switch to POST once CSRF is working
-                    //RestClient.POST('logout');
-                  }}>Logout</MenuItem>
-                </NavDropdown>}
+              {user !== null &&
+                <Notification
+                  alertChannelId={user.alertChannelId}
+                />
+              }
+              {this.getRightMenu()}
             </Nav>
           </Navbar.Collapse>
         </div>
