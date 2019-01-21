@@ -1,6 +1,5 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
-import com.google.common.hash.Hashing;
 import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
@@ -12,6 +11,7 @@ import com.paypal.api.payments.Payment;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/donations")
@@ -34,11 +37,16 @@ public class DonationsApiController {
     @NonNull private final AlertService alertService;
 
 
+    @Value("${application.blackListedWords}")
+    private String[] blackListedWords;
+
+    @Value("${twitch.whiteListedAccounts}")
+    private String[] whiteListedAccounts;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
         final UserModel streamer = userService.getUser(createDonationRequest.getStreamerUsername()).orElse(null);
-        final String game = createDonationRequest.getGame();
         if (proposer == null || streamer == null) {
             log.warn("Username: {} or StreamerUsername: {} does not exist.", createDonationRequest.getUsername(), createDonationRequest.getStreamerUsername());
             return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -57,14 +65,12 @@ public class DonationsApiController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        final ContractModel contract = contractService.createContract(proposer, streamer, game, createDonationRequest.getBounty());
+        final ContractModel contract = contractService.createContract(proposer, streamer, createDonationRequest.getGame(), createDonationRequest.getBounty());
+        checkForBlackListedWords(createDonationRequest.getBounty(), contract.getId());
         donationService.createDonation(contract, proposer, createDonationRequest.getAmount(), contract.getProposedAt(), paypalPaymentId, authorizationId);
 
-        // send notification to FE
         final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
-        final String description = contract.getDescription();
-        alertService.sendNotification(streamer, title, description);
-
+        alertService.sendNotification(streamer, title, contract.getDescription());
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -83,5 +89,18 @@ public class DonationsApiController {
         }
 
         return payment.getTransactions().get(0).getRelatedResources().get(0).getAuthorization().getId();
+    }
+
+    private void checkForBlackListedWords(@NonNull final String bounty, @NonNull final UUID contractId) {
+        final List<String> blackListedBountyWords = getBlackListedWords(bounty);
+        if (!blackListedBountyWords.isEmpty()) {
+            log.warn("ContractId: {} may contain the following offensive language: {}", contractId, blackListedBountyWords);
+        }
+    }
+
+    private List<String> getBlackListedWords(@NonNull final String bounty) {
+        return Arrays.stream(blackListedWords)
+                .filter(blackListedWord -> bounty.toLowerCase().contains(blackListedWord.toLowerCase()))
+                .collect(Collectors.toList());
     }
 }

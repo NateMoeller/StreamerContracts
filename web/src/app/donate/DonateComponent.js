@@ -9,6 +9,7 @@ import {
   Col,
   PageHeader
 } from 'react-bootstrap';
+import { BLACK_LISTED_WORDS } from '../BlackListedWords'
 import React, { Component } from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import DonationCheckoutComponent from './DonateCheckoutComponent';
@@ -29,10 +30,12 @@ class DonateComponent extends Component {
     this.state = {
       amount: '',
       bounty: '',
+      blackListedBountyWords: '',
       game: null,
       showPaymentOptions: false,
       amountError: null,
-      bountyError: null
+      bountyError: null,
+      bountyWarning: null
     };
 
     this.submitForm = this.submitForm.bind(this);
@@ -69,6 +72,10 @@ class DonateComponent extends Component {
     return false;
   }
 
+  getBlackListedBountyWords(bounty) {
+    return BLACK_LISTED_WORDS.filter(blackListedWord => bounty.toLowerCase().includes(blackListedWord.toLowerCase()));
+  }
+
   validateAmount() {
     const regex = /^[1-9]\d*(?:\.\d{0,2})?$/;
     let error = { type: null };
@@ -89,14 +96,18 @@ class DonateComponent extends Component {
 
   validateBounty() {
     let error = { type: null };
+    let warning = { type: null };
     if (this.validateRequiredField(this.state.bounty)) {
       error = { type: 'error', message: REQUIRED_MESSAGE };
     } else if (this.state.bounty.length >= MAX_BOUNTY_LENGTH) {
       error = { type: 'error', message: TOO_LONG_MESSAGE };
+    } else if (this.state.blackListedBountyWords.length > 0) {
+      warning = { type: 'error', message: 'Caution. This bounty contains potentially offensive language and will be reviewed for abuse. If abuse is detected, this account will be banned.'}
     }
 
     this.setState({
-      bountyError: error
+      bountyError: error,
+      bountyWarning: warning
     });
   }
 
@@ -110,7 +121,8 @@ class DonateComponent extends Component {
 
   bountyChange(newBounty) {
     this.setState({
-      bounty: newBounty
+      bounty: newBounty,
+      blackListedBountyWords: this.getBlackListedBountyWords(newBounty)
     }, () => {
       this.validateBounty();
     });
@@ -152,6 +164,8 @@ class DonateComponent extends Component {
   render() {
     const amountErrorMessage = this.state.amountError !== null ? this.state.amountError.message : '';
     const bountyErrorMessage = this.state.bountyError !== null ? this.state.bountyError.message : '';
+    const bountyWarningMessage = this.state.bountyWarning !== null ? this.state.bountyWarning.message : '';
+    const offensiveWords = this.state.blackListedBountyWords.length > 0 ? ('Words flagged: ' + this.state.blackListedBountyWords.join(', ')) : '';
 
     if (this.state.showPaymentOptions) {
       return (
@@ -234,6 +248,8 @@ class DonateComponent extends Component {
                     />
                   </FormGroup>
                   <span className={styles.errorMessage}>{bountyErrorMessage}</span>
+                  <span className={styles.warningMessage}>{bountyWarningMessage}</span>
+                  <span>{offensiveWords}</span>
                 </Row>
                 <Row>
                   <Button type="submit" bsStyle="success" onClick={this.submitForm} disabled={!this.isSubmitEnabled()}>

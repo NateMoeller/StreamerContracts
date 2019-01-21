@@ -13,6 +13,11 @@
     color: $error-red;
   }
 
+  .warningMessage {
+    display: inline-block;
+    color: $warning-yellow;
+  }
+
   .title {
     margin-bottom: 30px;
     color: $primary-blue;
