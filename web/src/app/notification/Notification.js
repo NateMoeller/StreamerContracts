@@ -43,12 +43,17 @@ class Notification extends Component {
     const itemStyle = index % 2 !== 0 ? cx(styles.item, styles.itemGray) : styles.item;
 
     return (
-      <div className={itemStyle} key={index} onClick={() => this.props.clearNotification(index)}>
-        <div className={styles.title}>
-          {title}
+      <div className={itemStyle} key={index}>
+        <div className={styles.content}>
+          <div className={styles.title}>
+            {title}
+          </div>
+          <div className={styles.description}>
+            {description}
+          </div>
         </div>
-        <div className={styles.description}>
-          {description}
+        <div className={styles.remove}>
+          <Glyphicon glyph="remove" onClick={() => this.props.clearNotification(index)} />
         </div>
       </div>
     )
@@ -61,7 +66,7 @@ class Notification extends Component {
     const content = items.length > 0 ? items : <div className={styles.noNotifications}>No notifications</div>;
 
     const popover = (
-      <Popover id="popover-positioned-bottom">
+      <Popover id="popover-positioned-bottom" className={styles.navPopover}>
         {content}
       </Popover>
     );
