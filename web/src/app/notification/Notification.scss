@@ -1,10 +1,12 @@
 @import '../../colors.scss';
 
-:global {
-  .popover-content {
-    padding: 0px;
-    max-height: 700px;
-    overflow: auto;
+.navPopover {
+  :global {
+    .popover-content {
+      padding: 0px;
+      max-height: 700px;
+      overflow: auto;
+    }
   }
 }
 
@@ -52,7 +54,6 @@
 .item {
   width: 250px;
   padding: 10px;
-  cursor: pointer;
 
   &Gray {
     background: $table-gray1;
@@ -62,10 +63,21 @@
     background: $table-gray2;
   }
 
-  .title {
-    font-weight: 700;
-    margin-bottom: 10px;
+  .content {
+    display: inline-block;
+
+    .title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
   }
+
+  .remove {
+    display: inline-block;
+    float: right;
+    cursor: pointer;
+  }
+
 }
 
 .noNotifications {
