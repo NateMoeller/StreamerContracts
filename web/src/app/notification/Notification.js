@@ -17,19 +17,19 @@ class Notification extends Component {
   }
 
   componentDidMount() {
-    const alertChannelId = this.props.alertChannelId;
-    if (alertChannelId) {
-      this.connect(alertChannelId);
+    const username = this.props.username;
+    if (username) {
+      this.connect(username);
     } else {
       console.error('No id specified');
     }
   }
 
-  connect(alertChannelId) {
+  connect(username) {
     const socket = new SockJS(`${process.env.REACT_APP_API_HOST}alert-websocket`);
     this.stompClient = Stomp.over(socket);
     this.stompClient.connect({}, (frame) => {
-        this.stompClient.subscribe('/alert/' + alertChannelId, this.receivedNotification);
+        this.stompClient.subscribe('/alert/' + username, this.receivedNotification);
     });
   }
 
@@ -91,7 +91,7 @@ class Notification extends Component {
 }
 
 Notification.propTypes = {
-  alertChannelId: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired
 }
 
 function mapDispatchToProps(dispatch) {

@@ -63,10 +63,7 @@ public class DonationsApiController {
         // send notification to FE
         final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
         final String description = contract.getDescription();
-        final String alertChannelId = Hashing.sha256()
-                .hashString(streamer.getId().toString(), StandardCharsets.UTF_8)
-                .toString();
-        alertService.sendAlert(alertChannelId, title, description);
+        alertService.sendNotification(streamer, title, description);
 
 
         return new ResponseEntity(HttpStatus.OK);

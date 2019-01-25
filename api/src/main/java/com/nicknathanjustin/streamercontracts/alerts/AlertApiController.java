@@ -19,7 +19,7 @@ public class AlertApiController {
     public boolean testAlert(@NonNull @RequestBody final String alertChannelId) {
         final String title = "New Bounty from User123";
         final String description = "This is a test bounty message";
-        final AlertMessage testMessage = new AlertMessage(title, description);
+        final NotificationMessage testMessage = new NotificationMessage(title, description);
         final String url = "/alert/" + alertChannelId;
 
         messagingTemplate.convertAndSend(url, testMessage);

@@ -7,7 +7,7 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
-    const alertChannelId = process.env.PUBLIC_URL + '/alert/' + this.props.alertChannelId;
+    const alertChannelId = process.env.PUBLIC_URL + '/overlay/' + this.props.alertChannelId;
 
     return (
       <div>

@@ -97,7 +97,7 @@ class NavbarComponent extends Component {
             <Nav pullRight>
               {user !== null &&
                 <Notification
-                  alertChannelId={user.alertChannelId}
+                  username={user.displayName}
                 />
               }
               {this.getRightMenu()}
