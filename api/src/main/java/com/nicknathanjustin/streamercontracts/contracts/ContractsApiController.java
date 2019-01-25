@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +41,7 @@ public class ContractsApiController {
     @NonNull private final SecurityService SecurityService;
     @NonNull private final UserService userService;
     @NonNull private final VoteService voteService;
+    @NonNull private final AlertService alertService;
 
     @RequestMapping(path = "/vote", method = RequestMethod.POST)
     public ResponseEntity voteOnContract(@NonNull final HttpServletRequest httpServletRequest,
@@ -147,6 +148,14 @@ public class ContractsApiController {
         contractService.activateContract(contractModel);
         final PrivateContract activatedContract = new PrivateContract(contractModel);
 
+        // send notification to proposer
+        final String title = String.format("%s is attempting your bounty", contractModel.getStreamer().getTwitchUsername());
+        final String description = contractModel.getDescription();
+        alertService.sendNotification(contractModel.getProposer(), title, description);
+
+        // send stream alert
+        alertService.sendStreamActivateAlert(contractModel.getStreamer(), activatedContract);
+
         return ResponseEntity.ok(activatedContract);
     }
 
@@ -169,6 +178,11 @@ public class ContractsApiController {
         }
 
         contractService.deactivateContract(contractModel);
+        final PrivateContract deactivatedContract = new PrivateContract(contractModel);
+
+        // send stream alert
+        alertService.sendStreamDeactivateAlert(contractModel.getStreamer(), deactivatedContract);
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -192,6 +206,12 @@ public class ContractsApiController {
 
         contractService.setContractState(contractModel, ContractState.DECLINED);
         contractService.settlePayments(contractModel);
+
+        // send notification to proposer
+        final String title = String.format("%s declined your bounty", contractModel.getStreamer().getTwitchUsername());
+        final String description = contractModel.getDescription();
+        alertService.sendNotification(contractModel.getProposer(), title, description);
+
         return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import DonateContainer from '../app/donate/DonateContainer';
 import HomeContainer from '../app/home/HomeContainer';
 import LoginContainer from '../app/login/LoginContainer';
 import NavBar from '../app/common/navbar/NavbarComponent';
+import OverlayContainer from '../app/overlay/OverlayContainer';
 import ProfileContainer from '../app/profile/ProfileContainer';
 import ProtectedRoute from '../app/common/protectedRoute/ProtectedRoute';
 import UserContainer from '../app/user/UserContainer';
@@ -21,6 +22,7 @@ class App extends Component {
         <div>
           <Route path="/(|home|about|login|profile|donate|user|settings)" component={NavBar} />
           <Route path="/alert/:alertChannelId" component={AlertContainer} />
+          <Route path="/overlay/:alertChannelId" component={OverlayContainer} />
           <Route path="/splash" component={SplashComponent} />
           <div className={cx([styles.App, 'container'])}>
             <Route exact path="/" component={HomeContainer} />
