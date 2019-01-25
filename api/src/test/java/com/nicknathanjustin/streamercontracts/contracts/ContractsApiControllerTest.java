@@ -1,5 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
+import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
@@ -39,6 +40,7 @@ public class ContractsApiControllerTest {
     @Mock private ContractService mockContractService;
     @Mock private UserService mockUserService;
     @Mock private VoteService mockVoteService;
+    @Mock private AlertService mockAlertService;
     @InjectMocks private ContractsApiController contractsApiController;
 
     @Test(expected = NullPointerException.class)
