@@ -40,9 +40,6 @@ public class DonationsApiController {
     @Value("${application.blackListedWords}")
     private String[] blackListedWords;
 
-    @Value("${twitch.whiteListedAccounts}")
-    private String[] whiteListedAccounts;
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
@@ -94,7 +91,7 @@ public class DonationsApiController {
     private void checkForBlackListedWords(@NonNull final String bounty, @NonNull final UUID contractId) {
         final List<String> blackListedBountyWords = getBlackListedWords(bounty);
         if (!blackListedBountyWords.isEmpty()) {
-            log.warn("ContractId: {} may contain the following offensive language: {}", contractId, blackListedBountyWords);
+            log.warn("ContractId: {} contains potentially offensive language: {}", contractId, blackListedBountyWords);
         }
     }
 

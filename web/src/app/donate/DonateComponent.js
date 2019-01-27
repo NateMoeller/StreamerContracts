@@ -102,7 +102,7 @@ class DonateComponent extends Component {
     } else if (this.state.bounty.length >= MAX_BOUNTY_LENGTH) {
       error = { type: 'error', message: TOO_LONG_MESSAGE };
     } else if (this.state.blackListedBountyWords.length > 0) {
-      warning = { type: 'error', message: 'Caution. This bounty contains potentially offensive language and will be reviewed for abuse. If abuse is detected, this account will be banned.'}
+      warning = { type: 'warning', message: 'Caution. This bounty contains potentially offensive language and will be reviewed for abuse. If abuse is detected, this account will be banned.'}
     }
 
     this.setState({
