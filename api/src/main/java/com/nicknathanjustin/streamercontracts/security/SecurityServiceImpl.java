@@ -1,7 +1,7 @@
 package com.nicknathanjustin.streamercontracts.security;
 
-import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
+import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +43,11 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private boolean isRecognizedUserBlocked(@NonNull final HttpServletRequest httpServletRequest) {
-        final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
+        final TwitchUser twitchUser = userService.getTwitchUserFromRequest(httpServletRequest);
         if (isEnvLockedToWhiteListedAccounts()) {
-            return !isUserWhiteListed(userModel);
+            return !isUserWhiteListed(twitchUser);
         }
-        return isUserBlackListed(userModel);
+        return isUserBlackListed(twitchUser);
     }
 
     private boolean isEnvLockedToWhiteListedAccounts() {
@@ -56,11 +56,11 @@ public class SecurityServiceImpl implements SecurityService {
         return environment.equals("Beta");
     }
 
-    private boolean isUserWhiteListed(@NonNull final UserModel userModel) {
-        return Arrays.asList(whiteListedAccounts).contains(userModel.getTwitchUsername());
+    private boolean isUserWhiteListed(@NonNull final TwitchUser twitchUser) {
+        return Arrays.asList(whiteListedAccounts).contains(twitchUser.getDisplayName());
     }
 
-    private boolean isUserBlackListed(@NonNull final UserModel userModel) {
-        return Arrays.asList(blackListedAccounts).contains(userModel.getTwitchUsername());
+    private boolean isUserBlackListed(@NonNull final TwitchUser twitchUser) {
+        return Arrays.asList(blackListedAccounts).contains(twitchUser.getDisplayName());
     }
 }
