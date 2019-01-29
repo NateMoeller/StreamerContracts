@@ -1,3 +1,4 @@
+import './noBackground.css';
 import React, { Component } from 'react';
 import Overlay from './Overlay';
 import SockJS from 'sockjs-client';
