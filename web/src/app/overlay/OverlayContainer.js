@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Overlay from './Overlay';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import styles from './OverlayStyles.scss';
 
 // defined alert types
 const ALERT_TYPE = {
@@ -21,7 +22,7 @@ class OverlayContainer extends Component {
   }
 
   componentDidMount() {
-    document.body.style.background = 'transparent'; // TODO: does this work?
+    document.body.className = styles.noBackground;
     const alertChannelId = this.props.match.params.alertChannelId;
     if (alertChannelId) {
       this.connect(alertChannelId);
