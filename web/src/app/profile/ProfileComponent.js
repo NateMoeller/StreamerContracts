@@ -12,7 +12,7 @@ import styles from './ProfileStyles.scss'
 const ACCOUNT_TAB = 'account';
 const MY_BOUNTIES_TAB = 'my_bounties';
 const BOUNTIES_TO_STREAMERS_TAB = 'bounties_to_streamers';
-const ALERT_TAB = 'alerts';
+const OVERLAY_TAB = 'overlay';
 
 class ProfileComponent extends Component {
   constructor(props) {
@@ -44,8 +44,8 @@ class ProfileComponent extends Component {
       return this.getBountiesContent();
     } else if (this.state.activeTab === BOUNTIES_TO_STREAMERS_TAB) {
       return this.getDonationsContent();
-    } else if (this.state.activeTab === ALERT_TAB) {
-      return this.getAlertContent();
+    } else if (this.state.activeTab === OVERLAY_TAB) {
+      return this.getOverlayContent();
     } else {
       return this.getProfileContent();
     }
@@ -103,10 +103,10 @@ class ProfileComponent extends Component {
     );
   }
 
-  getAlertContent() {
+  getOverlayContent() {
     return (
       <div>
-        <PageHeader>Alerts</PageHeader>
+        <PageHeader>Overlay</PageHeader>
         <AlertComponent
           alertChannelId={this.props.user.alertChannelId}
           testAlert={this.props.testAlert}
@@ -139,8 +139,8 @@ class ProfileComponent extends Component {
               <NavItem eventKey={3} onClick={() => this.onTabClick(BOUNTIES_TO_STREAMERS_TAB)}>
                 Bounties to Streamers
               </NavItem>
-              <NavItem eventKey={4} onClick={() => this.onTabClick(ALERT_TAB)}>
-                Alerts
+              <NavItem eventKey={4} onClick={() => this.onTabClick(OVERLAY_TAB)}>
+                Overlay
               </NavItem>
             </Nav>
           </Row>

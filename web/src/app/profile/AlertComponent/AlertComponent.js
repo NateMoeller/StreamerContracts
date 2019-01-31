@@ -7,7 +7,7 @@ import styles from './AlertComponentStyles.scss';
 /* globals window */
 class AlertComponent extends Component {
   render() {
-    const alertChannelId = process.env.PUBLIC_URL + '/overlay/' + this.props.alertChannelId;
+    const alertChannelId = process.env.REACT_APP_PUBLIC_URL + 'overlay/' + this.props.alertChannelId;
 
     return (
       <div>
@@ -17,7 +17,7 @@ class AlertComponent extends Component {
         <Form>
           <FormGroup controlId="formInlineName">
             <div className={styles.alertLabel}>
-              Alert url:
+              Overlay url:
             </div>
             <div className={styles.alertTextBox}>
               <FormControl
@@ -32,18 +32,10 @@ class AlertComponent extends Component {
               </CopyToClipboard>
             </div>
             <div className={styles.openButton}>
-              <Button onClick={()=> window.open(alertChannelId, "_blank", "location=no,width=640,height=480")}>Open Alert</Button>
+              <Button onClick={()=> window.open(alertChannelId, "_blank", "location=no,width=1200,height=400")}>Open Overlay</Button>
             </div>
           </FormGroup>
           </Form>
-          <div className={styles.message}>
-            Use the button below to test the alert
-          </div>
-          <div>
-            <Button onClick={() => {
-              this.props.testAlert(this.props.alertChannelId);
-            }}>Test Alert</Button>
-          </div>
       </div>
     );
   }

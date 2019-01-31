@@ -28,12 +28,12 @@ class Overlay extends Component {
           <div className={styles.moneyBox}>
             ${activeBounty.bountyAmount.toFixed(2)}
           </div>
-          <div className={styles.description}>
-            {activeBounty.bountyDescription}
-          </div>
           <div className={styles.link}>
             <img src={logo} alt="Bounty Streamer" width="200" height="50" />
           </div>
+        </div>
+        <div className={styles.description}>
+          {activeBounty.bountyDescription}
         </div>
       </div>
     );

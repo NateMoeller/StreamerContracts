@@ -15,7 +15,7 @@
 
   .left {
     display: inline-block;
-    width: 75%;
+    width: auto;
 
     .moneyBox {
       display: inline-block;
@@ -29,15 +29,8 @@
       2px 2px 1px $black-shadow;
     }
 
-    .description {
-      display: inline-block;
-      margin-left: 20px;
-      line-height: 65px;
-      vertical-align: top;
-    }
-
     .link {
-      line-height: 35px;
+      line-height: 0px;
       font-size: 16px;
       color: $twitch-purple;
 
@@ -45,6 +38,17 @@
         color: $twitch-purple;
       }
     }
+  }
+
+  .description {
+    display: inline-block;
+    padding-left: 20px;
+    width: 75%;
+    vertical-align: top;
+    color: $true-white;
+    text-shadow:
+    -1px -1px 1px $light-gray,
+    2px 2px 1px $black-shadow;
   }
 }
 
