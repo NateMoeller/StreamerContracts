@@ -49,12 +49,12 @@ class ActiveBounty extends Component {
           <div className={styles.moneyBox}>
             ${activeBounty.contractAmount.toFixed(2)}
           </div>
-          <div className={styles.description}>
-            {activeBounty.description}
-          </div>
           <div className={styles.link}>
             <i className="fa fa-twitch" /> <a href={`https://www.${twitchLink}`} target="_blank" rel='noreferrer noopener'>{twitchLink}</a>
           </div>
+        </div>
+        <div className={styles.description}>
+          {activeBounty.description}
         </div>
         <div className={styles.right}>
           <div className={styles.timer}>
