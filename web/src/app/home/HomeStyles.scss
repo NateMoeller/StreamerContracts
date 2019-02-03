@@ -1,31 +1,62 @@
 @import '../../colors.scss';
 
+$section-height: 500px;
+$nav-height: 54px;
+
 .content {
-  margin-bottom: 50px;
-}
 
-
-.header {
-  font-size: 68px;
-  color: $primary-blue;
-}
-
-.caption {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.highlight {
-  color: $secondary-blue !important;
-}
-
-.tabs {
-  .tabContent {
-    margin-top: 10px;
+  .button {
+    background: $secondary-blue;
+    color: $true-white;
   }
-}
 
-.button {
-  background: $secondary-blue;
-  color: $true-white;
+  .section {
+    height: $section-height;
+  }
+
+  .backgroundImage {
+    background: url('../../resources/splash/geoff_right_blackWhite_noWindow2.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    .overlay {
+      position: absolute;
+      top: $nav-height;
+      left: 0;
+      width: 100%;
+      height: $section-height;
+
+      background: linear-gradient(to right, $primary-blue, $splash-gray);
+      background-repeat: no-repeat;
+      z-index: 1;
+      opacity: .85;
+    }
+  }
+
+  .section1 {
+    position: relative;
+    z-index: 2;
+    color: $true-white;
+
+    .left {
+      display: inline-block;
+      font-size: 88px;
+    }
+    .right {
+      display: inline-block;
+      float: right;
+
+      .image {
+        width: 400px;
+        height: 400px;
+        border: 1px solid black;
+      }
+    }
+  }
+
+  .section2 {
+    background-color: $light-gray;
+  }
 }

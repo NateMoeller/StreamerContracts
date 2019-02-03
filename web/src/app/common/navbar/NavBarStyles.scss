@@ -10,11 +10,13 @@
 
 .navBar {
   background-color: $primary-blue;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
+  border: 0px;
 }
 
 .tab {
   margin-right: 10px;
+  border-bottom: 2px solid transparent;
 
   a {
     transition: all 0.25s ease;
@@ -26,13 +28,17 @@
       color: $secondary-blue !important;
     }
   }
+
+  &:hover {
+    border-bottom: 2px solid $secondary-blue;
+  }
 }
 
 .activeTab {
   a {
-    border-bottom: 2px solid $secondary-blue;
     color: $secondary-blue !important;
   }
+  border-bottom: 2px solid $secondary-blue;
 }
 
 .dropdownMenu {

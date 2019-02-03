@@ -1,33 +1,36 @@
 import { Button, Tabs, Tab } from 'react-bootstrap';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
+import geoff from '../../resources/splash/geoff_right_blackWhite_noWindow2.jpg';
 import styles from './HomeStyles.scss';
 
 class HomeComponent extends Component {
   render() {
     return (
-      <div>
-        <div className={styles.content}>
-          <h1 className={styles.header}>Donations Done <span className={styles.highlight}>Differently</span>.</h1>
-          <p className={styles.caption}>
-            Give your stream a competitive edge by enabling competitive donations. As a streamer, BountyStreamer allows viewers to open donation
-          bounties for you to complete while you play. If you complete the bounty, then the money is yours. If you fail, the money returns to the viewer.
-          BountyStreamer gives an every day stream the competitive tension of a high stakes tournament.</p>
-          <Button className={styles.button} bsStyle="primary" href="/login" bsSize="large">Start Now</Button>
+      <div className={styles.content}>
+        <div className={cx(styles.section, styles.backgroundImage)}>
+          <div className={styles.overlay} />
+          <div className={cx(styles.section1, "container")}>
+            <div className={styles.left}>
+              <p>Build</p>
+              <p>Big</p>
+              <p>Moments.</p>
+            </div>
+            <div className={styles.right}>
+              right content
+            </div>
+          </div>
         </div>
-        <div className={styles.tabs}>
-          <Tabs defaultActiveKey={1} id="contract-tabs">
-            <Tab eventKey={1} title="Featured Bounties">
-              <div className={styles.tabContent}>
-                Tab 1 content
-              </div>
-            </Tab>
-            <Tab eventKey={2} title="All Bounties">
-              <div className={styles.tabContent}>
-                Tab 2 Content
-              </div>
-            </Tab>
-          </Tabs>
+        <div className={cx(styles.section, styles.section2)}>
+          <div className="container">
+            ABOUT SECTION
+          </div>
+        </div>
+        <div className={styles.section}>
+          <div className="container">
+            NEW SECTION
+          </div>
         </div>
       </div>
 

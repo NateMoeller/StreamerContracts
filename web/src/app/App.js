@@ -24,9 +24,9 @@ class App extends Component {
           <Route path="/alert/:alertChannelId" component={AlertContainer} />
           <Route path="/overlay/:alertChannelId" component={OverlayContainer} />
           <Route path="/splash" component={SplashComponent} />
+          <Route exact path="/" component={HomeContainer} />
+          <Route path="/home" component={HomeContainer} />
           <div className={cx([styles.App, 'container'])}>
-            <Route exact path="/" component={HomeContainer} />
-            <Route path="/home" component={HomeContainer} />
             <Route path="/about" component={AboutContainer} />
             <ProtectedRoute path="/login" component={LoginContainer} />
             <Route path="/profile" component={ProfileContainer} />
