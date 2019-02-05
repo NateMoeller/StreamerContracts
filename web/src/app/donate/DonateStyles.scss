@@ -8,9 +8,19 @@
 .donateContainer {
   width: 100%;
 
+  .bountyMessageRow {
+    height: 330px;
+  }
+
   .errorMessage {
     display: inline-block;
     color: $error-red;
+  }
+
+  .warningMessage {
+    height: 40px;
+    display: inline-block;
+    color: $warning-yellow;
   }
 
   .title {
