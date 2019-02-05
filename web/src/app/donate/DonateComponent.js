@@ -223,7 +223,7 @@ class DonateComponent extends Component {
                       <span className={styles.errorMessage}>{amountErrorMessage}</span>
                   </Col>
                 </Row>
-                <Row>
+                <Row className={styles.bountyMessageRow}>
                   <FormGroup controlId="formControlsSelect">
                     <ControlLabel>Game</ControlLabel>
                     <Typeahead
