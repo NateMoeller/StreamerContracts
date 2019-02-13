@@ -88,7 +88,7 @@ class NavbarComponent extends Component {
           <Navbar.Collapse>
             <Nav>
               <LinkContainer exact to="/about" className={aboutClassname} onClick={() => this.setActiveItem('about')}>
-                <NavItem>How it works</NavItem>
+                <NavItem>About</NavItem>
               </LinkContainer>
               <LinkContainer exact to="/profile" className={profileClassname} onClick={() => this.setActiveItem('profile')}>
                 <NavItem>Profile</NavItem>

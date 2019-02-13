@@ -7,13 +7,12 @@ import { homeOperations } from './duck';
 
 class HomeContainer extends Component {
   render() {
-    const { fetchApi } = this.props; // get the fetchApi function from operations
-
     return (
       <div>
         <HomeComponent
-          fetchApi={fetchApi}
-          showSpinner={this.props.home.showSpinner}
+          getHomeBounties={this.props.getHomeBounties}
+          bounties={this.props.home.bounties}
+          totalBounties={this.props.home.totalBounties}
         />
       </div>
     );
@@ -31,7 +30,6 @@ function mapStateToProps(state) {
 }
 
 HomeContainer.propTypes = {
-  fetchApi: PropTypes.func.isRequired,
   home: PropTypes.object.isRequired
 };
 

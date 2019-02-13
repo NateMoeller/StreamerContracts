@@ -1,22 +1,20 @@
-import Creators from './actions';
+import {
+  requestHomeBounties,
+  receiveHomeBounties
+} from './actions';
 import RestClient from '../../RestClient';
 
-const requestApi = Creators.requestApi;
-const receiveApi = Creators.receiveApi;
+const getHomeBounties = (page, pageSize) => (dispatch) => {
+  dispatch(requestHomeBounties());
 
-const fetchApi = () => {
-  return (dispatch) => {
-    dispatch(requestApi());
-
-    RestClient.GET('user', (response) => {
-      const responseData = response.data;
-
-      // can post process the data here
-      dispatch(receiveApi(responseData));
-    });
-  }
-};
+  let url = `bounties/streamerBounties/${page}/${pageSize}`;
+  RestClient.GET(url, (response) => {
+    dispatch(receiveHomeBounties(response.data));
+  }, (error) => {
+    console.error(error);
+  });
+}
 
 export default {
-  fetchApi
+  getHomeBounties
 };

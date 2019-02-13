@@ -31,7 +31,7 @@ class App extends Component {
             <ProtectedRoute path="/login" component={LoginContainer} />
             <Route path="/profile" component={ProfileContainer} />
             <ProtectedRoute private path="/donate/:twitchUserName" component={DonateContainer} />
-            <ProtectedRoute private path="/user/:twitchUserName" component={UserContainer} />
+            <Route path="/user/:twitchUserName" component={UserContainer} />
             <ProtectedRoute private path="/settings" component={SettingsContainer} />
           </div>
         </div>

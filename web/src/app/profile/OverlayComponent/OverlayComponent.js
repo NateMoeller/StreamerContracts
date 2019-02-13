@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, FormControl } from 'react-bootstrap';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import PropTypes from 'prop-types';
-import styles from './AlertComponentStyles.scss';
+import styles from './OverlayComponentStyles.scss';
 
 /* globals window */
-class AlertComponent extends Component {
+class OverlayComponent extends Component {
   render() {
     const alertChannelId = process.env.REACT_APP_PUBLIC_URL + 'overlay/' + this.props.alertChannelId;
 
@@ -41,9 +41,9 @@ class AlertComponent extends Component {
   }
 }
 
-AlertComponent.propTypes = {
+OverlayComponent.propTypes = {
   alertChannelId: PropTypes.string.isRequired,
   testAlert: PropTypes.func.isRequired
 }
 
-export default AlertComponent;
+export default OverlayComponent;

@@ -1,15 +1,17 @@
-import types from './types.js';
+import {
+  REQUEST_HOME_BOUNTIES,
+  RECEIVE_HOME_BOUNTIES
+} from './types';
 
-const requestApi = () => ({
-  type: types.REQUEST_API
-  // more stuff can go here
+const requestHomeBounties = () => ({
+  type: REQUEST_HOME_BOUNTIES
 });
-const receiveApi = json => ({
-  type: types.RECEIVE_API,
-  response: json
+const receiveHomeBounties = (bounties) => ({
+  type: RECEIVE_HOME_BOUNTIES,
+  bounties
 });
 
-export default {
-  requestApi,
-  receiveApi
+export {
+  requestHomeBounties,
+  receiveHomeBounties
 };
