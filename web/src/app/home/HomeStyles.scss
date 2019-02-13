@@ -63,7 +63,7 @@ $nav-height: 54px;
         2px 2px 1px $black-shadow;
 
         &:hover {
-          background: #1981BC;
+          background: $button-hover;
         }
       }
     }
