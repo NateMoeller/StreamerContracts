@@ -1,18 +1,18 @@
-import { Col, Grid, Image, Nav, NavItem, Row, PageHeader } from 'react-bootstrap';
+import { Col, Grid, Image, Nav, NavItem, Row, PageHeader, Glyphicon } from 'react-bootstrap';
 import React, { Component } from 'react';
 import MyActiveBountyContainer from '../common/activeBounty/MyActiveBountyContainer';
-import AlertComponent from './AlertComponent/AlertComponent';
+import OverlayComponent from './OverlayComponent/OverlayComponent';
+import ProfileLink from './ProfileLink/ProfileLink';
 import DonationsComponent from './DonationsComponent/DonationsComponent';
-import MyBountiesComponent from './MyBountiesComponent/MyBountiesComponent';
+import StreamerDashboard from './StreamerDashboard/StreamerDashboard';
 import { OPEN, COMPLETED, FAILED } from '../BountyState';
 import PropTypes from 'prop-types';
 import StatBox from './StatBox/StatBox';
 import styles from './ProfileStyles.scss'
 
 const ACCOUNT_TAB = 'account';
-const MY_BOUNTIES_TAB = 'my_bounties';
-const BOUNTIES_TO_STREAMERS_TAB = 'bounties_to_streamers';
-const OVERLAY_TAB = 'overlay';
+const STREAMER_DASHBOARD = 'streamer_dashboard';
+const VIEWER_DASHBOARD = 'viewer_dashboard';
 
 class ProfileComponent extends Component {
   constructor(props) {
@@ -40,12 +40,10 @@ class ProfileComponent extends Component {
   getContent() {
     if (this.state.activeTab === ACCOUNT_TAB) {
       return this.getProfileContent();
-    } else if (this.state.activeTab === MY_BOUNTIES_TAB) {
+    } else if (this.state.activeTab === STREAMER_DASHBOARD) {
       return this.getBountiesContent();
-    } else if (this.state.activeTab === BOUNTIES_TO_STREAMERS_TAB) {
+    } else if (this.state.activeTab === VIEWER_DASHBOARD) {
       return this.getDonationsContent();
-    } else if (this.state.activeTab === OVERLAY_TAB) {
-      return this.getOverlayContent();
     } else {
       return this.getProfileContent();
     }
@@ -56,9 +54,22 @@ class ProfileComponent extends Component {
       <div>
         <PageHeader>My Profile</PageHeader>
         <StatBox number={`$${Number(this.props.user.moneyEarned).toFixed(2)}`} label={'Money earned'} />
-        <StatBox number={this.props.user.openContracts} label={'Bounties open'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, OPEN)}/>
-        <StatBox number={this.props.user.completedContracts} label={'Bounties completed'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, COMPLETED)}/>
-        <StatBox number={this.props.user.failedContracts} label={'Bounties failed'} onClick={() => this.onTabClick(MY_BOUNTIES_TAB, FAILED)}/>
+        <StatBox number={this.props.user.openContracts} label={'Bounties open'} onClick={() => this.onTabClick(STREAMER_DASHBOARD, OPEN)}/>
+        <StatBox number={this.props.user.completedContracts} label={'Bounties completed'} onClick={() => this.onTabClick(STREAMER_DASHBOARD, COMPLETED)}/>
+        <StatBox number={this.props.user.failedContracts} label={'Bounties failed'} onClick={() => this.onTabClick(STREAMER_DASHBOARD, FAILED)}/>
+        <div className={styles.section}>
+          <div className={styles.secondaryHeader}>Overlay</div>
+          <OverlayComponent
+            alertChannelId={this.props.user.alertChannelId}
+            testAlert={this.props.testAlert}
+          />
+        </div>
+        <div className={styles.section}>
+          <div className={styles.secondaryHeader}>Profile link</div>
+          <ProfileLink
+            username={this.props.user.displayName}
+          />
+        </div>
       </div>
     );
   }
@@ -68,7 +79,7 @@ class ProfileComponent extends Component {
     return (
       <div>
         <PageHeader>
-          Bounties to Streamers
+          Viewer Dashboard
         </PageHeader>
         <DonationsComponent
           listDonorBounties={this.props.listDonorBounties}
@@ -85,9 +96,9 @@ class ProfileComponent extends Component {
     return (
       <div>
         <PageHeader>
-          My Bounties
+          Streamer Dashboard
         </PageHeader>
-        <MyBountiesComponent
+        <StreamerDashboard
           twitchUserName={this.props.user.displayName}
           listStreamerBounties={this.props.listStreamerBounties}
           bounties={this.props.bounties}
@@ -100,18 +111,6 @@ class ProfileComponent extends Component {
         />
       </div>
 
-    );
-  }
-
-  getOverlayContent() {
-    return (
-      <div>
-        <PageHeader>Overlay</PageHeader>
-        <AlertComponent
-          alertChannelId={this.props.user.alertChannelId}
-          testAlert={this.props.testAlert}
-        />
-      </div>
     );
   }
 
@@ -131,16 +130,13 @@ class ProfileComponent extends Component {
           <Row>
             <Nav stacked>
               <NavItem eventKey={1} onClick={() => this.onTabClick(ACCOUNT_TAB)}>
-                Profile
+                <i className="fa fa-gear" /> General
               </NavItem>
-              <NavItem eventKey={2} onClick={() => this.onTabClick(MY_BOUNTIES_TAB)}>
-                My Bounties
+              <NavItem eventKey={2} onClick={() => this.onTabClick(STREAMER_DASHBOARD)}>
+                <i className="fa fa-gamepad" /> Streamer Dashboard
               </NavItem>
-              <NavItem eventKey={3} onClick={() => this.onTabClick(BOUNTIES_TO_STREAMERS_TAB)}>
-                Bounties to Streamers
-              </NavItem>
-              <NavItem eventKey={4} onClick={() => this.onTabClick(OVERLAY_TAB)}>
-                Overlay
+              <NavItem eventKey={3} onClick={() => this.onTabClick(VIEWER_DASHBOARD)}>
+                <Glyphicon glyph="user" /> Viewer Dashboard
               </NavItem>
             </Nav>
           </Row>

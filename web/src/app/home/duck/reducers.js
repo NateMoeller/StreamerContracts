@@ -1,26 +1,25 @@
-import types from './types';
+import {
+  RECEIVE_HOME_BOUNTIES
+} from './types';
 
 const INITIAL_STATE = {
-  showSpinner: false
+  bounties: [],
+  totalBounties: 0
 };
 
 const homeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-  case types.REQUEST_API: {
-    return {
-      ...state,
-      showSpinner: true
-    };
-  }
-  case types.RECEIVE_API: {
-    return {
-      ...state,
-      showSpinner: false
-    };
-  }
-  default:
-    return state;
-  }
+    case RECEIVE_HOME_BOUNTIES: {
+      console.log('RECEIVE HOME BOUNTIES');
+      return {
+        ...state,
+        bounties: action.bounties.content,
+        totalBounties: action.bounties.totalElements
+      };
+    }
+    default:
+      return state;
+    }
 };
 
 export default homeReducer;

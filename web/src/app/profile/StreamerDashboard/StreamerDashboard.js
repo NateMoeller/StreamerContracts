@@ -25,7 +25,7 @@ import tableStyles from '../../tableStyles.scss';
 
 const pageSize = 10;
 
-class MyBountiesComponent extends Component {
+class StreamerDashboard extends Component {
   constructor(props) {
     super(props);
 
@@ -387,7 +387,7 @@ class MyBountiesComponent extends Component {
   }
 }
 
-MyBountiesComponent.propTypes = {
+StreamerDashboard.propTypes = {
   twitchUserName: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   bounties: PropTypes.array.isRequired,
@@ -398,9 +398,9 @@ MyBountiesComponent.propTypes = {
   bountyFilter: PropTypes.string
 }
 
-MyBountiesComponent.defaultProps = {
+StreamerDashboard.defaultProps = {
   loading: false,
   bountyFilter: null
 }
 
-export default MyBountiesComponent;
+export default StreamerDashboard;

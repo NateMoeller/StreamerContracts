@@ -1,31 +1,114 @@
 @import '../../colors.scss';
 
+$section-height: 550px;
+$nav-height: 54px;
+
 .content {
-  margin-bottom: 50px;
-}
 
-
-.header {
-  font-size: 68px;
-  color: $primary-blue;
-}
-
-.caption {
-  font-size: 18px;
-  margin-bottom: 20px;
-}
-
-.highlight {
-  color: $secondary-blue !important;
-}
-
-.tabs {
-  .tabContent {
-    margin-top: 10px;
+  .section {
+    height: $section-height;
   }
-}
 
-.button {
-  background: $secondary-blue;
-  color: $true-white;
+  .backgroundImage {
+    background: url('../../resources/splash/geoff_right_blackWhite_noWindow2.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    .overlay {
+      position: absolute;
+      top: $nav-height;
+      left: 0;
+      width: 100%;
+      height: $section-height;
+
+      background: linear-gradient(to right, $primary-blue, $splash-gray);
+      background-repeat: no-repeat;
+      z-index: 1;
+      opacity: .85;
+    }
+  }
+
+  .section1 {
+    position: relative;
+    z-index: 2;
+    color: $true-white;
+
+    .bigText {
+      font-size: 116px;
+      text-align: center;
+      text-shadow:
+      -1px -1px 1px $light-gray,
+      2px 2px 1px $black-shadow;
+    }
+
+    .captionText {
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .joinButton {
+      text-align: center;
+      margin-top: 50px;
+
+      .button {
+        background: $secondary-blue;
+        color: $true-white;
+        width: 300px;
+        font-size: 32px;
+        border: 0px;
+        text-shadow:
+        -1px -1px 1px $light-gray,
+        2px 2px 1px $black-shadow;
+
+        &:hover {
+          background: $button-hover;
+        }
+      }
+    }
+  }
+
+  .section2 {
+    background-color: $light-gray;
+    text-align: center;
+
+    .box {
+      display: inline-block;
+      vertical-align: top;
+      width: 300px;
+      height: 400px;
+      margin-right: 30px;
+      border: 1px solid $gray;
+
+      -webkit-box-shadow: 0px 2px 10px 2px rgba(222,222,222,1);
+      -moz-box-shadow: 0px 2px 10px 2px rgba(222,222,222,1);
+      box-shadow: 0px 2px 10px 2px rgba(222,222,222,1);
+
+      transition: all .2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      .icon {
+        width: 300px;
+        height: 200px;
+        font-size: 128px;
+        color: $secondary-blue;
+      }
+      .money {
+        color: $money-green;
+      }
+
+      .text {
+        width: 300px;
+        font-size: 32px;
+      }
+    }
+  }
+
+  .header {
+    text-align: center;
+  }
 }

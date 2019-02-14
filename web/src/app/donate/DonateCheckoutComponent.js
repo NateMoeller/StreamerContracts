@@ -58,7 +58,7 @@ class DonateCheckoutComponent extends Component {
               Total amount:
             </Col>
             <Col xs={3} md={2} className={styles.amount}>
-              ${this.props.amount}
+              ${parseFloat(this.props.amount).toFixed(2)}
             </Col>
           </Row>
           <Row>
