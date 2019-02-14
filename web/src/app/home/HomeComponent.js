@@ -85,7 +85,6 @@ class HomeComponent extends Component {
     dataField: 'action',
     text: '',
     isDummyField : true,
-    //formatter: this.getAction,
     headerStyle: { width: '10%' }
   }];
 
