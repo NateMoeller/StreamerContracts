@@ -10,10 +10,15 @@ dependencies {
     compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.2.RELEASE")
 
     compile("com.auth0:java-jwt:3.4.1")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.9.4")
     compile("com.google.guava:guava:23.5-jre")
     compile("com.paypal.sdk:rest-api-sdk:+")
+    compile("io.jsonwebtoken:jjwt-api:0.10.5")
     compile("org.postgresql:postgresql:42.1.4")
     compile("org.projectlombok:lombok:1.16.20")
+
+    runtime("io.jsonwebtoken:jjwt-impl:0.10.5")
+    runtime("io.jsonwebtoken:jjwt-jackson:0.10.5")
 
     testCompile("junit:junit")
     testCompile("org.mockito:mockito-core")

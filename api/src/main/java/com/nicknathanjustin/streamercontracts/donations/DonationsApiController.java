@@ -30,12 +30,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DonationsApiController {
 
+    @NonNull private final AlertService alertService;
     @NonNull private final ContractService contractService;
     @NonNull private final DonationService donationService;
     @NonNull private final PaymentsService paymentsService;
     @NonNull private final UserService userService;
-    @NonNull private final AlertService alertService;
-
 
     @Value("${application.blackListedWords}")
     private String[] blackListedWords;

@@ -23,19 +23,18 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public void sendStreamActivateAlert(@NonNull final UserModel user, Contract contract) {
+    public void sendStreamActivateAlert(@NonNull final UserModel user, @NonNull final Contract contract) {
         final AlertMessage message = new AlertMessage(contract.getDescription(), contract.getContractAmount(), contract.getProposerName(), AlertType.ACTIVATE);
-        final String alertChannelId = Hashing.sha256()
-                .hashString(user.getId().toString(), StandardCharsets.UTF_8)
-                .toString();
-        final String url = "/alert/" + alertChannelId;
-
-        messagingTemplate.convertAndSend(url, message);
+        sendStreamAlert(user, contract, message);
     }
 
     @Override
-    public void sendStreamDeactivateAlert(@NonNull final UserModel user, Contract contract) {
+    public void sendStreamDeactivateAlert(@NonNull final UserModel user, @NonNull final Contract contract) {
         final AlertMessage message = new AlertMessage(contract.getDescription(), contract.getContractAmount(), contract.getProposerName(), AlertType.DEACTIVATE);
+        sendStreamAlert(user, contract, message);
+    }
+
+    private void sendStreamAlert(@NonNull final UserModel user, @NonNull final Contract contract, @NonNull  final AlertMessage message) {
         final String alertChannelId = Hashing.sha256()
                 .hashString(user.getId().toString(), StandardCharsets.UTF_8)
                 .toString();

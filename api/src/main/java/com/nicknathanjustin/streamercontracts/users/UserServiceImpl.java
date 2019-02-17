@@ -1,20 +1,22 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -52,6 +54,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserModel> getUser(@NonNull final String twitchUsername) {
         return Optional.ofNullable(userModelRepository.findByTwitchUsername(twitchUsername));
+    }
+
+    @Override
+    public Page<UserModel> listUsers(@NonNull final Pageable pageable) {
+        return userModelRepository.findAll(pageable);
     }
 
     @Override
@@ -108,13 +115,12 @@ public class UserServiceImpl implements UserService {
     private String getTwitchUserIdFromJwtToken(@NonNull final String jwtToken) throws JWTVerificationException{
         final String token = jwtToken.split(" ")[1];
         final byte[] decodedSecret = Base64.getDecoder().decode(jwtSigningSecret);
-        final Algorithm algorithm = Algorithm.HMAC256(decodedSecret);
-        final JWTVerifier verifier = JWT.require(algorithm).build();
-        final DecodedJWT decodedJWT = verifier.verify(token);
-        final Map<String, Claim> claims = decodedJWT.getClaims();
+        final SecretKey key = Keys.hmacShaKeyFor(decodedSecret);
+        final Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+        final Claims claims = jws.getBody();
         if (!claims.containsKey(USER_ID_CLAIM_KEY)) {
-            throw new IllegalArgumentException("Claim: " + USER_ID_CLAIM_KEY + " does not exist for decoded jwtToken: " + decodedJWT);
+            throw new IllegalArgumentException("Claim: " + USER_ID_CLAIM_KEY + " does not exist for decoded jwtToken: " + jws);
         }
-        return claims.get(USER_ID_CLAIM_KEY).asString();
+        return claims.get(USER_ID_CLAIM_KEY, String.class);
     }
 }

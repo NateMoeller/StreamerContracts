@@ -11,6 +11,8 @@ import com.nicknathanjustin.streamercontracts.users.dtos.PublicUser;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,5 +80,14 @@ public class UsersApiController {
         }
 
         return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(path = "list/{page}/{pageSize}", method = RequestMethod.GET)
+    public ResponseEntity listUsers(
+            @NonNull final HttpServletRequest httpServletRequest,
+            @PathVariable final int page,
+            @PathVariable final int pageSize) {
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        return ResponseEntity.ok(userService.listUsers(pageable));
     }
 }

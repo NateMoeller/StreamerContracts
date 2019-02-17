@@ -1,6 +1,8 @@
 package com.nicknathanjustin.streamercontracts.donations;
 
+import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import lombok.NonNull;
@@ -11,9 +13,14 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.nicknathanjustin.streamercontracts.donations.DonationState.ERROR;
+import static com.nicknathanjustin.streamercontracts.donations.DonationState.PAID_TO_STREAMER;
+import static com.nicknathanjustin.streamercontracts.donations.DonationState.RETURNED_TO_DONOR;
+
 @RequiredArgsConstructor
 public class DonationServiceImpl implements  DonationService{
 
+    @NonNull private final AlertService alertService;
     @NonNull final DonationModelRepository donationModelRepository;
     @NonNull final PaymentsService paymentsService;
 
@@ -49,20 +56,44 @@ public class DonationServiceImpl implements  DonationService{
         DonationState donationState;
         if (releaseDonation) {
             donationState = paymentsService.capturePayment(donationModel.getPaypalAuthorizationId()) ?
-                    DonationState.PAID_TO_STREAMER :
-                    DonationState.ERROR;
+                    PAID_TO_STREAMER :
+                    ERROR;
         } else {
             donationState = paymentsService.voidPayment(donationModel.getPaypalAuthorizationId()) ?
-                    DonationState.RETURNED_TO_DONOR :
-                    DonationState.ERROR;
+                    RETURNED_TO_DONOR :
+                    ERROR;
         }
 
         donationModel.setDonationState(donationState);
-        if (donationState != DonationState.ERROR) {
+        if (donationState != ERROR) {
             donationModel.setReleasedAt(new Timestamp(System.currentTimeMillis()));
+            notifyStreamerAndDonor(donationModel, donationState);
         }
 
         donationModelRepository.save(donationModel);
-        return donationState != DonationState.ERROR;
+        return donationState != ERROR;
+    }
+
+    private void notifyStreamerAndDonor(@NonNull final DonationModel donationModel, @NonNull final DonationState donationState) {
+        final UserModel donor = donationModel.getDonor();
+        final UserModel streamer = donationModel.getContract().getStreamer();
+        final String description = donationModel.getContract().getDescription();
+
+        String donorMessage;
+        String streamerMessage;
+        if (donationModel.getContract().getState().equals(ContractState.DECLINED)) {
+            donorMessage = streamer.getTwitchUsername() + " declined your bounty.";
+            streamerMessage = " you declined " + donor.getTwitchUsername() + "'s bounty.";
+        } else {
+            donorMessage = donationState == PAID_TO_STREAMER ?
+                    streamer.getTwitchUsername() + " completed your bounty!" :
+                    streamer.getTwitchUsername() + " failed your bounty.";
+            streamerMessage = donationState == PAID_TO_STREAMER ?
+                    "You completed " + donor.getTwitchUsername() + " bounty!" :
+                    "You failed " + donor.getTwitchUsername() + " bounty.";
+        }
+
+        alertService.sendNotification(donor, donorMessage, description);
+        alertService.sendNotification(streamer, streamerMessage, description);
     }
 }
