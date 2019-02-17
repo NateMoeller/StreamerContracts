@@ -83,7 +83,7 @@ public class UsersApiController {
     }
 
     @RequestMapping(path = "list/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity lisUsers(
+    public ResponseEntity listUsers(
             @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize) {
