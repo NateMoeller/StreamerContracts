@@ -4,7 +4,6 @@ import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
@@ -13,7 +12,6 @@ import java.security.Principal;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-@Slf4j
 public class SecurityServiceImpl implements SecurityService {
 
     @NonNull private final UserService userService;

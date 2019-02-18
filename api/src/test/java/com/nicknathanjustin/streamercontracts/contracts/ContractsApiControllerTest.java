@@ -45,7 +45,7 @@ public class ContractsApiControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void voteOnContract_nullRequest_throwsException() {
-        final ResponseEntity response = contractsApiController.voteOnContract(null, CONTRACT_VOTE_REQUEST);
+        contractsApiController.voteOnContract(null, CONTRACT_VOTE_REQUEST);
     }
 
     @Test(expected = NullPointerException.class)
@@ -55,14 +55,14 @@ public class ContractsApiControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void voteOnContract_requestIsUnauthorized_returnsForbidden() {
-        final ResponseEntity response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, null);
+        final ResponseEntity<HttpStatus> response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, null);
 
         Assert.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
     public void voteOnContract_noContractForSuppliedId_returnsNotFound() {
-        final ResponseEntity response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
+        final ResponseEntity<HttpStatus> response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
 
         Assert.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -77,7 +77,7 @@ public class ContractsApiControllerTest {
         when(mockUserService.getUserModelFromRequest(MOCK_HTTP_SERVLET_REQUEST)).thenReturn(userModel);
         when(mockContractService.getContract(CONTRACT_ID)).thenReturn(Optional.of(contractModel));
 
-        final ResponseEntity response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
+        final ResponseEntity<HttpStatus> response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
 
         verify(mockVoteService).recordVote(userModel, contractModel, FLAG_COMPLETED);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -99,7 +99,7 @@ public class ContractsApiControllerTest {
         when(mockVoteService.isVotingComplete(proposerVote, streamerVote, contractModel)).thenReturn(true);
         when(mockVoteService.getVoteOutcome(proposerVote, streamerVote, contractModel)).thenReturn(voteOutcome);
 
-        final ResponseEntity response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
+        final ResponseEntity<HttpStatus> response = contractsApiController.voteOnContract(MOCK_HTTP_SERVLET_REQUEST, CONTRACT_VOTE_REQUEST);
 
         verify(mockVoteService).recordVote(userModel, contractModel, FLAG_COMPLETED);
         verify(mockContractService).setContractState(contractModel, voteOutcome);

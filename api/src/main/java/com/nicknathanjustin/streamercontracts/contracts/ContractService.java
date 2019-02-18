@@ -60,20 +60,20 @@ public interface ContractService {
      * @param streamer The user to retrieve contracts by.
      * @param state The state to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
-     * @param username The username of the user that made the request.
+     * @param requestedByStreamer Boolean that indicates if the request was by the streamer.
      * @return a set of all contracts in the given state for the given user.
      */
-    Page<Contract> getContractsForStreamerAndState(UserModel streamer, ContractState state, Pageable pageable, String username);
+    Page<Contract> getContractsForStreamerAndState(UserModel streamer, ContractState state, Pageable pageable, boolean requestedByStreamer);
 
     /**
      * Gets all contracts for the given user.
      *
      * @param streamer The user to retrieve contracts by.
      * @param pageable identifies the page number and pagesize to retrieve
-     * @param username The username of the user that made the request.
+     * @param requestedByStreamer Boolean that indicates if the request was by the streamer.
      * @return a set of all contracts for the given user.
      */
-    Page<Contract> getContractsForStreamer(UserModel streamer, Pageable pageable, String username);
+    Page<Contract> getContractsForStreamer(UserModel streamer, Pageable pageable, boolean requestedByStreamer);
 
     /**
      * Gets all contracts in the given state.

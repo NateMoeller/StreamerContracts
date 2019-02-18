@@ -43,17 +43,17 @@ public class ContractsApiController {
     @NonNull private final VoteService voteService;
 
     @RequestMapping(path = "/vote", method = RequestMethod.POST)
-    public ResponseEntity voteOnContract(@NonNull final HttpServletRequest httpServletRequest,
+    public ResponseEntity<HttpStatus> voteOnContract(@NonNull final HttpServletRequest httpServletRequest,
                                          @RequestBody @NonNull final ContractVoteRequest contractVoteRequest) {
         if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UUID contractId = contractVoteRequest.getContractId();
         final Optional<ContractModel> optionalContractModel = contractService.getContract(contractId);
         if (!optionalContractModel.isPresent()) {
             log.warn("No contract found for id: {}", contractVoteRequest.getContractId());
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
         }
 
         final ContractModel contractModel = optionalContractModel.get();
@@ -71,51 +71,54 @@ public class ContractsApiController {
             contractService.settlePayments(contractModel);
         }
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
     @RequestMapping(path = "streamerBounties/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listContractsForStreamer(
+    public ResponseEntity<Page<Contract>> listContractsForStreamer(
             @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state,
             @RequestParam("username") @Nullable final String username) {
-        final Pageable pageable = PageRequest.of(page, pageSize);
-
-        if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return ResponseEntity.ok(contractService.getAllContracts(pageable));
-        } else {
-            final UserModel user = userService.getUserModelFromRequest(httpServletRequest);
-            final UserModel streamer = username != null ? userService.getUser(username).orElse(null) : null;
-
-            if (user != null && streamer != null && state != null) {
-                return ResponseEntity.ok(contractService.getContractsForStreamerAndState(
-                        streamer,
-                        state,
-                        pageable,
-                        user.getTwitchUsername()));
-            } else if (user != null && streamer != null) {
-                return ResponseEntity.ok(contractService.getContractsForStreamer(
-                        streamer,
-                        pageable,
-                        user.getTwitchUsername()));
-            } else if (state != null) {
-                return ResponseEntity.ok(contractService.getContractsForState(state, pageable));
-            }
+        UserModel user = null;
+        try {
+            user = userService.getUserModelFromRequest(httpServletRequest);
+        } catch (IllegalStateException e) {
+            // Ignore the IllegalStateException because it is ok if unauthenticated users
+            // list contracts.
+        }
+        
+        boolean requestedByStreamer = false;
+        if (username != null && user != null) {
+            requestedByStreamer = username.equals(user.getTwitchUsername());
         }
 
-        return ResponseEntity.ok(contractService.getAllContracts(pageable));
+        final Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Contract> contracts = null;
+        final UserModel streamer = username != null ? userService.getUser(username).orElse(null) : null;
+
+        if (streamer != null && state != null) {
+            contracts = contractService.getContractsForStreamerAndState(streamer, state, pageable, requestedByStreamer);
+        } else if (streamer != null) {
+            contracts = contractService.getContractsForStreamer(streamer, pageable, requestedByStreamer);
+        } else if (state != null) {
+            contracts = contractService.getContractsForState(state, pageable);
+        } else {
+            contracts = contractService.getAllContracts(pageable);
+        }
+
+        return ResponseEntity.ok(contracts);
     }
 
     @RequestMapping(path = "donorBounties/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listContractsForDonator(
+    public ResponseEntity<?> listContractsForDonator(
             @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state) {
         if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UserModel donor = userService.getUserModelFromRequest(httpServletRequest);
@@ -131,17 +134,17 @@ public class ContractsApiController {
     }
 
     @RequestMapping(path = "activate", method = RequestMethod.PUT)
-    public ResponseEntity activateContract(
+    public ResponseEntity<?> activateContract(
             @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UUID contractId = contractStateRequest.getContractId();
         final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
         if (contractModel == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
         }
 
         if (!contractModel.getState().equals(ContractState.OPEN)) {
@@ -150,7 +153,7 @@ public class ContractsApiController {
 
         final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
         if (contractModel.getStreamer().getTwitchUsername() != userModel.getTwitchUsername()) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
  
         contractService.activateContract(contractModel);
@@ -162,17 +165,17 @@ public class ContractsApiController {
     }
 
     @RequestMapping(path = "deactivate", method = RequestMethod.PUT)
-    public ResponseEntity deactivateContract(
+    public ResponseEntity<HttpStatus> deactivateContract(
             @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UUID contractId = contractStateRequest.getContractId();
         final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
         if (contractModel == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
         }
 
         if (!contractModel.getState().equals(ContractState.ACTIVE)) {
@@ -182,21 +185,21 @@ public class ContractsApiController {
         contractService.deactivateContract(contractModel);
         alertService.sendStreamDeactivateAlert(contractModel.getStreamer(), new PrivateContract(contractModel));
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
     @RequestMapping(path = "decline", method = RequestMethod.PUT)
-    public ResponseEntity declineContract(
+    public ResponseEntity<HttpStatus> declineContract(
             @NonNull final HttpServletRequest httpServletRequest,
             @RequestBody @NonNull final ContractStateRequest contractStateRequest) {
         if (securityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UUID contractId = contractStateRequest.getContractId();
         final ContractModel contractModel = contractService.getContract(contractId).orElse(null);
         if (contractModel == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
         }
 
         if (!contractModel.getState().equals(ContractState.OPEN) && !contractModel.getState().equals(ContractState.ACTIVE)) {
@@ -206,7 +209,7 @@ public class ContractsApiController {
         contractService.setContractState(contractModel, ContractState.DECLINED);
         contractService.settlePayments(contractModel);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
     private void notifyProposer(@NonNull final ContractModel contractModel, @NonNull final String title) {

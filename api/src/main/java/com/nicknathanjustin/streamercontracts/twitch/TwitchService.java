@@ -5,7 +5,6 @@ import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface TwitchService {
 
@@ -30,7 +29,7 @@ public interface TwitchService {
      * @param twitchUsername The username of the twitch user
      * @return An Optional<TwitchUser> for the user
      */
-    Optional<TwitchUser> getTwitchUserFromUsername(String twitchUsername);
+    TwitchUser getTwitchUserFromUsername(String twitchUsername);
 
     /**
      * Gets the TwitchUser object from Twitch API
@@ -38,5 +37,5 @@ public interface TwitchService {
      * @param twitchUserId The id of the twitch user
      * @return An Optional<TwitchUser> for the user
      */
-    Optional<TwitchUser> getTwitchUserFromTwitchUserId(String twitchUserId);
+    TwitchUser getTwitchUserFromTwitchUserId(String twitchUserId);
 }

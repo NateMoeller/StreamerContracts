@@ -6,7 +6,6 @@ import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/userSettings")
 @RequiredArgsConstructor
-@Slf4j
 public class UserSettingsApiController {
 
     @NonNull private final SecurityService SecurityService;
@@ -28,21 +26,21 @@ public class UserSettingsApiController {
     @NonNull private final UserSettingsService userSettingsService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity updateUserSettings(@NonNull final HttpServletRequest httpServletRequest,
+    public ResponseEntity<HttpStatus> updateUserSettings(@NonNull final HttpServletRequest httpServletRequest,
                                              @RequestBody @NonNull final UpdateUserSettingsRequest updateUserSettingsRequest) {
         if (SecurityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
         userSettingsService.updateUserSettings(userModel, updateUserSettingsRequest);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getUserSettings(@NonNull final HttpServletRequest httpServletRequest) {
+    public ResponseEntity<?> getUserSettings(@NonNull final HttpServletRequest httpServletRequest) {
         if (SecurityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
@@ -54,6 +52,6 @@ public class UserSettingsApiController {
             return ResponseEntity.ok(userSettingsDto);
         }
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 }

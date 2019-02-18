@@ -12,9 +12,10 @@ public interface UserService {
      * Creates the user in the database given the twitch username.
      *
      * @param  twitchUsername The username of the twitch user.
+     * @param  twitchId The id of the twitch user.
      * @return An object modeling the user.
      */
-    UserModel createUser(String twitchUsername);
+    UserModel createUser(String twitchUsername, String twitchId);
 
     /**
      * Gets a user from the database given the twitch username.
@@ -44,16 +45,14 @@ public interface UserService {
      *
      * @param httpServletRequest HttpRequest to get a user from.
      * @return UserModel associated with the provided HttpRequest.
-     * @throws IllegalArgumentException thrown when no user is associated with the supplied request.
      */
-    UserModel getUserModelFromRequest(HttpServletRequest httpServletRequest) throws IllegalArgumentException;
+    UserModel getUserModelFromRequest(HttpServletRequest httpServletRequest);
 
     /**
      * Returns a TwitchUser from a valid HttpRequest Object.
      *
      * @param httpServletRequest the HttpRequest to get a user from.
      * @return TwitchUser associated with the provided HttpRequest.
-     * @throws IllegalArgumentException thrown when no user is associated with the supplied request.
      */
     TwitchUser getTwitchUserFromRequest(HttpServletRequest httpServletRequest);
 }

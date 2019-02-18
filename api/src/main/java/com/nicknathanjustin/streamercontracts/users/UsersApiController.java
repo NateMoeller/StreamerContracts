@@ -11,6 +11,8 @@ import com.nicknathanjustin.streamercontracts.users.dtos.PublicUser;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,9 +38,9 @@ public class UsersApiController {
     @NonNull private final UserSettingsService userSettingsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity privateUser(@NonNull final HttpServletRequest httpServletRequest) {
+    public ResponseEntity<?> privateUser(@NonNull final HttpServletRequest httpServletRequest) {
         if (SecurityService.isAnonymousRequest(httpServletRequest)) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final UserModel userModel = userService.getUserModelFromRequest(httpServletRequest);
@@ -67,11 +69,10 @@ public class UsersApiController {
     }
 
     @RequestMapping(path = "/{twitchUsername}", method = RequestMethod.GET)
-    public ResponseEntity publicUser(@PathVariable("twitchUsername") @NonNull final String twitchUsername) {
-        final Optional<TwitchUser> optionalTwitchUser = twitchService.getTwitchUserFromUsername(twitchUsername);
+    public ResponseEntity<?> publicUser(@PathVariable("twitchUsername") @NonNull final String twitchUsername) {
+        final TwitchUser twitchUser = twitchService.getTwitchUserFromUsername(twitchUsername);
         final Optional<UserModel> optionalUserModel = userService.getUser(twitchUsername);
         final UserModel userModel = optionalUserModel.orElse(null);
-        final TwitchUser twitchUser = optionalTwitchUser.orElse(null);
 
         if (twitchUser != null && userModel != null) {
             final UserSettingsModel userSettingsModel = userSettingsService.getUserSettings(userModel).orElse(null);
@@ -79,11 +80,11 @@ public class UsersApiController {
             return ResponseEntity.ok(publicUser);
         }
 
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(path = "list/{page}/{pageSize}", method = RequestMethod.GET)
-    public ResponseEntity listUsers(
+    public ResponseEntity<Page<UserModel>> listUsers(
             @NonNull final HttpServletRequest httpServletRequest,
             @PathVariable final int page,
             @PathVariable final int pageSize) {

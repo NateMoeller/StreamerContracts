@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public abstract class ExternalUser {
 
+    protected String externalId;
+    
     protected String login;
 
     protected String displayName;

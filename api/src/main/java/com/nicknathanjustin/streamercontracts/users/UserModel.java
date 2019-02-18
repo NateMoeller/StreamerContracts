@@ -29,6 +29,8 @@ public class UserModel {
     private UUID id;
 
     private String twitchUsername;
+    
+    private String twitchId;
 
     private Timestamp createdAt;
 

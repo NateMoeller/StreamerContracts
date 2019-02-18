@@ -9,6 +9,8 @@ import com.nicknathanjustin.streamercontracts.users.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +32,7 @@ public class ReportsApiController {
     @NonNull private final UserService userService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity createReport(@NonNull final HttpServletRequest httpServletRequest,
+    public ResponseEntity<HttpStatus> createReport(@NonNull final HttpServletRequest httpServletRequest,
                                        @RequestBody @NonNull final CreateReportRequest createReportRequest) {
 
         final UserModel reportingUser = securityService.isAnonymousRequest(httpServletRequest) ?
