@@ -94,6 +94,10 @@ public class UserServiceImpl implements UserService {
 
     private TwitchUser getTwitchUserFromJwtToken(@NonNull final String jwtToken) {
         final String twitchUserId = securityService.getTwitchUserIdFromJwtToken(jwtToken);
+        if (twitchUserId == null) {
+            throw new IllegalStateException("unable to parse twitch user id from JWT token.");
+        }
+
         final TwitchUser twitchUser = twitchService.getTwitchUserFromTwitchUserId(twitchUserId);
         if (twitchUser == null) {
             throw new IllegalStateException("unable to retrieve " + TwitchUser.class.getName() + " with twitchUserId: " + twitchUserId);

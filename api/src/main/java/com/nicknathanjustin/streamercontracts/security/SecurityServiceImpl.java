@@ -46,15 +46,7 @@ public class SecurityServiceImpl implements SecurityService {
         final String jwtToken = httpServletRequest.getHeader(jwtHeader);
         final Principal principal = httpServletRequest.getUserPrincipal();
         
-        if (jwtToken != null) {
-            try {
-                getTwitchUserIdFromJwtToken(jwtToken);
-            } catch (IllegalStateException e) {
-                return true;
-            }
-        }
-
-        final boolean isUserRecognized = (jwtToken != null || principal instanceof OAuth2Authentication);
+        final boolean isUserRecognized = ((jwtToken != null && getTwitchUserIdFromJwtToken(jwtToken) != null) || principal instanceof OAuth2Authentication);
         if (isUserRecognized) {
             return isRecognizedUserBlocked(httpServletRequest);
         }
@@ -92,7 +84,7 @@ public class SecurityServiceImpl implements SecurityService {
         final Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
         final Claims claims = jws.getBody();
         if (!claims.containsKey(USER_ID_CLAIM_KEY)) {
-            throw new IllegalStateException("Claim: " + USER_ID_CLAIM_KEY + " does not exist for decoded jwtToken: " + jws);
+            return null;
         }
 
         return claims.get(USER_ID_CLAIM_KEY, String.class);
