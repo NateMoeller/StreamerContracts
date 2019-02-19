@@ -23,8 +23,7 @@ import java.util.Base64;
 public class SecurityServiceImpl implements SecurityService {
 
     private static final String USER_ID_CLAIM_KEY = "user_id";
-
-    @NonNull private final UserService userService;
+    private static final String USER_NAME_CLAIM_KEY = "user_id";
 
     @Value("${twitch.extension.jwtHeader}")
     private String jwtHeader;
@@ -46,34 +45,13 @@ public class SecurityServiceImpl implements SecurityService {
         final String jwtToken = httpServletRequest.getHeader(jwtHeader);
         final Principal principal = httpServletRequest.getUserPrincipal();
         
-        final boolean isUserRecognized = ((jwtToken != null && getTwitchUserIdFromJwtToken(jwtToken) != null) || principal instanceof OAuth2Authentication);
+        final boolean isUserRecognized = ((jwtToken != null && getTwitchUserIdFromJwtToken(jwtToken) != null) ||
+                                           principal instanceof OAuth2Authentication);
         if (isUserRecognized) {
             return isRecognizedUserBlocked(httpServletRequest);
         }
 
         return true;
-    }
-
-    private boolean isRecognizedUserBlocked(@NonNull final HttpServletRequest httpServletRequest) {
-        final TwitchUser twitchUser = userService.getTwitchUserFromRequest(httpServletRequest);
-        if (isEnvLockedToWhiteListedAccounts()) {
-            return !isUserWhiteListed(twitchUser);
-        }
-        return isUserBlackListed(twitchUser);
-    }
-
-    private boolean isEnvLockedToWhiteListedAccounts() {
-        // Beta endpoint is currently open to any client. However, we want to only allow bountyStreamer accounts to
-        // access Beta. As such, we maintain a white list of accounts that are allowed to authenticate with Beta.
-        return environment.equals("Beta");
-    }
-
-    private boolean isUserWhiteListed(@NonNull final TwitchUser twitchUser) {
-        return Arrays.asList(whiteListedAccounts).contains(twitchUser.getDisplayName());
-    }
-
-    private boolean isUserBlackListed(@NonNull final TwitchUser twitchUser) {
-        return Arrays.asList(blackListedAccounts).contains(twitchUser.getDisplayName());
     }
     
     @Override
@@ -88,5 +66,30 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return claims.get(USER_ID_CLAIM_KEY, String.class);
+    }
+
+
+    private boolean isRecognizedUserBlocked(@NonNull final HttpServletRequest httpServletRequest) {
+        //TODO: uncomment and fix circular dependency issue after twitch extension competition completes
+//        final TwitchUser twitchUser = userService.getTwitchUserFromRequest(httpServletRequest);
+//        if (isEnvLockedToWhiteListedAccounts()) {
+//            return !isUserWhiteListed(twitchUser);
+//        }
+//        return isUserBlackListed(twitchUser);
+        return false;
+    }
+
+    private boolean isEnvLockedToWhiteListedAccounts() {
+        // Beta endpoint is currently open to any client. However, we want to only allow bountyStreamer accounts to
+        // access Beta. As such, we maintain a white list of accounts that are allowed to authenticate with Beta.
+        return environment.equals("Beta");
+    }
+
+    private boolean isUserWhiteListed(@NonNull final TwitchUser twitchUser) {
+        return Arrays.asList(whiteListedAccounts).contains(twitchUser.getDisplayName());
+    }
+
+    private boolean isUserBlackListed(@NonNull final TwitchUser twitchUser) {
+        return Arrays.asList(blackListedAccounts).contains(twitchUser.getDisplayName());
     }
 }

@@ -1,10 +1,8 @@
 package com.nicknathanjustin.streamercontracts.security;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import lombok.NonNull;
+import javax.servlet.http.HttpServletRequest;
 
 public interface SecurityService {
 
@@ -19,9 +17,9 @@ public interface SecurityService {
     /**
      * Gets a user id from a JWT Token.
      *
-     * @param jwtToke The JWT token.
+     * @param jwtToken The JWT token.
      * @return Returns the userId from the JWT Token.
      * @throws JWTVerificationException Throws if parsing the JWT token encounters an error.
      */
-    String getTwitchUserIdFromJwtToken(@NonNull final String jwtToken) throws JWTVerificationException;
+    String getTwitchUserIdFromJwtToken(String jwtToken) throws JWTVerificationException;
 }
