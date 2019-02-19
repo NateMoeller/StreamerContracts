@@ -17,7 +17,6 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     public UserSettingsModel updateUserSettings(@NonNull final UserModel userModel,
                                                 @NonNull final UpdateUserSettingsRequest updateUserSettingsRequest) {
         final Timestamp now = new Timestamp(System.currentTimeMillis());
-        final String paypalEmail = updateUserSettingsRequest.getPaypalEmail();
         final Optional<UserSettingsModel> optionalUserSettingsModel = userSettingsModelRepository.findByUserId(userModel.getId());
         final UserSettingsModel userSettingsModel = optionalUserSettingsModel.orElse(
                 UserSettingsModel.builder()
@@ -26,8 +25,11 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .build()
         );
 
+        final String paypalEmail = updateUserSettingsRequest.getPaypalEmail();
+        final Boolean isBusinessEmail = updateUserSettingsRequest.getIsBusinessEmail();
         userSettingsModel.setPaypalEmail(paypalEmail);
         userSettingsModel.setUpdatedAt(now);
+        userSettingsModel.setIsBusinessEmail(isBusinessEmail);
 
         return userSettingsModelRepository.save(userSettingsModel);
     }

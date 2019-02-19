@@ -23,7 +23,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 public class TwitchServiceImpl implements TwitchService {
@@ -59,14 +58,14 @@ public class TwitchServiceImpl implements TwitchService {
     }
 
     @Override
-    public Optional<TwitchUser> getTwitchUserFromUsername(@NonNull final String twitchUsername) {
+    public TwitchUser getTwitchUserFromUsername(@NonNull final String twitchUsername) {
         final ResponseEntity<Map> response = queryTwitch(userInfoUri + "?login=" + twitchUsername);
         final Map<String, List<Map<String, Object>>> details = response.getBody();
         return TwitchUser.createTwitchUser(details);
     }
 
     @Override
-    public Optional<TwitchUser> getTwitchUserFromTwitchUserId(@NonNull final String twitchUserId) {
+    public TwitchUser getTwitchUserFromTwitchUserId(@NonNull final String twitchUserId) {
         final ResponseEntity<Map> response = queryTwitch(userInfoUri + "?id=" + twitchUserId);
         final Map<String, List<Map<String, Object>>> details = response.getBody();
         return TwitchUser.createTwitchUser(details);

@@ -5,16 +5,16 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class TwitchUser extends ExternalUser {
 
-    public static Optional<TwitchUser> createTwitchUser(@NonNull final Map<String, List<Map<String, Object>>> details) {
+    public static TwitchUser createTwitchUser(@NonNull final Map<String, List<Map<String, Object>>> details) {
         TwitchUser twitchUser = null;
         final List<Map<String, Object>> data = details.get("data");
         if (!CollectionUtils.isEmpty(data)) {
             final Map<String, Object> properties = data.get(0);
             twitchUser = new TwitchUser(
+                    (String) properties.get("id"),
                     (String) properties.get("login"),
                     (String) properties.get("display_name"),
                     (String) properties.get("type"),
@@ -26,11 +26,11 @@ public class TwitchUser extends ExternalUser {
             );
         }
 
-        return Optional.ofNullable(twitchUser);
+        return twitchUser;
     }
 
-
     public TwitchUser(
+            @NonNull final String externalId,
             @NonNull final String login,
             @NonNull final String displayName,
             @NonNull final String type,
@@ -39,6 +39,7 @@ public class TwitchUser extends ExternalUser {
             @NonNull final String profileImageUrl,
             @NonNull final String offlineImageUrl,
             final int viewCount) {
+        this.externalId = externalId;
         this.login = login;
         this.displayName = displayName;
         this.type = type;

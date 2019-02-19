@@ -4,11 +4,13 @@ import com.google.common.hash.Hashing;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
+@EqualsAndHashCode(callSuper=true)
 @Data
 public class PrivateUser extends User {
 

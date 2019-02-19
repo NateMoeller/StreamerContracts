@@ -1,7 +1,6 @@
 package com.nicknathanjustin.streamercontracts.contracts;
 
 import com.nicknathanjustin.streamercontracts.donations.DonationService;
-import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import com.nicknathanjustin.streamercontracts.votes.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,6 @@ public class ContractConfig {
 
     @Autowired private ContractModelRepository contractModelRepository;
     @Autowired private DonationService donationService;
-    @Autowired private SecurityService SecurityService;
     @Autowired private VoteService voteService;
 
     @Bean

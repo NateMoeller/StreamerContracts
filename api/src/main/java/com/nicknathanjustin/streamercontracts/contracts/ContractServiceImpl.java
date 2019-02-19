@@ -23,8 +23,8 @@ public class ContractServiceImpl implements ContractService {
 
     private static final int PAY_PAL_TRANSACTION_TIMEOUT_IN_DAYS = 3;
     private static final int MAX_ACTIVE_CONTRACTS = 1;
-    private static final List PAY_STREAMER_STATES = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
-    private static final List PAY_DONOR_STATES = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
+    private static final List<ContractState> PAY_STREAMER_STATES = ImmutableList.of(ContractState.COMPLETED, ContractState.DISPUTED);
+    private static final List<ContractState> PAY_DONOR_STATES = ImmutableList.of(ContractState.DECLINED, ContractState.FAILED, ContractState.EXPIRED);
 
 
     @NonNull final ContractModelRepository contractModelRepository;
@@ -93,12 +93,7 @@ public class ContractServiceImpl implements ContractService {
             @NonNull final UserModel user, 
             @NonNull final ContractState state, 
             @NonNull final Pageable pageable, 
-            @Nullable final String username) {
-        boolean requestedByStreamer = false;
-        if (username != null) {
-            requestedByStreamer = username.equals(user.getTwitchUsername());
-        }
-
+            @Nullable final boolean requestedByStreamer) {
         return requestedByStreamer ?
                 contractModelRepository.findAllPrivateContractsForStreamerAndState(user.getTwitchUsername(), state, pageable) :
                 contractModelRepository.findAllPublicContractsForStreamerAndState(user.getTwitchUsername(), state, pageable);
@@ -108,12 +103,7 @@ public class ContractServiceImpl implements ContractService {
     public Page<Contract> getContractsForStreamer(
             @NonNull final UserModel user, 
             @NonNull final Pageable pageable,
-            @Nullable final String username) {
-        boolean requestedByStreamer = false;
-        if (username != null) {
-            requestedByStreamer = username.equals(user.getTwitchUsername());
-        }
-
+            @Nullable final boolean requestedByStreamer) {
         return requestedByStreamer ?
                 contractModelRepository.findAllPrivateContractsForStreamer(user.getTwitchUsername(), pageable) :
                 contractModelRepository.findAllPublicContractsForStreamer(user.getTwitchUsername(), pageable);

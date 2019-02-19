@@ -7,6 +7,8 @@ import lombok.NonNull;
 @Data
 public abstract class User {
 
+    private final String externalId;
+    
     private final String displayName;
 
     private final String type;
@@ -20,6 +22,7 @@ public abstract class User {
     private final int viewCount;
 
     public User(@NonNull final ExternalUser externalUser) {
+        this.externalId = externalUser.getExternalId();
         this.displayName = externalUser.getDisplayName();
         this.type = externalUser.getType();
         this.broadcasterType = externalUser.getBroadcasterType();

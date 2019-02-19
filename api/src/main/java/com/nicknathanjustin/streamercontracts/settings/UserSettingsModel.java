@@ -38,4 +38,6 @@ public class UserSettingsModel {
     private Timestamp createdAt;
 
     private Timestamp updatedAt;
+    
+    private Boolean isBusinessEmail;
 }

@@ -3,5 +3,6 @@ CREATE TABLE user_settings (
     user_id UUID REFERENCES users (id) NOT NULL,
     paypal_email VARCHAR(128) UNIQUE,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    updated_at TIMESTAMP NOT NULL,
+    is_business_email BOOLEAN NULL
 );

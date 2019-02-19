@@ -40,25 +40,25 @@ public class DonationsApiController {
     private String[] blackListedWords;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
+    public ResponseEntity<HttpStatus> createDonation(@RequestBody @NonNull final CreateDonationRequest createDonationRequest) {
         final UserModel proposer = userService.getUser(createDonationRequest.getUsername()).orElse(null);
         final UserModel streamer = userService.getUser(createDonationRequest.getStreamerUsername()).orElse(null);
         if (proposer == null || streamer == null) {
             log.warn("Username: {} or StreamerUsername: {} does not exist.", createDonationRequest.getUsername(), createDonationRequest.getStreamerUsername());
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
         final String paypalPaymentId = createDonationRequest.getPayPalPaymentId();
         final Payment payment = paymentsService.executePayment(paypalPaymentId).orElse(null);
         if(payment == null) {
             log.warn("Couldn't execute payment for id: {}", paypalPaymentId);
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         final String authorizationId = getAuthorizationId(payment);
         if(authorizationId == null) {
             log.warn("Payment executed, but couldn't extract authorizationId for paymentId: {}", paypalPaymentId);
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         final ContractModel contract = contractService.createContract(proposer, streamer, createDonationRequest.getGame(), createDonationRequest.getBounty());
@@ -68,7 +68,7 @@ public class DonationsApiController {
         final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
         alertService.sendNotification(streamer, title, contract.getDescription());
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }
 
     private String getAuthorizationId(@NonNull final Payment payment) {

@@ -1,25 +1,36 @@
 package com.nicknathanjustin.streamercontracts.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Base64;
 
 @RequiredArgsConstructor
-@Slf4j
 public class SecurityServiceImpl implements SecurityService {
+
+    private static final String USER_ID_CLAIM_KEY = "user_id";
 
     @NonNull private final UserService userService;
 
     @Value("${twitch.extension.jwtHeader}")
     private String jwtHeader;
+    
+    @Value("${twitch.extension.secret}")
+    private String jwtSigningSecret;
 
     @Value("${twitch.whiteListedAccounts}")
     private String[] whiteListedAccounts;
@@ -34,11 +45,12 @@ public class SecurityServiceImpl implements SecurityService {
     public boolean isAnonymousRequest(@NonNull final HttpServletRequest httpServletRequest) {
         final String jwtToken = httpServletRequest.getHeader(jwtHeader);
         final Principal principal = httpServletRequest.getUserPrincipal();
-        final boolean isUserRecognized = (jwtToken != null || principal instanceof OAuth2Authentication);
-
+        
+        final boolean isUserRecognized = ((jwtToken != null && getTwitchUserIdFromJwtToken(jwtToken) != null) || principal instanceof OAuth2Authentication);
         if (isUserRecognized) {
             return isRecognizedUserBlocked(httpServletRequest);
         }
+
         return true;
     }
 
@@ -62,5 +74,19 @@ public class SecurityServiceImpl implements SecurityService {
 
     private boolean isUserBlackListed(@NonNull final TwitchUser twitchUser) {
         return Arrays.asList(blackListedAccounts).contains(twitchUser.getDisplayName());
+    }
+    
+    @Override
+    public String getTwitchUserIdFromJwtToken(@NonNull final String jwtToken) throws JWTVerificationException {
+        final String token = jwtToken.split(" ")[1];
+        final byte[] decodedSecret = Base64.getDecoder().decode(jwtSigningSecret);
+        final SecretKey key = Keys.hmacShaKeyFor(decodedSecret);
+        final Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+        final Claims claims = jws.getBody();
+        if (!claims.containsKey(USER_ID_CLAIM_KEY)) {
+            return null;
+        }
+
+        return claims.get(USER_ID_CLAIM_KEY, String.class);
     }
 }

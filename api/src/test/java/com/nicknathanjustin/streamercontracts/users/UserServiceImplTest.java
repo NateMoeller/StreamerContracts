@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 public class UserServiceImplTest {
 
     private static final String TWITCH_USER_NAME = "twitchUserName";
+    private static final String TWITCH_ID = "123456";
     private static final int TOTAL_LOGINS = 1;
     private static final Timestamp CREATED_AT = new Timestamp(System.currentTimeMillis());
     private static final Timestamp LAST_LOGIN = new Timestamp(System.currentTimeMillis());
@@ -41,8 +42,13 @@ public class UserServiceImplTest {
 
 
     @Test(expected = NullPointerException.class)
-    public void createUser_nullInput_throwsException() {
-        userService.createUser(null);
+    public void createUser_nullTwitchUsername_throwsException() {
+        userService.createUser(null, TWITCH_ID);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void createUser_nullTwitchId_throwsException() {
+        userService.createUser(TWITCH_USER_NAME, null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -59,7 +65,7 @@ public class UserServiceImplTest {
     public void createUser_validInput_createsUser() {
         final ArgumentCaptor<UserModel> userModelArgumentCaptor = ArgumentCaptor.forClass(UserModel.class);
 
-        userService.createUser(TWITCH_USER_NAME);
+        userService.createUser(TWITCH_USER_NAME, TWITCH_ID);
 
         verify(mockUserModelRepository).save(userModelArgumentCaptor.capture());
         final UserModel userModel = userModelArgumentCaptor.getValue();

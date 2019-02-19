@@ -4,10 +4,10 @@ import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.votes.VoteModel;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
-import java.util.stream.Stream;
-
+@EqualsAndHashCode(callSuper=true)
 @Data
 public class PrivateContract extends Contract {
 
