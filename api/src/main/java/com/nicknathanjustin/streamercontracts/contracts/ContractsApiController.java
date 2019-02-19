@@ -81,13 +81,19 @@ public class ContractsApiController {
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state,
             @RequestParam("username") @Nullable final String username) {
+        final Pageable pageable = PageRequest.of(page, pageSize);
         boolean requestedByStreamer = false;
         if (username != null && !securityService.isAnonymousRequest(httpServletRequest)) {
-            final UserModel user = userService.getUserModelFromRequest(httpServletRequest);
-            requestedByStreamer = username.equals(user.getTwitchUsername());
+            try {
+                final UserModel user = userService.getUserModelFromRequest(httpServletRequest);
+                requestedByStreamer = username.equals(user.getTwitchUsername());
+            } catch (Exception e) {
+                // Caught exception means a JWT token existed, but no user existed in our system for that ID
+                // TODO: remove try catch and rework securityService.isAnonymousRequest to return true iff a user model can be parsed from httpServletRequest
+                ResponseEntity.ok(contractService.getAllContracts(pageable));
+            }
         }
 
-        final Pageable pageable = PageRequest.of(page, pageSize);
         Page<Contract> contracts = null;
         final UserModel streamer = username != null ? userService.getUser(username).orElse(null) : null;
 
