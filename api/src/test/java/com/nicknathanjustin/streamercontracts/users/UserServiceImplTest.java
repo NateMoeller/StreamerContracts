@@ -1,6 +1,7 @@
 package com.nicknathanjustin.streamercontracts.users;
 
 import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class UserServiceImplTest {
     private UserModel userModel;
 
     @Mock private TwitchService mockTwitchService;
+    @Mock private SecurityService securityService;
     @Mock private UserModelRepository mockUserModelRepository;
     @InjectMocks private UserServiceImpl userService;
 
