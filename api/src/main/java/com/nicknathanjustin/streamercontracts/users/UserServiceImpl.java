@@ -82,16 +82,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private TwitchUser getTwitchUserFromOAuth(@NonNull final OAuth2Authentication oAuth2Authentication) {
-        final Authentication userAuth = oAuth2Authentication.getUserAuthentication();
-        final Map<String, List<Map<String, Object>>> authDetails = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();
-        final TwitchUser twitchUser = TwitchUser.createTwitchUser(authDetails);
-        if (twitchUser == null) {
-            throw new IllegalStateException("unable to retrieve " + TwitchUser.class.getName() + " from oAuth2Authentication: " + oAuth2Authentication);
-        }
-        return twitchUser;
-    }
-
     private TwitchUser getTwitchUserFromJwtToken(@NonNull final String jwtToken) {
         final String twitchUserId = securityService.getTwitchUserIdFromJwtToken(jwtToken);
         if (twitchUserId == null) {
@@ -101,6 +91,16 @@ public class UserServiceImpl implements UserService {
         final TwitchUser twitchUser = twitchService.getTwitchUserFromTwitchUserId(twitchUserId);
         if (twitchUser == null) {
             throw new IllegalStateException("unable to retrieve " + TwitchUser.class.getName() + " with twitchUserId: " + twitchUserId);
+        }
+        return twitchUser;
+    }
+
+    private TwitchUser getTwitchUserFromOAuth(@NonNull final OAuth2Authentication oAuth2Authentication) {
+        final Authentication userAuth = oAuth2Authentication.getUserAuthentication();
+        final Map<String, List<Map<String, Object>>> authDetails = (Map<String, List<Map<String, Object>>>) userAuth.getDetails();
+        final TwitchUser twitchUser = TwitchUser.createTwitchUser(authDetails);
+        if (twitchUser == null) {
+            throw new IllegalStateException("unable to retrieve " + TwitchUser.class.getName() + " from oAuth2Authentication: " + oAuth2Authentication);
         }
         return twitchUser;
     }
