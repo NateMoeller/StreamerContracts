@@ -90,7 +90,7 @@ public class ContractsApiController {
             } catch (Exception e) {
                 // Caught exception means a JWT token existed, but no user existed in our system for that ID
                 // TODO: remove try catch and rework securityService.isAnonymousRequest to return true iff a user model can be parsed from httpServletRequest
-                ResponseEntity.ok(contractService.getAllContracts(pageable));
+                requestedByStreamer = false;
             }
         }
 
