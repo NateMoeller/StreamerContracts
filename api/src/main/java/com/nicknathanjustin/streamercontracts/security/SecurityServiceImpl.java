@@ -1,9 +1,7 @@
 package com.nicknathanjustin.streamercontracts.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -23,7 +21,6 @@ import java.util.Base64;
 public class SecurityServiceImpl implements SecurityService {
 
     private static final String USER_ID_CLAIM_KEY = "user_id";
-    private static final String USER_NAME_CLAIM_KEY = "user_id";
 
     @Value("${twitch.extension.jwtHeader}")
     private String jwtHeader;
