@@ -1,12 +1,8 @@
 package com.nicknathanjustin.streamercontracts.users;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import com.nicknathanjustin.streamercontracts.security.SecurityService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,13 +21,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static final String USER_ID_CLAIM_KEY = "user_id";
-
     @NonNull final TwitchService twitchService;
     @NonNull final UserModelRepository userModelRepository;
-
-    @Value("${twitch.extension.secret}")
-    private String jwtSigningSecret;
+    @NonNull final SecurityService securityService;
 
     @Value("${twitch.extension.jwtHeader}")
     private String jwtHeader;
@@ -103,23 +93,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private TwitchUser getTwitchUserFromJwtToken(@NonNull final String jwtToken) {
-        final String twitchUserId = getTwitchUserIdFromJwtToken(jwtToken);
+        final String twitchUserId = securityService.getTwitchUserIdFromJwtToken(jwtToken);
         final TwitchUser twitchUser = twitchService.getTwitchUserFromTwitchUserId(twitchUserId);
         if (twitchUser == null) {
             throw new IllegalStateException("unable to retrieve " + TwitchUser.class.getName() + " with twitchUserId: " + twitchUserId);
         }
         return twitchUser;
-    }
-
-    private String getTwitchUserIdFromJwtToken(@NonNull final String jwtToken) throws JWTVerificationException{
-        final String token = jwtToken.split(" ")[1];
-        final byte[] decodedSecret = Base64.getDecoder().decode(jwtSigningSecret);
-        final SecretKey key = Keys.hmacShaKeyFor(decodedSecret);
-        final Jws<Claims> jws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-        final Claims claims = jws.getBody();
-        if (!claims.containsKey(USER_ID_CLAIM_KEY)) {
-            throw new IllegalStateException("Claim: " + USER_ID_CLAIM_KEY + " does not exist for decoded jwtToken: " + jws);
-        }
-        return claims.get(USER_ID_CLAIM_KEY, String.class);
     }
 }

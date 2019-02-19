@@ -4,5 +4,5 @@ CREATE TABLE user_settings (
     paypal_email VARCHAR(128) UNIQUE,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
-	is_business_email BOOLEAN NULL
+    is_business_email BOOLEAN NULL
 );

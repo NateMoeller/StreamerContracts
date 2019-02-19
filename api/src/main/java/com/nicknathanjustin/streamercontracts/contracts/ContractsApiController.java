@@ -81,16 +81,9 @@ public class ContractsApiController {
             @PathVariable final int pageSize,
             @RequestParam("state") @Nullable final ContractState state,
             @RequestParam("username") @Nullable final String username) {
-        UserModel user = null;
-        try {
-            user = userService.getUserModelFromRequest(httpServletRequest);
-        } catch (IllegalStateException e) {
-            // Ignore the IllegalStateException because it is ok if unauthenticated users
-            // list contracts.
-        }
-        
         boolean requestedByStreamer = false;
-        if (username != null && user != null) {
+        if (username != null && !securityService.isAnonymousRequest(httpServletRequest)) {
+            final UserModel user = userService.getUserModelFromRequest(httpServletRequest);
             requestedByStreamer = username.equals(user.getTwitchUsername());
         }
 
