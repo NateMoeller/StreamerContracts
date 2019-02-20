@@ -25,13 +25,17 @@
         color: $error-red;
         display: inline-block;
         margin-right: 10px;
-        font-size: 32px;
+        font-size: 20px;
         vertical-align: middle;
       }
 
       .text {
         display: inline-block;
-        font-size: 32px;
+        font-size: 20px;
+      }
+
+      .extensionText {
+        font-size: 12px;
       }
 
       .submit {

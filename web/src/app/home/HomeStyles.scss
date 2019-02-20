@@ -6,7 +6,7 @@ $nav-height: 54px;
 .content {
 
   .section {
-    height: $section-height;
+    min-height: $section-height;
   }
 
   .backgroundImage {

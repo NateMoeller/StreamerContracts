@@ -23,14 +23,16 @@ class BountyDetails extends Component {
   }
 
   componentDidMount() {
-    const gameName = this.props.curBounty.game;
-    this.setState({ loading: true });
-    RestClient.GET(`twitch/game/${gameName}`, (response) => {
-      this.setState({
-        loading: false,
-        image: response.data.boxArtUrl
+    if (!this.props.isExtension) {
+      const gameName = this.props.curBounty.game;
+      this.setState({ loading: true });
+      RestClient.GET(`twitch/game/${gameName}`, (response) => {
+        this.setState({
+          loading: false,
+          image: response.data.boxArtUrl
+        });
       });
-    });
+    }
   }
 
   goBack = () => {
@@ -67,8 +69,8 @@ class BountyDetails extends Component {
   getOpenButtons() {
     return (
       <div className={styles.rightButtons}>
-        <Button bsStyle="link" className={styles.remove} onClick={() => this.props.onDeclineBounty(this.props.curBounty.contractId)}>Decline bounty</Button>
-        <Button className={styles.submit} onClick={() => this.props.onActivateBounty(this.props.curBounty.contractId)}>Activate bounty</Button>
+        <Button bsStyle="link" className={cx(styles.remove, { [styles.extensionText]: this.props.isExtension})} onClick={() => this.props.onDeclineBounty(this.props.curBounty.contractId)}>Decline bounty</Button>
+        <Button className={cx(styles.submit, { [styles.extensionText]: this.props.isExtension})} onClick={() => this.props.onActivateBounty(this.props.curBounty.contractId)}>Activate bounty</Button>
       </div>
     );
   }
@@ -179,7 +181,7 @@ class BountyDetails extends Component {
         <div className={styles.buttons}>
           <Button onClick={this.goBack}>
             <Glyphicon glyph="arrow-left" className={styles.arrowLeft} />
-            Back
+            {!this.props.isExtension ? 'Back' : null}
           </Button>
           {this.getAction()}
         </div>
@@ -196,6 +198,10 @@ class BountyDetails extends Component {
           <div className={styles.stats}>
             <div className={styles.title}>Statistics</div>
             <div className={styles.statRow}>
+              <div className={styles.statHeader}>Amount:</div>
+              <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
+            </div>
+            <div className={styles.statRow}>
               <div className={styles.statHeader}>Submitted by:</div>
               <div className={styles.statCell}>{this.props.curBounty.proposerName}</div>
             </div>
@@ -209,10 +215,6 @@ class BountyDetails extends Component {
               <div className={styles.statHeader}>Expires at:</div>
               <div className={styles.statCell}>{new Date(this.props.curBounty.settlesAt).toLocaleString()}</div>
             </div>
-            <div className={styles.statRow}>
-              <div className={styles.statHeader}>Amount:</div>
-              <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
-            </div>
           </div>
         </div>
       </div>
@@ -225,7 +227,8 @@ BountyDetails.defaultProps = {
   onDeclineBounty: null,
   onVoteBounty: null,
   isStreamer: false,
-  isDonor: false
+  isDonor: false,
+  isExtension: false
 };
 
 BountyDetails.propTypes = {
@@ -235,7 +238,8 @@ BountyDetails.propTypes = {
   onDeclineBounty: PropTypes.func,
   onVoteBounty: PropTypes.func,
   isStreamer: PropTypes.bool,
-  isDonor: PropTypes.bool
+  isDonor: PropTypes.bool,
+  isExtension: PropTypes.bool
 }
 
 export default BountyDetails;

@@ -5,6 +5,11 @@
     margin-bottom: 5px;
     width: 200px;
     float: right;
+
+    &Extension {
+      float: none;
+      margin: 0 auto;
+    }
   }
 
   table {
@@ -68,5 +73,23 @@
 
   .description {
     cursor: pointer;
+  }
+
+  .extension {
+    ul {
+      min-width: 120px;
+      left: -70px;
+      font-size: 12px;
+    }
+  }
+}
+
+.completeButton {
+  background: $secondary-blue;
+  color: $true-white;
+  border: none;
+
+  &:hover {
+    background: $button-hover;
   }
 }

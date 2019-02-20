@@ -68,7 +68,7 @@ public class UsersApiController {
         return ResponseEntity.ok(privateUser);
     }
 
-    @RequestMapping(path = "/{twitchUsername}", method = RequestMethod.GET)
+    @RequestMapping(path = "/username/{twitchUsername}", method = RequestMethod.GET)
     public ResponseEntity<?> publicUser(@PathVariable("twitchUsername") @NonNull final String twitchUsername) {
         final TwitchUser twitchUser = twitchService.getTwitchUserFromUsername(twitchUsername);
         final Optional<UserModel> optionalUserModel = userService.getUser(twitchUsername);
@@ -81,6 +81,27 @@ public class UsersApiController {
         }
 
         return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(path = "/twitchId/{twitchId}", method = RequestMethod.GET)
+    public ResponseEntity<?> publicUserFromTwitchId(@PathVariable("twitchId") @NonNull final String twitchId) {
+        final TwitchUser twitchUser = twitchService.getTwitchUserFromTwitchUserId(twitchId);
+        final Optional<UserModel> optionalUserModel = userService.getUser(twitchUser.getDisplayName());
+        final UserModel userModel = optionalUserModel.orElse(null);
+
+        if (twitchUser != null) {
+            if (userModel != null) {
+                // sign up for both twitch and our site
+                final UserSettingsModel userSettingsModel = userSettingsService.getUserSettings(userModel).orElse(null);
+                final PublicUser publicUser = new PublicUser(twitchUser, userSettingsModel);
+                return ResponseEntity.ok(publicUser);
+            } else {
+                // TODO: on twitch, but not on our site. What should we do?
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(path = "list/{page}/{pageSize}", method = RequestMethod.GET)
