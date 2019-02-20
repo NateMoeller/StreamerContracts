@@ -1,7 +1,6 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractState;
-import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import org.springframework.http.ResponseEntity;

@@ -70,7 +70,6 @@ public class DonationsApiController {
         final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
         alertService.sendNotification(streamer, title, contract.getDescription());
 
-        // tell the extension to refresh
         twitchService.sendExtensionRefresh(contract.getState(), streamer.getTwitchId());
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);

@@ -77,7 +77,7 @@ public class TwitchServiceImpl implements TwitchService {
     }
 
     @Override
-    public ResponseEntity sendExtensionRefresh(@NonNull final ContractState contractState, @NonNull final String channelId) {
+    public ResponseEntity<?> sendExtensionRefresh(@NonNull final ContractState contractState, @NonNull final String channelId) {
         final String url = "https://api.twitch.tv/extensions/message/" + channelId;
         final String extensionJwt = getTwitchExtensionJwtToken(channelId);
         final HttpHeaders headers = new HttpHeaders();
