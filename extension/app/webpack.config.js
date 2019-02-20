@@ -7,6 +7,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 // defines where the bundle file will live
 const bundlePath = path.resolve(__dirname, "dist/")
 
+// Do this as the first thing so that any code reading it knows the right env.
+process.env.BABEL_ENV = 'development';
+process.env.NODE_ENV = 'development';
+
 module.exports = (_env,argv)=> {
   let entryPoints = {
     VideoComponent:{
@@ -45,7 +49,10 @@ module.exports = (_env,argv)=> {
 
   // edit webpack plugins here!
   let plugins = [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.API_HOST': JSON.stringify(_env.API_HOST || 'https://localhost:8070/')
+    }),
   ]
 
   for(name in entryPoints){

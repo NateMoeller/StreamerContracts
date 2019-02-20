@@ -6,7 +6,6 @@ import logoDark from '../../resources/logo_dark.png';
 import logoLight from '../../resources/logo_light.png';
 
 import styles from './App.scss';
-const API_HOST = 'https://localhost:8070';
 
 export default class App extends React.Component{
     constructor(props){
@@ -73,7 +72,7 @@ export default class App extends React.Component{
     }
 
     getBroadcaster(channelId, callback) {
-      const url = `${API_HOST}/user/twitchId/${channelId}`;
+      const url = `${process.env.API_HOST}/user/twitchId/${channelId}`;
       this.Authentication.makeCall(url).then((response) => {
         return response.text();
       }).then(data =>{

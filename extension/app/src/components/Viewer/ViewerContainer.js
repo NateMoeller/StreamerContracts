@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import LoadingComponent from '../../../../../web/src/app/common/loading/LoadingComponent';
 import ViewerComponent from './ViewerComponent';
 
-const API_HOST = 'https://localhost:8070';
 const PAGE_SIZE = 10;
 
 class ViewerContainer extends Component {
@@ -43,7 +42,7 @@ class ViewerContainer extends Component {
     if (state) {
       url += `&state=${state}`;
     }
-    this.props.Authentication.makeCall(`${API_HOST}/${url}`).then(response => {
+    this.props.Authentication.makeCall(`${process.env.API_HOST}/${url}`).then(response => {
       return response.text();
     }).then(data => {
       const bountyData = JSON.parse(data);

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import LoadingComponent from '../../../../../web/src/app/common/loading/LoadingComponent';
 import BroadCasterComponent from './BroadcasterComponent';
 
-const API_HOST = 'https://localhost:8070';
 const PAGE_SIZE = 10;
 
 class BroadcasterContainer extends Component {
@@ -48,7 +47,7 @@ class BroadcasterContainer extends Component {
     if (state) {
       url += `&state=${state}`;
     }
-    this.props.Authentication.makeCall(`${API_HOST}/${url}`).then(response => {
+    this.props.Authentication.makeCall(`${process.env.API_HOST}/${url}`).then(response => {
       return response.text();
     }).then(data => {
       const bountyData = JSON.parse(data);
@@ -62,7 +61,7 @@ class BroadcasterContainer extends Component {
 
   activateBounty(contractId, callback = null) {
     const payload = { contractId };
-    this.props.Authentication.makeCall(`${API_HOST}/bounties/activate`, 'PUT', payload).then(response => {
+    this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/activate`, 'PUT', payload).then(response => {
       return response;
     }).then(data => {
       if (callback) {
@@ -73,7 +72,7 @@ class BroadcasterContainer extends Component {
 
   declineBounty(contractId, callback = null) {
     const payload = { contractId };
-    this.props.Authentication.makeCall(`${API_HOST}/bounties/decline`, 'PUT', payload).then(response => {
+    this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/decline`, 'PUT', payload).then(response => {
       return response;
     }).then(data => {
       if (callback) {
@@ -86,9 +85,9 @@ class BroadcasterContainer extends Component {
     const votePayload = { contractId: payload.contract.contractId, flagCompleted: payload.flagCompleted };
 
     if (payload.contract.state === 'ACTIVE') {
-      this.props.Authentication.makeCall(`${API_HOST}/bounties/deactivate`, 'PUT', { contractId: payload.contract.contractId }).then(deactivateResponse => {
+      this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/deactivate`, 'PUT', { contractId: payload.contract.contractId }).then(deactivateResponse => {
         // TODO: manage activeBounty
-        this.props.Authentication.makeCall(`${API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
+        this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
           console.log('voteResponse', voteResponse);
           return voteResponse;
         }).then(data => {
@@ -98,7 +97,7 @@ class BroadcasterContainer extends Component {
         });
       });
     } else {
-      this.props.Authentication.makeCall(`${API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
+      this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
         return voteResponse;
       }).then(data => {
         if (callback) {
