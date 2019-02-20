@@ -102,7 +102,7 @@ public class TwitchServiceImpl implements TwitchService {
             final ExtensionMessageRequest body = new ExtensionMessageRequest(message);
             return sendExtentionMessage(user.getTwitchId(), body);
         } catch (IOException e) {
-            log.error("Could not serialize the contract state.");
+            log.error("Could not serialize the overlay message.");
             throw new RuntimeException(e);
         }
     }
@@ -114,7 +114,7 @@ public class TwitchServiceImpl implements TwitchService {
             final ExtensionMessageRequest body = new ExtensionMessageRequest(message);
             return sendExtentionMessage(user.getTwitchId(), body);
         } catch (IOException e) {
-            log.error("Could not serialize the contract state.");
+            log.error("Could not serialize the overlay message.");
             throw new RuntimeException(e);
         }
     }
