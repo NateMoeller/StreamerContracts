@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Authentication from '../../util/Authentication/Authentication';
 import Overlay from '../../../../../web/src/app/overlay/Overlay';
 
 const MESSAGE_TYPE = {
@@ -11,7 +10,6 @@ class VideoOverlayContainer extends Component {
   constructor(props) {
     super(props);
 
-    this.Authentication = new Authentication();
     this.twitch = window.Twitch ? window.Twitch.ext : null;
 
     this.state = {
