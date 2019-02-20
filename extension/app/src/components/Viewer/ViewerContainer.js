@@ -23,7 +23,8 @@ class ViewerContainer extends Component {
 
   componentDidMount() {
     this.props.twitch.listen('broadcast', (target, contentType, body) => {
-      const refreshState = JSON.parse(body);
+      const message = JSON.parse(body);
+      const refreshState = message.contractState;
       if (refreshState === 'ALL' || refreshState === this.state.bountyFilter) {
         this.getPublicBounties(0, PAGE_SIZE, this.state.user.displayName, this.state.bountyFilter);
       }
