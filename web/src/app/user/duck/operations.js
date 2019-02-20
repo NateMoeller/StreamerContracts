@@ -13,7 +13,7 @@ import RestClient from '../../RestClient';
 const getPublicUser = (twitchUsername) => (dispatch) => {
   dispatch(requestPublicUser());
 
-  RestClient.GET(`user/${twitchUsername}`, (response) => {
+  RestClient.GET(`user/username/${twitchUsername}`, (response) => {
     dispatch(receivePublicUserSuccess(response.data));
   }, (error) => {
     dispatch(receivePublicUserFailure());

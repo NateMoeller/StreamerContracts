@@ -125,7 +125,7 @@ class ProfileComponent extends Component {
         <Col xs={3} md={2} className={styles.sidebar}>
           <Row>
             <Image src={this.props.user.profileImageUrl} thumbnail />
-            <h2 className="name">{this.props.user.displayName}</h2>
+            <h2 className={styles.name} title={this.props.user.displayName}>{this.props.user.displayName}</h2>
           </Row>
           <Row>
             <Nav stacked>

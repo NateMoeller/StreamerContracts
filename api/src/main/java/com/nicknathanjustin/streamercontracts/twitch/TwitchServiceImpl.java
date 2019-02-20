@@ -2,7 +2,9 @@ package com.nicknathanjustin.streamercontracts.twitch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
+import com.nicknathanjustin.streamercontracts.twitch.requests.ExtensionMessageRefreshRequest;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,6 +31,9 @@ public class TwitchServiceImpl implements TwitchService {
 
     @Value("${security.oauth2.client.clientId}")
     private String clientId;
+
+    @Value("${twitch.extension.client}")
+    private String extensionClientId;
 
     @Value("${security.oauth2.resource.userInfoUri}")
     private String userInfoUri;
@@ -71,6 +76,27 @@ public class TwitchServiceImpl implements TwitchService {
         return TwitchUser.createTwitchUser(details);
     }
 
+    @Override
+    public ResponseEntity sendExtensionRefresh(@NonNull final ContractState contractState, @NonNull final String channelId) {
+        final String url = "https://api.twitch.tv/extensions/message/" + channelId;
+        final String extensionJwt = getTwitchExtensionJwtToken(channelId);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + extensionJwt);
+        headers.set("Client-Id", extensionClientId);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        try {
+            final ExtensionMessageRefreshRequest body = new ExtensionMessageRefreshRequest(contractState);
+            final HttpEntity<?> entity = new HttpEntity<>(body, headers);
+            final RestTemplate restTemplate = new RestTemplate();
+
+            return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
+        } catch (IOException e) {
+            log.error("Could not serialize the contract state.");
+            throw new RuntimeException(e);
+        }
+    }
+
     private ResponseEntity<Map> queryTwitch(@NonNull final String url) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -81,7 +107,7 @@ public class TwitchServiceImpl implements TwitchService {
         return restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
     }
 
-    private String getTwitchJwtToken() {
+    private String getTwitchExtensionJwtToken(@NonNull final String channelId) {
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
             final JsonNode pubsubPermissions = objectMapper.readTree("{\"send\":[\"*\"]}");
@@ -89,9 +115,9 @@ public class TwitchServiceImpl implements TwitchService {
             final SecretKey key = Keys.hmacShaKeyFor(decodedSecret);
             return Jwts.builder()
                     .claim("exp", new Date(System.currentTimeMillis() + 6000000))
-                    .claim("user_id", "75481598")
+                    .claim("user_id", channelId)
                     .claim("role", "external")
-                    .claim("channel_id", "75481598")
+                    .claim("channel_id", channelId)
                     .claim("pubsub_perms", pubsubPermissions)
                     .signWith(key)
                     .compact();

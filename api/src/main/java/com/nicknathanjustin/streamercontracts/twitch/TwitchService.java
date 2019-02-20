@@ -1,7 +1,10 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
+import com.nicknathanjustin.streamercontracts.contracts.ContractState;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +41,11 @@ public interface TwitchService {
      * @return An Optional<TwitchUser> for the user
      */
     TwitchUser getTwitchUserFromTwitchUserId(String twitchUserId);
+
+    /**
+     * Sends the new/updated contract to the extension for real-time updating
+     * @param contractState the state to refresh
+     * @param channelId the channel to send the bounty to
+     */
+    ResponseEntity sendExtensionRefresh(ContractState contractState, String channelId);
 }

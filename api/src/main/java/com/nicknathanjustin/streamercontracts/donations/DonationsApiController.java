@@ -5,6 +5,7 @@ import com.nicknathanjustin.streamercontracts.contracts.ContractModel;
 import com.nicknathanjustin.streamercontracts.contracts.ContractService;
 import com.nicknathanjustin.streamercontracts.donations.requests.CreateDonationRequest;
 import com.nicknathanjustin.streamercontracts.payments.PaymentsService;
+import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.paypal.api.payments.Payment;
@@ -34,6 +35,7 @@ public class DonationsApiController {
     @NonNull private final ContractService contractService;
     @NonNull private final DonationService donationService;
     @NonNull private final PaymentsService paymentsService;
+    @NonNull private final TwitchService twitchService;
     @NonNull private final UserService userService;
 
     @Value("${application.blackListedWords}")
@@ -68,7 +70,11 @@ public class DonationsApiController {
         final String title = "New bounty from " + contract.getProposer().getTwitchUsername();
         alertService.sendNotification(streamer, title, contract.getDescription());
 
+        // tell the extension to refresh
+        twitchService.sendExtensionRefresh(contract.getState(), streamer.getTwitchId());
+
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+
     }
 
     private String getAuthorizationId(@NonNull final Payment payment) {

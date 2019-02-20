@@ -37,8 +37,8 @@ twitch:
   frontEndUrls: https://localhost.rig.twitch.tv:8080, http://localhost.rig.twitch.tv:8080
   whiteListedAccounts:
   extension:
-    client: n79uq3pvee208imhrzr14um2rboiwv
-    secret: ncstDxsrg9Sc872otJT8Z+xt75rW8VpCy9F1rKO/vNU=
+    client: ChangeMe
+    secret: ChangeMe
     jwtHeader: Authorization
 
 paypal:

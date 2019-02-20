@@ -1,5 +1,11 @@
 @import '../../colors.scss';
 
+.name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .sidebar {
   margin-right: 30px;
   margin-top: 20px;

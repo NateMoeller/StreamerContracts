@@ -34,6 +34,49 @@ class StreamerDashboard extends Component {
       curPage: 1,
       bountyFilter: props.bountyFilter ? props.bountyFilter : OPEN
     };
+
+    if (this.props.isExtension) {
+      this.columns = [{
+        dataField: 'description',
+        text: 'Bounty',
+        formatter: this.getBounty,
+        headerStyle: { width: '60%' }
+      }, {
+        dataField: 'contractAmount',
+        text: 'Amount',
+        formatter: this.getMoney,
+      }, {
+        dataField: 'action',
+        text: '',
+        isDummyField : true,
+        formatter: this.getAction,
+      }];
+    } else {
+      this.columns = [{
+        dataField: 'description',
+        text: 'Bounty',
+        formatter: this.getBounty,
+        headerStyle: { width: '40%' }
+      }, {
+        dataField: 'proposerName',
+        text: 'Submitted by',
+        formatter: this.getName
+      }, {
+        dataField: 'game',
+        formatter: this.getGame,
+        text: 'Game'
+      }, {
+        dataField: 'contractAmount',
+        text: 'Amount',
+        formatter: this.getMoney
+      }, {
+        dataField: 'action',
+        text: '',
+        isDummyField : true,
+        formatter: this.getAction,
+        headerStyle: { width: '10%' }
+      }];
+    }
   }
 
   componentDidMount() {
@@ -103,9 +146,10 @@ class StreamerDashboard extends Component {
         You've completed this bounty. Good job!
       </Tooltip>
     );
+    const direction = this.props.isExtension ? 'left' : 'top';
 
     return (
-      <OverlayTrigger placement="top" overlay={tooltip}>
+      <OverlayTrigger placement={direction} overlay={tooltip}>
         <Glyphicon glyph="ok-circle" className={styles.checkmark} />
       </OverlayTrigger>
     );
@@ -117,9 +161,10 @@ class StreamerDashboard extends Component {
         You have marked this bounty complete. The icon will fill in when voting has finished.
       </Tooltip>
     );
+    const direction = this.props.isExtension ? 'left' : 'top';
 
     return (
-      <OverlayTrigger placement="top" overlay={tooltip}>
+      <OverlayTrigger placement={direction} overlay={tooltip}>
         <Glyphicon glyph="ok-circle" className={cx(styles.checkmark, styles.voted)} />
       </OverlayTrigger>
     );
@@ -138,9 +183,10 @@ class StreamerDashboard extends Component {
         {tooltipText}
       </Tooltip>
     );
+    const direction = this.props.isExtension ? 'left' : 'top';
 
     return (
-      <OverlayTrigger placement="top" overlay={tooltip}>
+      <OverlayTrigger placement={direction} overlay={tooltip}>
         <Glyphicon glyph="remove-circle" className={styles.error} />
       </OverlayTrigger>
     );
@@ -158,7 +204,7 @@ class StreamerDashboard extends Component {
 
     const completedPopover = (
       <Popover id="popover" title="Bounty completed?">
-        <Button bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>I completed this bounty</Button>
+        <Button className={tableStyles.completeButton} bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>I completed this bounty</Button>
       </Popover>
     );
     const failedPopover = (
@@ -174,19 +220,20 @@ class StreamerDashboard extends Component {
         <figure></figure>
       </div>
     );
+    const direction = this.props.isExtension ? 'top' : 'left';
     const markCompleted = (
-      <OverlayTrigger trigger="focus" placement="left" overlay={completedPopover}>
-        <MenuItem eventKey="1">Mark completed</MenuItem>
+      <OverlayTrigger trigger="focus" placement={direction} overlay={completedPopover}>
+        <MenuItem eventKey="1"><span className={tableStyles.complete}>Mark completed</span></MenuItem>
       </OverlayTrigger>
     );
     const markFailed = (
-      <OverlayTrigger trigger="focus" placement="left" overlay={failedPopover}>
-        <MenuItem eventKey="2">Mark failed</MenuItem>
+      <OverlayTrigger trigger="focus" placement={direction} overlay={failedPopover}>
+        <MenuItem eventKey="2"><span className={tableStyles.error}>Mark failed</span></MenuItem>
       </OverlayTrigger>
     );
 
     return (
-      <ButtonToolbar>
+      <ButtonToolbar className={cx({ [tableStyles.extension] : this.props.isExtension })}>
         <DropdownButton
           bsStyle="default"
           title={kebab}
@@ -217,7 +264,7 @@ class StreamerDashboard extends Component {
     );
     const markComplete = (
       <Popover id="popover" title="Mark complete?">
-        <Button bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>Mark complete</Button>
+        <Button className={tableStyles.completeButton} bsStyle="success" onClick={() => this.onVoteBounty(voteCompletedPayload)}>Mark complete</Button>
       </Popover>
     );
 
@@ -229,53 +276,30 @@ class StreamerDashboard extends Component {
       </div>
     );
 
+    const direction = 'left';
+
     return (
-      <ButtonToolbar>
+      <ButtonToolbar className={cx({ [tableStyles.extension] : this.props.isExtension })}>
         <DropdownButton
           bsStyle="default"
           title={kebab}
           noCaret
           id="dropdown-no-caret"
         >
-          <OverlayTrigger trigger="focus" placement="left" overlay={acceptPopover}>
+          <OverlayTrigger trigger="focus" placement={direction} overlay={acceptPopover}>
             <MenuItem eventKey="1"><span className={tableStyles.activate}>Activate bounty</span></MenuItem>
           </OverlayTrigger>
-          <OverlayTrigger trigger="focus" placement="left" overlay={removePopover}>
+          <OverlayTrigger trigger="focus" placement={direction} overlay={removePopover}>
             <MenuItem eventKey="4"><span className={tableStyles.error}>Decline bounty</span></MenuItem>
           </OverlayTrigger>
           <MenuItem divider />
-          <OverlayTrigger trigger="focus" placement="left" overlay={markComplete}>
+          <OverlayTrigger trigger="focus" placement={direction} overlay={markComplete}>
             <MenuItem eventKey="2"><span className={tableStyles.complete}>Mark complete</span></MenuItem>
           </OverlayTrigger>
         </DropdownButton>
       </ButtonToolbar>
     );
   }
-
-  columns = [{
-    dataField: 'description',
-    text: 'Bounty',
-    formatter: this.getBounty,
-    headerStyle: { width: '40%' }
-  }, {
-    dataField: 'proposerName',
-    text: 'Submitted by',
-    formatter: this.getName
-  }, {
-    dataField: 'game',
-    formatter: this.getGame,
-    text: 'Game'
-  }, {
-    dataField: 'contractAmount',
-    text: 'Amount',
-    formatter: this.getMoney
-  }, {
-    dataField: 'action',
-    text: '',
-    isDummyField : true,
-    formatter: this.getAction,
-    headerStyle: { width: '10%' }
-  }];
 
   getEmptyContent() {
     return (
@@ -316,6 +340,10 @@ class StreamerDashboard extends Component {
   };
 
   setBountyFilter = (e) => {
+    // TODO: bad practice to have duplicate states...fine for now
+    if (this.props.setBountyFilter) {
+      this.props.setBountyFilter(e.target.value);
+    }
     this.setState({
       bountyFilter: e.target.value,
       curPage: 1
@@ -349,7 +377,7 @@ class StreamerDashboard extends Component {
     if (this.state.curBounty === null) {
       return (
         <div className={tableStyles.table}>
-          <div className={tableStyles.typeDropdown}>
+          <div className={cx(tableStyles.typeDropdown, { [tableStyles.typeDropdownExtension]: this.props.isExtension })}>
             <form>
               <FormGroup controlId="formControlsSelect">
                 <FormControl
@@ -381,6 +409,7 @@ class StreamerDashboard extends Component {
           onDeclineBounty={this.onDeclineBounty}
           onVoteBounty={this.onVoteBounty}
           isStreamer
+          isExtension={this.props.isExtension}
         />
       );
     }
@@ -395,12 +424,16 @@ StreamerDashboard.propTypes = {
   activateBounty: PropTypes.func.isRequired,
   declineBounty: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired,
-  bountyFilter: PropTypes.string
+  bountyFilter: PropTypes.string,
+  isExtension: PropTypes.bool,
+  setBountyFilter: PropTypes.func
 }
 
 StreamerDashboard.defaultProps = {
   loading: false,
-  bountyFilter: null
+  bountyFilter: null,
+  isExtension: false,
+  setBountyFilter: null
 }
 
 export default StreamerDashboard;

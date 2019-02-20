@@ -1,29 +1,42 @@
-import './BroadcasterStyles.css';
 import React, { Component } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
-import logo from '../../resources/logo_dark.png';
+import PropTypes from 'prop-types';
+import StreamerDashboard from '../../../../../web/src/app/profile/StreamerDashboard/StreamerDashboard';
+import styles from './BroadcasterStyles.scss';
 
 class BroadCasterComponent extends Component {
   render() {
     return (
       <div>
-        <div className="header">
-          <img src={logo} alt="Bounty Streamer" width={200} height={50} />
-        </div>
-        <Tabs defaultActiveKey={1} id="tabs">
-          <Tab eventKey={1} title="Open">
-            Tab 1 content
-          </Tab>
-          <Tab eventKey={2} title="Active">
-            Tab 2 content
-          </Tab>
-          <Tab eventKey={3} title="Completed">
-            Tab 3 content
-          </Tab>
-        </Tabs>
+        <StreamerDashboard
+          twitchUserName={this.props.user.displayName}
+          listStreamerBounties={this.props.listStreamerBounties}
+          bounties={this.props.bounties}
+          totalBounties={this.props.totalBounties}
+          activateBounty={this.props.activateBounty}
+          declineBounty={this.props.declineBounty}
+          voteBounty={this.props.voteBounty}
+          isExtension
+          setBountyFilter={this.props.setBountyFilter}
+        />
       </div>
     );
   }
 }
+
+BroadCasterComponent.defaultProps = {
+  user: null
+}
+
+BroadCasterComponent.propTypes = {
+  user: PropTypes.object,
+  listStreamerBounties: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  bounties: PropTypes.array.isRequired,
+  totalBounties: PropTypes.number.isRequired,
+  activateBounty: PropTypes.func.isRequired,
+  declineBounty: PropTypes.func.isRequired,
+  voteBounty: PropTypes.func.isRequired,
+  setBountyFilter: PropTypes.func.isRequired
+};
 
 export default BroadCasterComponent;
