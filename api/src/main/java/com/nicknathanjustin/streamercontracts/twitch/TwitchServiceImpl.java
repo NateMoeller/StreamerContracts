@@ -3,8 +3,12 @@ package com.nicknathanjustin.streamercontracts.twitch;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicknathanjustin.streamercontracts.contracts.ContractState;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
-import com.nicknathanjustin.streamercontracts.twitch.requests.ExtensionMessageRefreshRequest;
+import com.nicknathanjustin.streamercontracts.twitch.dtos.OverlayMessage;
+import com.nicknathanjustin.streamercontracts.twitch.dtos.RefreshMessage;
+import com.nicknathanjustin.streamercontracts.twitch.requests.ExtensionMessageRequest;
+import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -78,6 +82,41 @@ public class TwitchServiceImpl implements TwitchService {
 
     @Override
     public ResponseEntity<?> sendExtensionRefresh(@NonNull final ContractState contractState, @NonNull final String channelId) {
+        try {
+            final RefreshMessage refreshDto = new RefreshMessage(contractState);
+            final ExtensionMessageRequest body = new ExtensionMessageRequest(refreshDto);
+            return sendExtentionMessage(channelId, body);
+        } catch (IOException e) {
+            log.error("Could not serialize the contract state.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> sendExtensionActivateOverlay(@NonNull final UserModel user, @NonNull final Contract contract) {
+        try {
+            final OverlayMessage message = new OverlayMessage(contract.getDescription(), contract.getContractAmount(), contract.getProposerName(), "ACTIVATE");
+            final ExtensionMessageRequest body = new ExtensionMessageRequest(message);
+            return sendExtentionMessage(user.getTwitchId(), body);
+        } catch (IOException e) {
+            log.error("Could not serialize the overlay message.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> sendExtensionDeactivateOverlay(@NonNull final UserModel user, @NonNull final Contract contract) {
+        try {
+            final OverlayMessage message = new OverlayMessage(contract.getDescription(), contract.getContractAmount(), contract.getProposerName(), "DEACTIVATE");
+            final ExtensionMessageRequest body = new ExtensionMessageRequest(message);
+            return sendExtentionMessage(user.getTwitchId(), body);
+        } catch (IOException e) {
+            log.error("Could not serialize the overlay message.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ResponseEntity<?> sendExtentionMessage(@NonNull final String channelId, @NonNull final ExtensionMessageRequest messageRequest) {
         final String url = "https://api.twitch.tv/extensions/message/" + channelId;
         final String extensionJwt = getTwitchExtensionJwtToken(channelId);
         final HttpHeaders headers = new HttpHeaders();
@@ -85,16 +124,10 @@ public class TwitchServiceImpl implements TwitchService {
         headers.set("Client-Id", extensionClientId);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        try {
-            final ExtensionMessageRefreshRequest body = new ExtensionMessageRefreshRequest(contractState);
-            final HttpEntity<?> entity = new HttpEntity<>(body, headers);
-            final RestTemplate restTemplate = new RestTemplate();
+        final HttpEntity<?> entity = new HttpEntity<>(messageRequest, headers);
+        final RestTemplate restTemplate = new RestTemplate();
 
-            return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
-        } catch (IOException e) {
-            log.error("Could not serialize the contract state.");
-            throw new RuntimeException(e);
-        }
+        return restTemplate.exchange(url, HttpMethod.POST, entity, ResponseEntity.class);
     }
 
     private ResponseEntity<Map> queryTwitch(@NonNull final String url) {

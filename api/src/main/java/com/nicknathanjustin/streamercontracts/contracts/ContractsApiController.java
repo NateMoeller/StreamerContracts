@@ -6,6 +6,7 @@ import com.nicknathanjustin.streamercontracts.contracts.dtos.PrivateContract;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractStateRequest;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
+import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.votes.VoteModel;
@@ -39,6 +40,7 @@ public class ContractsApiController {
     @NonNull private final AlertService alertService;
     @NonNull private final ContractService contractService;
     @NonNull private final SecurityService securityService;
+    @NonNull private final TwitchService twitchService;
     @NonNull private final UserService userService;
     @NonNull private final VoteService voteService;
 
@@ -160,6 +162,8 @@ public class ContractsApiController {
         alertService.sendStreamActivateAlert(contractModel.getStreamer(), activatedContract);
         notifyProposer(contractModel,contractModel.getStreamer().getTwitchUsername() + " is attempting your bounty");
 
+        twitchService.sendExtensionActivateOverlay(contractModel.getStreamer(), activatedContract);
+
         return ResponseEntity.ok(activatedContract);
     }
 
@@ -181,8 +185,11 @@ public class ContractsApiController {
             throw new IllegalStateException(String.format("Cannot deactivate a contract that is not ACTIVE. Contract Id: %s Contract STate: %s", contractId, contractModel.getState().name()));
         }
 
+        final PrivateContract privateContract = new PrivateContract(contractModel);
         contractService.deactivateContract(contractModel);
-        alertService.sendStreamDeactivateAlert(contractModel.getStreamer(), new PrivateContract(contractModel));
+        alertService.sendStreamDeactivateAlert(contractModel.getStreamer(), privateContract);
+
+        twitchService.sendExtensionDeactivateOverlay(contractModel.getStreamer(), privateContract);
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);
     }

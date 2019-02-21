@@ -26,7 +26,8 @@ class BroadcasterContainer extends Component {
 
   componentDidMount() {
     this.props.twitch.listen('broadcast', (target, contentType, body) => {
-      const refreshState = JSON.parse(body);
+      const message = JSON.parse(body);
+      const refreshState = message.contractState;
       // this.twitch.rig.log(`New PubSub message!\n${target}\n${contentType}\n${body}`);
       if (refreshState === 'ALL' || refreshState === this.state.bountyFilter) {
         this.listStreamerBounties(0, PAGE_SIZE, this.state.user.displayName, this.state.bountyFilter);
@@ -86,7 +87,6 @@ class BroadcasterContainer extends Component {
 
     if (payload.contract.state === 'ACTIVE') {
       this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/deactivate`, 'PUT', { contractId: payload.contract.contractId }).then(deactivateResponse => {
-        // TODO: manage activeBounty
         this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
           console.log('voteResponse', voteResponse);
           return voteResponse;

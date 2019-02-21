@@ -1,7 +1,9 @@
 package com.nicknathanjustin.streamercontracts.twitch;
 
 import com.nicknathanjustin.streamercontracts.contracts.ContractState;
+import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
+import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.externalusers.TwitchUser;
 import org.springframework.http.ResponseEntity;
 
@@ -47,4 +49,16 @@ public interface TwitchService {
      * @param channelId the channel to send the bounty to
      */
     ResponseEntity sendExtensionRefresh(ContractState contractState, String channelId);
+
+    /**
+     * @param user the user to send the message to
+     * @param contract the bounty to be shown
+     */
+    ResponseEntity sendExtensionActivateOverlay(UserModel user, Contract contract);
+
+    /**
+     * @param user the user to send the message to
+     * @param contract the bounty to be deactivated
+     */
+    ResponseEntity sendExtensionDeactivateOverlay(UserModel user, Contract contract);
 }
