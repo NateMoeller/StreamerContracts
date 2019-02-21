@@ -162,7 +162,6 @@ public class ContractsApiController {
         alertService.sendStreamActivateAlert(contractModel.getStreamer(), activatedContract);
         notifyProposer(contractModel,contractModel.getStreamer().getTwitchUsername() + " is attempting your bounty");
 
-        // notify extension
         twitchService.sendExtensionActivateOverlay(contractModel.getStreamer(), activatedContract);
 
         return ResponseEntity.ok(activatedContract);
@@ -190,7 +189,6 @@ public class ContractsApiController {
         contractService.deactivateContract(contractModel);
         alertService.sendStreamDeactivateAlert(contractModel.getStreamer(), privateContract);
 
-        // notify extension
         twitchService.sendExtensionDeactivateOverlay(contractModel.getStreamer(), privateContract);
 
         return new ResponseEntity<HttpStatus>(HttpStatus.OK);

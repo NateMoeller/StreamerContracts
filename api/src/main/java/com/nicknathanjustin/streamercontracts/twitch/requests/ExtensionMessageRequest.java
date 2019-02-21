@@ -11,7 +11,7 @@ public class ExtensionMessageRequest {
     @NonNull private String message;
     @NonNull private String[] targets;
 
-    public ExtensionMessageRequest(@NonNull Object message) throws JsonProcessingException {
+    public ExtensionMessageRequest(@NonNull final Object message) throws JsonProcessingException {
         final ObjectMapper objectMapper = new ObjectMapper();
         this.content_type = "application/json";
         this.message = objectMapper.writeValueAsString(message);

@@ -2,8 +2,6 @@ package com.nicknathanjustin.streamercontracts.twitch;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicknathanjustin.streamercontracts.alerts.AlertMessage;
-import com.nicknathanjustin.streamercontracts.alerts.AlertType;
 import com.nicknathanjustin.streamercontracts.contracts.ContractState;
 import com.nicknathanjustin.streamercontracts.contracts.dtos.Contract;
 import com.nicknathanjustin.streamercontracts.twitch.dtos.Game;
@@ -26,7 +24,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.SecretKey;
-import javax.xml.ws.Response;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
