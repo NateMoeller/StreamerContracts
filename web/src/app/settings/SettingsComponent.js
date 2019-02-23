@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Panel, PageHeader, Tabs, Tab, FormGroup, FormControl, Glyphicon } from 'react-bootstrap';
+import { Button, Panel, PageHeader, Tabs, Tab, FormGroup, FormControl, Glyphicon, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import cx from 'classnames';
+import OverlayComponent from '../profile/OverlayComponent/OverlayComponent';
 import { emailRegex } from '../../commonRegex';
+import profileStyles from '../profile/ProfileStyles.scss';
 import styles from './SettingsStyles.scss';
 
 const INVALID_EMAIL = 'Please enter a valid email';
@@ -15,6 +17,7 @@ class SettingsComponent extends Component {
       editPayPal: false,
       newPayPalEmail: '',
       payPalEmailError: null,
+      isBusinessEmailChecked: false
     };
   }
 
@@ -37,8 +40,14 @@ class SettingsComponent extends Component {
     });
   }
 
+  isBusinessEmailChecked = (e) => {
+    this.setState({
+      isBusinessEmailChecked: e.target.checked
+    });
+  }
+
   isPayPalSubmitEnabled() {
-    if (this.state.payPalEmailError && this.state.payPalEmailError.type === null) {
+    if (this.state.payPalEmailError && this.state.payPalEmailError.type === null && this.state.isBusinessEmailChecked) {
         return true;
     }
 
@@ -48,16 +57,22 @@ class SettingsComponent extends Component {
   submitPayPalEmail(e) {
     e.preventDefault();
     const payload = {
-      paypalEmail: this.state.newPayPalEmail
+      paypalEmail: this.state.newPayPalEmail,
+      isBusinessEmail: this.state.isBusinessEmailChecked
     };
 
     this.props.updatePayPalEmail(payload);
-    this.setState({ editPayPal: false })
+    this.setState({ editPayPal: false, isBusinessEmailChecked: false });
   }
 
   getPayPalContent() {
     if (this.state.editPayPal) {
       const emailErrorMessage = this.state.payPalEmailError !== null ? this.state.payPalEmailError.message : '';
+      const tooltip = (
+        <Tooltip id="tooltip">
+          Important! We cannot authorize payments if your paypal account is not a business account.
+        </Tooltip>
+      );
 
       return (
         <Panel.Body className={styles.panelBody}>
@@ -76,8 +91,20 @@ class SettingsComponent extends Component {
             </FormGroup>
             <span className={styles.errorMessage}>{emailErrorMessage}</span>
             <Button className={cx(styles.button, styles.submitButton)} onClick={(e) => this.submitPayPalEmail(e)} disabled={!this.isPayPalSubmitEnabled()}>Submit</Button>
-            <Button className={styles.button} onClick={() => this.setState({ editPayPal: false })}>Cancel</Button>
+            <Button className={styles.button} onClick={() => this.setState({ editPayPal: false, isBusinessEmailChecked: false })}>Cancel</Button>
           </form>
+          <div className={styles.checkboxDiv}>
+            <OverlayTrigger placement="top" overlay={tooltip}>
+              <input
+                type="checkbox"
+                className={styles.checkbox}
+                checked={this.state.isBusinessEmailChecked}
+                onChange={this.isBusinessEmailChecked}
+              />
+            </OverlayTrigger>
+
+            <span>This is a business paypal email.</span>
+          </div>
         </Panel.Body>
       );
     } else if (this.props.payPalEmail !== null) {
@@ -103,7 +130,14 @@ class SettingsComponent extends Component {
     return (
       <div>
         <PageHeader>Settings</PageHeader>
-        <Tabs defaultActiveKey={1} id="settings-tabs">
+        <div className={profileStyles.section}>
+          <div className={profileStyles.secondaryHeader}>Overlay</div>
+          <OverlayComponent
+            alertChannelId={this.props.user.alertChannelId}
+            testAlert={() => console.log('test alert')}
+          />
+        </div>
+        <Tabs defaultActiveKey={1} id="settings-tabs" className={styles.tabs}>
           <Tab eventKey={1} title="Payments">
             <div className={styles.settingsContent}>
               <Panel>
@@ -126,6 +160,7 @@ SettingsComponent.defaultProps = {
 };
 
 SettingsComponent.propTypes = {
+  user: PropTypes.object.isRequired,
   payPalEmail: PropTypes.string,
   updatePayPalEmail: PropTypes.func.isRequired,
 };

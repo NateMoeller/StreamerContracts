@@ -17,6 +17,8 @@ class BroadCasterComponent extends Component {
           voteBounty={this.props.voteBounty}
           isExtension
           setBountyFilter={this.props.setBountyFilter}
+          getSettings={this.props.getSettings}
+          settings={this.props.settings}
         />
       </div>
     );
@@ -36,7 +38,9 @@ BroadCasterComponent.propTypes = {
   activateBounty: PropTypes.func.isRequired,
   declineBounty: PropTypes.func.isRequired,
   voteBounty: PropTypes.func.isRequired,
-  setBountyFilter: PropTypes.func.isRequired
+  setBountyFilter: PropTypes.func.isRequired,
+  getSettings: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
 };
 
 export default BroadCasterComponent;

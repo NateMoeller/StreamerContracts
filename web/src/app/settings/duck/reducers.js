@@ -4,7 +4,8 @@ import {
 } from './types';
 
 const INITIAL_STATE = {
-  payPalEmail: null
+  payPalEmail: null,
+  isBusinessEmail: false
 };
 
 const settingsReducer = (state = INITIAL_STATE, action) => {
@@ -12,7 +13,8 @@ const settingsReducer = (state = INITIAL_STATE, action) => {
     case RECEIVE_SETTINGS_SUCCESS: {
       return {
         ...state,
-        payPalEmail: action.userSettings.paypalEmail
+        payPalEmail: action.userSettings.paypalEmail,
+        isBusinessEmail: action.userSettings.isBusinessEmail
       }
     }
     case RECEIVE_UPDATE_PAYPAL_EMAIL_SUCCESS: {

@@ -14,7 +14,8 @@ class BroadcasterContainer extends Component {
       bounties: [],
       totalBounties: 0,
       loading: false,
-      bountyFilter: 'OPEN' // TODO: duplicate state, should consolidate with StreamerDashboard
+      bountyFilter: 'OPEN', // TODO: duplicate state, should consolidate with StreamerDashboard
+      settings: {}
     };
 
     this.listStreamerBounties = this.listStreamerBounties.bind(this);
@@ -22,6 +23,7 @@ class BroadcasterContainer extends Component {
     this.declineBounty = this.declineBounty.bind(this);
     this.voteBounty = this.voteBounty.bind(this);
     this.setBountyFilter = this.setBountyFilter.bind(this);
+    this.getSettings = this.getSettings.bind(this);
   }
 
   componentDidMount() {
@@ -113,6 +115,18 @@ class BroadcasterContainer extends Component {
     });
   }
 
+  getSettings() {
+    const url = `${process.env.API_HOST}/userSettings`;
+    this.props.Authentication.makeCall(url).then((response) => {
+      return response.text();
+    }).then(data =>{
+      const settings = data ? JSON.parse(data) : {};
+      this.setState({
+        settings
+      });
+    });
+  }
+
   render() {
     if (!this.state.user) {
       return <LoadingComponent />;
@@ -129,6 +143,8 @@ class BroadcasterContainer extends Component {
         declineBounty={this.declineBounty}
         voteBounty={this.voteBounty}
         setBountyFilter={this.setBountyFilter}
+        getSettings={this.getSettings}
+        settings={this.state.settings}
       />
     );
   }

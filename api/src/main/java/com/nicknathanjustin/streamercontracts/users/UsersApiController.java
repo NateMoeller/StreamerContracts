@@ -84,24 +84,72 @@ public class UsersApiController {
     }
 
     @RequestMapping(path = "/twitchId/{twitchId}", method = RequestMethod.GET)
-    public ResponseEntity<?> publicUserFromTwitchId(@PathVariable("twitchId") @NonNull final String twitchId) {
-        final TwitchUser twitchUser = twitchService.getTwitchUserFromTwitchUserId(twitchId);
-        final Optional<UserModel> optionalUserModel = userService.getUser(twitchUser.getDisplayName());
-        final UserModel userModel = optionalUserModel.orElse(null);
+    public ResponseEntity<?> extensionUser(@NonNull final HttpServletRequest httpServletRequest, @PathVariable("twitchId") @NonNull final String twitchId) {
+        final TwitchUser loggedInUser = userService.getTwitchUserFromRequest(httpServletRequest);
+        final TwitchUser requestedUser = twitchService.getTwitchUserFromTwitchUserId(twitchId);
 
-        if (twitchUser != null) {
-            if (userModel != null) {
-                // sign up for both twitch and our site
+        if (!loggedInUser.getExternalId().equals(twitchId)) {
+            final Optional<UserModel> optionalUserModel = userService.getUser(requestedUser.getDisplayName());
+            final UserModel userModel = optionalUserModel.orElse(null);
+
+            if (requestedUser != null && userModel != null) {
                 final UserSettingsModel userSettingsModel = userSettingsService.getUserSettings(userModel).orElse(null);
-                final PublicUser publicUser = new PublicUser(twitchUser, userSettingsModel);
+                final PublicUser publicUser = new PublicUser(requestedUser, userSettingsModel);
                 return ResponseEntity.ok(publicUser);
             } else {
-                // TODO: on twitch, but not on our site. What should we do?
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-        }
+        } else {
+            final Optional<UserModel> optionalUserModel = userService.getUser(loggedInUser.getDisplayName());
+            final UserModel userModel = optionalUserModel.orElse(null);
 
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+            if (userModel != null) {
+                final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, userModel);
+                final long activeContracts = contractService.countByStateAndStreamer(ContractState.ACTIVE, userModel);
+                final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, userModel);
+                final long expiredContracts = contractService.countByStateAndStreamer(ContractState.EXPIRED, userModel);
+                final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, userModel);
+                final long failedContracts = contractService.countByStateAndStreamer(ContractState.FAILED, userModel);
+                final long disputedContracts = contractService.countByStateAndStreamer(ContractState.DISPUTED, userModel);
+                final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(userModel, ContractState.COMPLETED);
+
+                final PrivateUser privateUser = new PrivateUser(
+                        loggedInUser,
+                        userModel,
+                        openContracts,
+                        activeContracts,
+                        declinedContracts,
+                        expiredContracts,
+                        completedContracts,
+                        failedContracts,
+                        disputedContracts,
+                        moneyEarned);
+                return ResponseEntity.ok(privateUser);
+            } else {
+                final UserModel newUser = userService.createUser(loggedInUser.getDisplayName(), loggedInUser.getExternalId());
+                final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, newUser);
+                final long activeContracts = contractService.countByStateAndStreamer(ContractState.ACTIVE, newUser);
+                final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, newUser);
+                final long expiredContracts = contractService.countByStateAndStreamer(ContractState.EXPIRED, newUser);
+                final long completedContracts = contractService.countByStateAndStreamer(ContractState.COMPLETED, newUser);
+                final long failedContracts = contractService.countByStateAndStreamer(ContractState.FAILED, newUser);
+                final long disputedContracts = contractService.countByStateAndStreamer(ContractState.DISPUTED, newUser);
+                final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(newUser, ContractState.COMPLETED);
+
+                final PrivateUser privateUser = new PrivateUser(
+                        loggedInUser,
+                        newUser,
+                        openContracts,
+                        activeContracts,
+                        declinedContracts,
+                        expiredContracts,
+                        completedContracts,
+                        failedContracts,
+                        disputedContracts,
+                        moneyEarned);
+                return ResponseEntity.ok(privateUser);
+            }
+        }
     }
 
     @RequestMapping(path = "list/{page}/{pageSize}", method = RequestMethod.GET)

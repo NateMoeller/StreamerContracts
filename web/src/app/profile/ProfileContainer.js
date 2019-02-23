@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { profileOperations } from './duck';
+import { settingsOperations } from '../settings/duck';
 
 /* global sessionStorage */
 class ProfileContainer extends Component {
@@ -41,18 +42,21 @@ class ProfileContainer extends Component {
         showSpinner={this.props.profile.showSpinner}
         activateBounty={this.props.activateBounty}
         declineBounty={this.props.declineBounty}
+        getSettings={this.props.getSettings}
+        settings={this.props.settings}
       />
     );
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ ...profileOperations }, dispatch);
+  return bindActionCreators({ ...profileOperations, ...settingsOperations }, dispatch);
 }
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile
+    profile: state.profile,
+    settings: state.settings
   };
 }
 
