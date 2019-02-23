@@ -3,6 +3,7 @@ package com.nicknathanjustin.streamercontracts.contracts;
 import com.nicknathanjustin.streamercontracts.alerts.AlertService;
 import com.nicknathanjustin.streamercontracts.contracts.requests.ContractVoteRequest;
 import com.nicknathanjustin.streamercontracts.security.SecurityService;
+import com.nicknathanjustin.streamercontracts.twitch.TwitchService;
 import com.nicknathanjustin.streamercontracts.users.UserModel;
 import com.nicknathanjustin.streamercontracts.users.UserService;
 import com.nicknathanjustin.streamercontracts.votes.VoteModel;
@@ -36,11 +37,13 @@ public class ContractsApiControllerTest {
     private static final UUID PROPOSER_ID = UUID.randomUUID();
     private static final UUID STREAMER_ID = UUID.randomUUID();
 
-    @Mock private SecurityService mockSecurityService;
+    @Mock private AlertService mockAlertService;
     @Mock private ContractService mockContractService;
+    @Mock private SecurityService mockSecurityService;
+    @Mock private TwitchService mockTwitchService;
     @Mock private UserService mockUserService;
     @Mock private VoteService mockVoteService;
-    @Mock private AlertService mockAlertService;
+
     @InjectMocks private ContractsApiController contractsApiController;
 
     @Test(expected = NullPointerException.class)
