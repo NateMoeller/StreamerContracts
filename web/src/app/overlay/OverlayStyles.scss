@@ -12,6 +12,9 @@
   border-top: 2px solid $light-gray;
   border-bottom: 2px solid $light-gray;
   height: 105px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ::after {
     content: "";
@@ -58,6 +61,7 @@
     width: 75%;
     vertical-align: top;
     color: $true-white;
+    font-size: 35px;
     text-shadow:
     -1px -1px 1px $light-gray,
     2px 2px 1px $black-shadow;
