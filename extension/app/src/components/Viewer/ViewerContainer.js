@@ -54,9 +54,9 @@ class ViewerContainer extends Component {
     });
   }
 
-  openBounty() {
-    // TODO: make link dynamic, make sure this url is whitelisted
-    window.open('https://localhost:3010/user/vgame18', '_blank');
+  openBounty(username) {
+    const link = `${process.env.REACT_APP_PUBLIC_URL}user/${username}`;
+    window.open(link, '_blank');
   }
 
   setBountyFilter(newFilter) {
