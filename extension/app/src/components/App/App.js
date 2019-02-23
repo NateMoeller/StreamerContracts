@@ -8,21 +8,21 @@ import logoLight from '../../resources/logo_light.png';
 import styles from './App.scss';
 
 export default class App extends React.Component{
-    constructor(props){
-        super(props);
-        this.Authentication = new Authentication();
+    constructor(props) {
+      super(props);
+      this.Authentication = new Authentication();
 
-        //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
-        this.twitch = window.Twitch ? window.Twitch.ext : null;
+      //if the extension is running on twitch or dev rig, set the shorthand here. otherwise, set to null.
+      this.twitch = window.Twitch ? window.Twitch.ext : null;
 
-        this.state= {
-          finishedLoading: false,
-          theme: 'light',
-          isVisible: true,
-          channelId: null
-        };
+      this.state= {
+        finishedLoading: false,
+        theme: 'light',
+        isVisible: true,
+        channelId: null
+      };
 
-        this.getBroadcaster = this.getBroadcaster.bind(this);
+      this.getBroadcaster = this.getBroadcaster.bind(this);
     }
 
     contextUpdate(context, delta){
@@ -45,7 +45,7 @@ export default class App extends React.Component{
         if(this.twitch) {
           this.twitch.onAuthorized((auth)=> {
             this.Authentication.setToken(auth.token, auth.userId)
-            if(!this.state.finishedLoading){
+            if (!this.state.finishedLoading){
               // if the component hasn't finished loading (as in we've not set up after getting a token), let's set it up now.
               // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
               this.setState({
@@ -85,7 +85,7 @@ export default class App extends React.Component{
       if (this.state.finishedLoading && this.state.isVisible) {
         if (this.Authentication.state.role === 'broadcaster') {
           return (
-            <div className={styles.test}>
+            <div className={this.state.theme === 'light' ? styles.appLight : styles.appDark}>
               <div className={styles.header}>
                 <img src={logo} alt="Bounty Streamer" width={200} height={50} />
               </div>
@@ -100,7 +100,7 @@ export default class App extends React.Component{
         }
 
         return (
-          <div>
+          <div className={this.state.theme === 'light' ? styles.appLight : styles.appDark}>
             <div className={styles.header}>
               <img src={logo} alt="Bounty Streamer" width={200} height={50} />
             </div>

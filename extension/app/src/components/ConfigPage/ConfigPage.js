@@ -16,8 +16,11 @@ export default class ConfigPage extends React.Component{
         this.twitch = window.Twitch ? window.Twitch.ext : null;
         this.state = {
             finishedLoading:false,
-            theme:'light'
+            theme:'light',
+            channelId: null
         };
+
+        this.getBroadcaster = this.getBroadcaster.bind(this);
     }
 
     contextUpdate(context, delta) {
@@ -33,13 +36,14 @@ export default class ConfigPage extends React.Component{
         if(this.twitch) {
             this.twitch.onAuthorized((auth)=>{
                 this.Authentication.setToken(auth.token, auth.userId)
-                if(!this.state.finishedLoading){
+                if (!this.state.finishedLoading){
                     // if the component hasn't finished loading (as in we've not set up after getting a token), let's set it up now.
 
                     // now we've done the setup for the component, let's set the state to true to force a rerender with the correct data.
-                    this.setState(()=>{
-                        return { finishedLoading:true }
-                    })
+                    this.setState({
+                      finishedLoading:true,
+                      channelId: auth.channelId
+                    });
                 }
             })
 
@@ -47,6 +51,15 @@ export default class ConfigPage extends React.Component{
                 this.contextUpdate(context,delta)
             })
         }
+    }
+
+    getBroadcaster(channelId, callback) {
+      const url = `${process.env.API_HOST}/user/twitchId/${channelId}`;
+      this.Authentication.makeCall(url).then((response) => {
+        return response.text();
+      }).then(data =>{
+        callback(JSON.parse(data));
+      });
     }
 
     render() {
@@ -58,6 +71,8 @@ export default class ConfigPage extends React.Component{
               <img src={logo} alt="Bounty Streamer" width={200} height={50} />
               <BroadcasterSettingsContainer
                 Authentication={this.Authentication}
+                getBroadcaster={this.getBroadcaster}
+                channelId={this.state.channelId}
               />
             </div>
           </div>

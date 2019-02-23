@@ -8,6 +8,7 @@ class BroadcasterSettingsContainer extends Component {
     super(props);
 
     this.state = {
+      user: null,
       paypalEmail: null,
       isBusinessEmail: null,
       loading: true
@@ -17,27 +18,31 @@ class BroadcasterSettingsContainer extends Component {
   }
 
   componentDidMount() {
-    this.getSettings();
+    this.setState({ loading: true });
+    this.props.getBroadcaster(this.props.channelId, (data) => {
+      this.setState({
+        user: data
+      }, () => {
+        this.getSettings();
+      });
+    });
   }
 
   getSettings() {
-    this.setState({ loading: true });
     const url = `${process.env.API_HOST}/userSettings`;
     this.props.Authentication.makeCall(url).then((response) => {
       return response.text();
     }).then(data =>{
-      const settings = JSON.parse(data);
-      console.log('settings', settings);
+      const settings = data ? JSON.parse(data) : null;
       this.setState({
         loading: false,
-        paypalEmail: settings.paypalEmail,
-        isBusinessEmail: settings.isBusinessEmail
+        paypalEmail: settings ? settings.paypalEmail : null,
+        isBusinessEmail: settings ? settings.isBusinessEmail : null
       });
     });
   }
 
   updatePayPalEmail(payload) {
-    console.log(payload);
     const newEmail = payload.paypalEmail;
     // TODO: this really should be a PUT request
     const url = `${process.env.API_HOST}/userSettings`;
@@ -58,6 +63,7 @@ class BroadcasterSettingsContainer extends Component {
     return (
       <div>
         <SettingsComponent
+          user={this.state.user}
           payPalEmail={this.state.paypalEmail}
           updatePayPalEmail={this.updatePayPalEmail}
         />
@@ -68,6 +74,8 @@ class BroadcasterSettingsContainer extends Component {
 
 BroadcasterSettingsContainer.propTypes = {
   Authentication: PropTypes.object.isRequired,
+  getBroadcaster: PropTypes.func.isRequired,
+  channelId: PropTypes.string.isRequired
 }
 
 export default BroadcasterSettingsContainer;

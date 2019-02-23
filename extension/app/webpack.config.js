@@ -16,12 +16,12 @@ module.exports = (_env,argv)=> {
     VideoComponent:{
       path:"./src/VideoComponent.js",
       outputHtml:"video_component.html",
-      build:true
+      build:false
     },
     VideoOverlay:{
       path:"./src/VideoOverlay.js",
       outputHtml:"video_overlay.html",
-      build:true
+      build:false
     },
     Panel:{
       path:"./src/Panel.js",
@@ -36,12 +36,12 @@ module.exports = (_env,argv)=> {
     LiveConfig:{
       path:"./src/LiveConfig.js",
       outputHtml:"live_config.html",
-      build:true
+      build:false
     },
     Mobile:{
       path:"./src/Mobile.js",
       outputHtml:"mobile.html",
-      build:true
+      build:false
     }
   }
 
@@ -51,7 +51,8 @@ module.exports = (_env,argv)=> {
   let plugins = [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
-      'process.env.API_HOST': JSON.stringify(_env.API_HOST || 'https://localhost:8070/')
+      'process.env.API_HOST': JSON.stringify(_env.API_HOST || 'https://localhost:8070/'),
+      'process.env.REACT_APP_PUBLIC_URL': JSON.stringify(_env.REACT_APP_PUBLIC_URL || 'https://localhost:3010/')
     }),
   ]
 

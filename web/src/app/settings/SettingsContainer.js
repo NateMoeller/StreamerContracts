@@ -10,8 +10,11 @@ class SettingsContainer extends Component {
   }
 
   render() {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
     return (
       <SettingsComponent
+        user={user}
         payPalEmail={this.props.settings.payPalEmail}
         updatePayPalEmail={this.props.updatePayPalEmail}
       />

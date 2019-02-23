@@ -108,6 +108,8 @@ class ProfileComponent extends Component {
           declineBounty={this.props.declineBounty}
           voteBounty={this.props.voteBounty}
           bountyFilter={this.state.initialBountyFilter}
+          getSettings={this.props.getSettings}
+          settings={this.props.settings}
         />
       </div>
 
@@ -162,6 +164,8 @@ ProfileComponent.propTypes = {
   showSpinner: PropTypes.bool.isRequired,
   activateBounty: PropTypes.func.isRequired,
   declineBounty: PropTypes.func.isRequired,
+  getSettings: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired
 };
 
 export default ProfileComponent;

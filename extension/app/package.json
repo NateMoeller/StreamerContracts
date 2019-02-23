@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode production --env.API_HOST=https://api.beta.bountystreamer.gg",
+    "build": "webpack --mode production --env.API_HOST=https://api.beta.bountystreamer.gg --env.REACT_APP_PUBLIC_URL=https://beta.bountystreamer.gg/",
     "start": "webpack-dev-server --mode development",
     "cert": "./bin/generate_cert.sh server",
-    "host": "webpack-dev-server --mode development --devrig --env.API_HOST=https://localhost:8070"
+    "host": "webpack-dev-server --mode development --devrig --env.API_HOST=https://localhost:8070 --env.REACT_APP_PUBLIC_URL=https://localhost:3010/"
   },
   "keywords": [],
   "author": "",

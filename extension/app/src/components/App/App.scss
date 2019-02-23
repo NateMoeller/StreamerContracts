@@ -1,5 +1,6 @@
 body {
   padding: 15px;
+  background: transparent;
 }
 .App {
     font-family: Arial, Helvetica, sans-serif;
@@ -11,6 +12,10 @@ body {
 
 .appDark{
   color: #e5e3e8;
+
+  table {
+    color: #232127;
+  }
 }
 
 .header {
