@@ -85,30 +85,25 @@ public class UsersApiController {
 
     @RequestMapping(path = "/twitchId/{twitchId}", method = RequestMethod.GET)
     public ResponseEntity<?> extensionUser(@NonNull final HttpServletRequest httpServletRequest, @PathVariable("twitchId") @NonNull final String twitchId) {
-        final TwitchUser twitchUser = userService.getTwitchUserFromRequest(httpServletRequest); // the user who made the request
-        final TwitchUser requestedUser = twitchService.getTwitchUserFromTwitchUserId(twitchId); // the user who we are requesting
+        final TwitchUser loggedInUser = userService.getTwitchUserFromRequest(httpServletRequest);
+        final TwitchUser requestedUser = twitchService.getTwitchUserFromTwitchUserId(twitchId);
 
-        if (!twitchUser.getExternalId().equals(twitchId)) {
-            // should get the public user
+        if (!loggedInUser.getExternalId().equals(twitchId)) {
             final Optional<UserModel> optionalUserModel = userService.getUser(requestedUser.getDisplayName());
             final UserModel userModel = optionalUserModel.orElse(null);
 
             if (requestedUser != null && userModel != null) {
-                // sign up for both twitch and our site
                 final UserSettingsModel userSettingsModel = userSettingsService.getUserSettings(userModel).orElse(null);
                 final PublicUser publicUser = new PublicUser(requestedUser, userSettingsModel);
                 return ResponseEntity.ok(publicUser);
             } else {
-                // not on twitch, or our site
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         } else {
-            // should get the private user
-            final Optional<UserModel> optionalUserModel = userService.getUser(twitchUser.getDisplayName());
+            final Optional<UserModel> optionalUserModel = userService.getUser(loggedInUser.getDisplayName());
             final UserModel userModel = optionalUserModel.orElse(null);
 
             if (userModel != null) {
-                // they user is already in our db
                 final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, userModel);
                 final long activeContracts = contractService.countByStateAndStreamer(ContractState.ACTIVE, userModel);
                 final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, userModel);
@@ -119,7 +114,7 @@ public class UsersApiController {
                 final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(userModel, ContractState.COMPLETED);
 
                 final PrivateUser privateUser = new PrivateUser(
-                        twitchUser,
+                        loggedInUser,
                         userModel,
                         openContracts,
                         activeContracts,
@@ -131,8 +126,7 @@ public class UsersApiController {
                         moneyEarned);
                 return ResponseEntity.ok(privateUser);
             } else {
-                // the user in not in our db, sign them up!
-                final UserModel newUser = userService.createUser(twitchUser.getDisplayName(), twitchUser.getExternalId());
+                final UserModel newUser = userService.createUser(loggedInUser.getDisplayName(), loggedInUser.getExternalId());
                 final long openContracts = contractService.countByStateAndStreamer(ContractState.OPEN, newUser);
                 final long activeContracts = contractService.countByStateAndStreamer(ContractState.ACTIVE, newUser);
                 final long declinedContracts = contractService.countByStateAndStreamer(ContractState.DECLINED, newUser);
@@ -143,7 +137,7 @@ public class UsersApiController {
                 final BigDecimal moneyEarned = contractService.getMoneyForStreamerAndState(newUser, ContractState.COMPLETED);
 
                 final PrivateUser privateUser = new PrivateUser(
-                        twitchUser,
+                        loggedInUser,
                         newUser,
                         openContracts,
                         activeContracts,
