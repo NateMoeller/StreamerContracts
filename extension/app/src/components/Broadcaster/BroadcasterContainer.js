@@ -91,7 +91,6 @@ class BroadcasterContainer extends Component {
     if (payload.contract.state === 'ACTIVE') {
       this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/deactivate`, 'PUT', { contractId: payload.contract.contractId }).then(deactivateResponse => {
         this.props.Authentication.makeCall(`${process.env.API_HOST}/bounties/vote`, 'POST', votePayload).then(voteResponse => {
-          console.log('voteResponse', voteResponse);
           return voteResponse;
         }).then(data => {
           if (callback) {
@@ -116,7 +115,7 @@ class BroadcasterContainer extends Component {
     });
   }
 
-  getSettings() {
+  getSettings(callback = null) {
     this.setState({ settingsLoading: true});
     const url = `${process.env.API_HOST}/userSettings`;
     this.props.Authentication.makeCall(url).then((response) => {
@@ -126,6 +125,10 @@ class BroadcasterContainer extends Component {
       this.setState({
         settings,
         settingsLoading: false
+      }, () => {
+        if (callback) {
+          callback();
+        }
       });
     });
   }
