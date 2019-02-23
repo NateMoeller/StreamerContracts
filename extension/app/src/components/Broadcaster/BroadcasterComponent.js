@@ -19,6 +19,7 @@ class BroadCasterComponent extends Component {
           setBountyFilter={this.props.setBountyFilter}
           getSettings={this.props.getSettings}
           settings={this.props.settings}
+          loading={this.props.loading}
         />
       </div>
     );

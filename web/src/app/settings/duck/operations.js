@@ -19,11 +19,14 @@ const updatePayPalEmail = (payload) => (dispatch) => {
   })
 }
 
-const getSettings =  () => (dispatch) => {
+const getSettings =  (callback = null) => (dispatch) => {
   dispatch(requestSettings());
 
   RestClient.GET('userSettings', (response) => {
     dispatch(receiveSettingsSuccess(response.data));
+    if (callback) {
+      callback();
+    }
   }, (error) => {
     dispatch(receiveSettingsFailure());
   })

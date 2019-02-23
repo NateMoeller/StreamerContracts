@@ -80,8 +80,9 @@ class StreamerDashboard extends Component {
   }
 
   componentDidMount() {
-    this.props.getSettings();
-    this.refreshList();
+    this.props.getSettings(() => {
+      this.refreshList();
+    });
   }
 
   tableChange = (type, newState) => {
@@ -371,6 +372,10 @@ class StreamerDashboard extends Component {
   }
 
   render() {
+    if (this.props.loading) {
+      return <LoadingComponent />;
+    }
+
     if ((this.props.settings.payPalEmail === null || this.props.settings.payPalEmail === '') || !this.props.settings.isBusinessEmail) {
       const message = !this.props.isExtension
       ? `Go to settings and submit your business paypal email to see this section.`
@@ -384,8 +389,17 @@ class StreamerDashboard extends Component {
       );
     }
 
-    if (this.props.loading) {
-      return <LoadingComponent />;
+    if ((this.props.settings.payPalEmail === null || this.props.settings.payPalEmail === '') || !this.props.settings.isBusinessEmail) {
+      const message = !this.props.isExtension
+      ? `Go to settings and submit your business paypal email to see this section.`
+      : 'Go to the extension configuration and submit your business paypal email';
+
+      return (
+        <div className={styles.empty}>
+          <h3>Paypal not setup.</h3>
+          {message}
+        </div>
+      );
     }
 
     if (this.state.curBounty === null) {

@@ -15,7 +15,8 @@ class BroadcasterContainer extends Component {
       totalBounties: 0,
       loading: false,
       bountyFilter: 'OPEN', // TODO: duplicate state, should consolidate with StreamerDashboard
-      settings: {}
+      settings: {},
+      settingsLoading: false
     };
 
     this.listStreamerBounties = this.listStreamerBounties.bind(this);
@@ -116,13 +117,15 @@ class BroadcasterContainer extends Component {
   }
 
   getSettings() {
+    this.setState({ settingsLoading: true});
     const url = `${process.env.API_HOST}/userSettings`;
     this.props.Authentication.makeCall(url).then((response) => {
       return response.text();
     }).then(data =>{
       const settings = data ? JSON.parse(data) : {};
       this.setState({
-        settings
+        settings,
+        settingsLoading: false
       });
     });
   }
@@ -136,7 +139,7 @@ class BroadcasterContainer extends Component {
       <BroadCasterComponent
         user={this.state.user}
         listStreamerBounties={this.listStreamerBounties}
-        loading={this.state.loading}
+        loading={this.state.loading || this.state.settingsLoading}
         bounties={this.state.bounties}
         totalBounties={this.state.totalBounties}
         activateBounty={this.activateBounty}
