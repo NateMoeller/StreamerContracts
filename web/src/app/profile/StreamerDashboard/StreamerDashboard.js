@@ -371,7 +371,7 @@ class StreamerDashboard extends Component {
   }
 
   render() {
-    if (!this.props.settings.payPalEmail || !this.props.settings.isBusinessEmail) {
+    if ((this.props.settings.payPalEmail === null || this.props.settings.payPalEmail === '') || !this.props.settings.isBusinessEmail) {
       const message = !this.props.isExtension
       ? `Go to settings and submit your business paypal email to see this section.`
       : 'Go to the extension configuration and submit your business paypal email';
