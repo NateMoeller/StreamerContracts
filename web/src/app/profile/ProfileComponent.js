@@ -103,7 +103,7 @@ class ProfileComponent extends Component {
           listStreamerBounties={this.props.listStreamerBounties}
           bounties={this.props.bounties}
           totalBounties={this.props.totalBounties}
-          loading={this.props.showSpinner}
+          loading={this.props.showSpinner || this.props.settings.settingsLoading}
           activateBounty={this.props.activateBounty}
           declineBounty={this.props.declineBounty}
           voteBounty={this.props.voteBounty}
