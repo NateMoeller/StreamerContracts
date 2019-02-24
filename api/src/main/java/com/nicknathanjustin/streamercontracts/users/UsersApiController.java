@@ -85,10 +85,19 @@ public class UsersApiController {
 
     @RequestMapping(path = "/twitchId/{twitchId}", method = RequestMethod.GET)
     public ResponseEntity<?> extensionUser(@NonNull final HttpServletRequest httpServletRequest, @PathVariable("twitchId") @NonNull final String twitchId) {
-        final TwitchUser loggedInUser = userService.getTwitchUserFromRequest(httpServletRequest);
+        TwitchUser loggedInUser;
+        boolean foundTwitchUser = false;
+        try {
+            loggedInUser = userService.getTwitchUserFromRequest(httpServletRequest);
+            foundTwitchUser = true;
+        } catch (IllegalStateException e) {
+            loggedInUser = null;
+        }
+
         final TwitchUser requestedUser = twitchService.getTwitchUserFromTwitchUserId(twitchId);
 
-        if (!loggedInUser.getExternalId().equals(twitchId)) {
+        if (!foundTwitchUser || !loggedInUser.getExternalId().equals(twitchId)) {
+            // get public user
             final Optional<UserModel> optionalUserModel = userService.getUser(requestedUser.getDisplayName());
             final UserModel userModel = optionalUserModel.orElse(null);
 
@@ -100,6 +109,7 @@ public class UsersApiController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         } else {
+            // get private user
             final Optional<UserModel> optionalUserModel = userService.getUser(loggedInUser.getDisplayName());
             final UserModel userModel = optionalUserModel.orElse(null);
 
