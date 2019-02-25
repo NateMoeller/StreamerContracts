@@ -31,11 +31,17 @@ class OverlayComponent extends Component {
                 <Button>Copy Link</Button>
               </CopyToClipboard>
             </div>
-            <div className={styles.openButton}>
-              <Button onClick={()=> window.open(alertChannelId, "_blank", "location=no,width=1200,height=400")}>Open Overlay</Button>
-            </div>
           </FormGroup>
-          </Form>
+        </Form>
+        <div className={styles.secondaryTitle}>
+          Recommended settings:
+        </div>
+        <div className={styles.settingsRow}>
+          Width: 1500px
+        </div>
+        <div className={styles.settingsRow}>
+          Height: 120px
+        </div>
       </div>
     );
   }
