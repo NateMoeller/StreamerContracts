@@ -27,6 +27,7 @@ public class UserServiceImplTest {
     private static final Timestamp LAST_LOGIN = new Timestamp(System.currentTimeMillis());
     private UserModel userModel;
 
+    //Needed for mock injections
     @Mock private TwitchService mockTwitchService;
     @Mock private SecurityService securityService;
     @Mock private UserModelRepository mockUserModelRepository;
