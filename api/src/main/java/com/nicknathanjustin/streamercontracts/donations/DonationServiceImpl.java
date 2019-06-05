@@ -54,7 +54,10 @@ public class DonationServiceImpl implements  DonationService{
         }
 
         DonationState donationState;
-        if (releaseDonation) {
+        final boolean freeDonation = donationModel.getDonationAmount().compareTo(BigDecimal.ZERO) == 0;
+        if (freeDonation){
+            donationState = releaseDonation ? PAID_TO_STREAMER : RETURNED_TO_DONOR;
+        } else if (releaseDonation) {
             donationState = paymentsService.capturePayment(donationModel.getPaypalAuthorizationId()) ?
                     PAID_TO_STREAMER :
                     ERROR;

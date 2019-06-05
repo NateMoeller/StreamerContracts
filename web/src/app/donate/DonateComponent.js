@@ -19,7 +19,7 @@ import styles from './DonateStyles.scss';
 const REQUIRED_MESSAGE = 'This field is required';
 const TOO_LONG_MESSAGE = 'Too many characters';
 
-const MIN_AMOUNT = 1;
+const MIN_AMOUNT = 0;
 const MAX_AMOUNT = 1000;
 const MAX_BOUNTY_LENGTH = 300;
 
@@ -77,7 +77,7 @@ class DonateComponent extends Component {
   }
 
   validateAmount() {
-    const regex = /^[1-9]\d*(?:\.\d{0,2})?$/;
+    const regex = /^[0-9]\d*(?:\.\d{0,2})?$/;
     let error = { type: null };
     if (this.validateRequiredField(this.state.amount)) {
       error = { type: 'error', message: REQUIRED_MESSAGE }

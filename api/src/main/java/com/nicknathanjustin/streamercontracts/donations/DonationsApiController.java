@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class DonationsApiController {
+
+    private static final String FREE_BOUNTY = "FREE_BOUNTY";
 
     @NonNull private final AlertService alertService;
     @NonNull private final ContractService contractService;
@@ -50,17 +53,24 @@ public class DonationsApiController {
             return new ResponseEntity<HttpStatus>(HttpStatus.FORBIDDEN);
         }
 
+        final boolean freeBounty = createDonationRequest.getAmount().compareTo(BigDecimal.ZERO) == 0;
         final String paypalPaymentId = createDonationRequest.getPayPalPaymentId();
-        final Payment payment = paymentsService.executePayment(paypalPaymentId).orElse(null);
-        if(payment == null) {
-            log.warn("Couldn't execute payment for id: {}", paypalPaymentId);
-            return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-        final String authorizationId = getAuthorizationId(payment);
-        if(authorizationId == null) {
-            log.warn("Payment executed, but couldn't extract authorizationId for paymentId: {}", paypalPaymentId);
-            return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+        String authorizationId;
+        if(freeBounty) {
+            authorizationId = FREE_BOUNTY;
+        } else {
+            final Payment payment = paymentsService.executePayment(paypalPaymentId).orElse(null);
+            if(payment == null) {
+                log.warn("Couldn't execute payment for id: {}", paypalPaymentId);
+                return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            authorizationId = getAuthorizationId(payment);
+            if(authorizationId == null) {
+                log.warn("Payment executed, but couldn't extract authorizationId for paymentId: {}", paypalPaymentId);
+                return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
         final ContractModel contract = contractService.createContract(proposer, streamer, createDonationRequest.getGame(), createDonationRequest.getBounty());
