@@ -40,11 +40,7 @@ class StreamerDashboard extends Component {
         dataField: 'description',
         text: 'Bounty',
         formatter: this.getBounty,
-        headerStyle: { width: '60%' }
-      }, {
-        dataField: 'contractAmount',
-        text: 'Amount',
-        formatter: this.getMoney,
+        headerStyle: { width: '80%' }
       }, {
         dataField: 'action',
         text: '',
@@ -374,19 +370,6 @@ class StreamerDashboard extends Component {
   render() {
     if (this.props.loading) {
       return <LoadingComponent />;
-    }
-
-    if ((this.props.settings.payPalEmail === null || this.props.settings.payPalEmail === '') || !this.props.settings.isBusinessEmail) {
-      const message = !this.props.isExtension
-      ? `Go to settings and submit your business paypal email to see this section.`
-      : 'Go to the extension configuration and submit your business paypal email';
-
-      return (
-        <div className={styles.empty}>
-          <h3>Paypal not setup.</h3>
-          {message}
-        </div>
-      );
     }
 
     if (this.state.curBounty === null) {

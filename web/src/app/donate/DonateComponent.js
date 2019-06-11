@@ -7,7 +7,7 @@ import {
   Grid,
   Row,
   Col,
-  PageHeader
+  PageHeader,
 } from 'react-bootstrap';
 import { BLACK_LISTED_WORDS } from '../BlackListedWords'
 import React, { Component } from 'react';
@@ -28,6 +28,7 @@ class DonateComponent extends Component {
     super(props);
 
     this.state = {
+      bountyType: 'free', // 'free' or 'cash'
       amount: '',
       bounty: '',
       blackListedBountyWords: '',
@@ -56,7 +57,7 @@ class DonateComponent extends Component {
   }
 
   isSubmitEnabled() {
-    if ((this.state.amountError && this.state.amountError.type === null) &&
+    if (((this.state.bountyType === 'free') || (this.state.amountError && this.state.amountError.type === null)) &&
         (this.state.bountyError && this.state.bountyError.type === null)) {
           return true;
     }
@@ -79,7 +80,7 @@ class DonateComponent extends Component {
   validateAmount() {
     const regex = /^[0-9]\d*(?:\.\d{0,2})?$/;
     let error = { type: null };
-    if (this.validateRequiredField(this.state.amount)) {
+    if (this.state.bountyType === 'cash' && this.validateRequiredField(this.state.amount)) {
       error = { type: 'error', message: REQUIRED_MESSAGE }
     } else if (!regex.test(this.state.amount)) {
       error = { type: 'error', message: 'Please enter a valid amount' };
@@ -162,7 +163,7 @@ class DonateComponent extends Component {
   }
 
   render() {
-    const amountErrorMessage = this.state.amountError !== null ? this.state.amountError.message : '';
+    const amountErrorMessage = this.state.bountyType === 'cash' && this.state.amountError !== null ? this.state.amountError.message : '';
     const bountyErrorMessage = this.state.bountyError !== null ? this.state.bountyError.message : '';
     const bountyWarningMessage = this.state.bountyWarning !== null ? this.state.bountyWarning.message : '';
     const offensiveWords = this.state.blackListedBountyWords.length > 0 ? ('Words flagged: ' + this.state.blackListedBountyWords.join(', ')) : '';
@@ -178,6 +179,7 @@ class DonateComponent extends Component {
           insertBounty={this.props.insertBounty}
           streamerUsername={this.props.streamerUsername}
           game={this.state.game}
+          bountyType={this.state.bountyType}
         />
       );
     }
@@ -192,36 +194,52 @@ class DonateComponent extends Component {
             <Col xs={8} md={6}>
               <form>
                 <Row>
-                  <Col xs={8} md={6} style={{ paddingLeft: '0px' }}>
-                    <FormGroup
-                      controlId={'username'}
-                      >
-                      <ControlLabel>Username</ControlLabel>
-                      <FormControl
-                        type='text'
-                        value={this.props.user.displayName}
-                        readOnly
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col xs={8} md={6}>
-                    <FormGroup
-                      controlId={'amount'}
-                      validationState={this.state.amountError ? this.state.amountError.type : null}
-                      >
-                      <ControlLabel>Amount</ControlLabel>
-                      <InputGroup>
-                        <InputGroup.Addon>$</InputGroup.Addon>
+                  <FormGroup
+                    controlId={'username'}
+                    >
+                    <ControlLabel>Username</ControlLabel>
+                    <FormControl
+                      type='text'
+                      value={this.props.user.displayName}
+                      readOnly
+                    />
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <FormGroup
+                    controlId={'amount'}
+                    validationState={this.state.bountyType === 'cash' && this.state.amountError ? this.state.amountError.type : null}
+                    >
+                    <ControlLabel>Amount</ControlLabel>
+                    <InputGroup>
+                      <div className={styles.amountSelect}>
                         <FormControl
-                          type="text"
-                          value={this.state.amount}
-                          placeholder='5.00'
-                          onChange={(e) => this.amountChange(e.target.value)}
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                      <span className={styles.errorMessage}>{amountErrorMessage}</span>
-                  </Col>
+                          componentClass="select"
+                          placeholder="select"
+                          value={this.state.bountyType}
+                          onChange={e => this.setState({ bountyType: e.target.value })}
+                        >
+                          <option value="free">Free Bounty</option>
+                          {this.props.streamerPaypalEmail !== null && this.props.streamerPaypalEmail !== '' &&
+                            <option value="cash">Cash Bounty</option>
+                          }
+                        </FormControl>
+                      </div>
+                      {this.state.bountyType === 'cash' &&
+                        <InputGroup.Addon className={styles.amountLabel}>$</InputGroup.Addon>
+                      }
+                      {this.state.bountyType === 'cash' &&
+                      <FormControl
+                        className={styles.amountBox}
+                        type="text"
+                        value={this.state.amount}
+                        placeholder='5.00'
+                        onChange={(e) => this.amountChange(e.target.value)}
+                      />
+                      }
+                    </InputGroup>
+                  </FormGroup>
+                    <span className={styles.errorMessage}>{amountErrorMessage}</span>
                 </Row>
                 <Row className={styles.bountyMessageRow}>
                   <FormGroup controlId="formControlsSelect">
@@ -265,10 +283,14 @@ class DonateComponent extends Component {
   }
 }
 
+DonateComponent.defaultProps = {
+  streamerPaypalEmail: null
+};
+
 DonateComponent.propTypes = {
   user: PropTypes.object.isRequired,
   streamerUsername: PropTypes.string.isRequired,
-  streamerPaypalEmail: PropTypes.string.isRequired,
+  streamerPaypalEmail: PropTypes.string,
   insertBounty: PropTypes.func.isRequired,
   topGames: PropTypes.array.isRequired
 };
