@@ -8,6 +8,14 @@
 .donateContainer {
   width: 100%;
 
+  .amountSelect {
+    width: 150px;
+  }
+
+  .amountBox {
+    width: 40%;
+  }
+
   .bountyMessageRow {
     height: 330px;
   }
@@ -71,4 +79,8 @@
 
 .gameThumbnail {
   margin-right: 10px;
+}
+
+.openBountyBtn {
+  margin-top: 10px;
 }

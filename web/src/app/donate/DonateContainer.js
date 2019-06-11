@@ -31,13 +31,6 @@ class DonateContainer extends Component {
       return <LoadingComponent />
     } else if (this.props.publicUser.publicUser === null) {
       return <InvalidUserComponent />;
-    } else if (this.props.publicUser.publicUser && !this.props.publicUser.publicUser.payPalEmail) {
-      return (
-        <InvalidUserComponent
-          title={`Paypal not linked`}
-          message={`Once ${streamerUsername} links their paypal, you may open a bounty.`}
-        />
-      );
     } else if (this.props.donate.curDonationState === donateTypes.DONATION_PROCESSED) {
       return (
         <SuccessComponent

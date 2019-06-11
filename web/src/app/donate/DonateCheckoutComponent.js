@@ -12,6 +12,20 @@ import PayWithPayPalComponent from './PayWithPayPalComponent';
 import styles from './DonateStyles.scss';
 
 class DonateCheckoutComponent extends Component {
+  insertFreeBounty = () => {
+    const payload = {
+      username: this.props.username,
+      amount: 0,
+      bounty: this.props.bounty,
+      payPalPaymentId: '',
+      streamerUsername: this.props.streamerUsername,
+      game: this.props.game
+    };
+
+    this.props.insertBounty(payload);
+  }
+
+
   render() {
     return (
       <div className={styles.donateContainer}>
@@ -53,28 +67,37 @@ class DonateCheckoutComponent extends Component {
               {this.props.bounty}
             </Col>
           </Row>
-          <Row className={styles.totalAmountCheckout}>
-            <Col xs={3} md={2}>
-              Total amount:
-            </Col>
-            <Col xs={3} md={2} className={styles.amount}>
-              ${parseFloat(this.props.amount).toFixed(2)}
-            </Col>
-          </Row>
+          {this.props.bountyType === 'cash' &&
+            <Row className={styles.totalAmountCheckout}>
+              <Col xs={3} md={2}>
+                Total amount:
+              </Col>
+              <Col xs={3} md={2} className={styles.amount}>
+                ${parseFloat(this.props.amount).toFixed(2)}
+              </Col>
+            </Row>
+          }
           <Row>
             <Col xs={3} md={2}></Col>
             <Col xs={3} md={2}>
-              <PayWithPayPalComponent
-                amount={this.props.amount}
-                streamerPaypalEmail={this.props.streamerPaypalEmail}
-                bounty={this.props.bounty}
-                username={this.props.username}
-                insertBounty={this.props.insertBounty}
-                streamerUsername={this.props.streamerUsername}
-                gameName={this.props.game}
-              />
+              {this.props.bountyType === 'cash' &&
+                <PayWithPayPalComponent
+                  amount={this.props.amount}
+                  streamerPaypalEmail={this.props.streamerPaypalEmail}
+                  bounty={this.props.bounty}
+                  username={this.props.username}
+                  insertBounty={this.props.insertBounty}
+                  streamerUsername={this.props.streamerUsername}
+                  gameName={this.props.game}
+                />
+              }
             </Col>
           </Row>
+          {this.props.bountyType === 'free' &&
+            <Button className={styles.openBountyBtn} type="submit" bsStyle="success" onClick={this.insertFreeBounty}>
+              Open Bounty
+            </Button>
+          }
         </Grid>
       </div>
     );
@@ -94,6 +117,7 @@ DonateCheckoutComponent.propTypes = {
   insertBounty: PropTypes.func.isRequired,
   streamerUsername: PropTypes.string.isRequired,
   game: PropTypes.string,
+  bountyType: PropTypes.string,
 };
 
 export default DonateCheckoutComponent;

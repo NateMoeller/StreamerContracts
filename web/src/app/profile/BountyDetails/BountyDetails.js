@@ -197,10 +197,12 @@ class BountyDetails extends Component {
           </div>
           <div className={styles.stats}>
             <div className={styles.title}>Statistics</div>
-            <div className={styles.statRow}>
-              <div className={styles.statHeader}>Amount:</div>
-              <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
-            </div>
+            {!this.props.isExtension &&
+              <div className={styles.statRow}>
+                <div className={styles.statHeader}>Amount:</div>
+                <div className={cx(styles.statCell, styles.money)}>{`$${this.props.curBounty.contractAmount.toFixed(2)}`}</div>
+              </div>
+            }
             <div className={styles.statRow}>
               <div className={styles.statHeader}>Submitted by:</div>
               <div className={styles.statCell}>{this.props.curBounty.proposerName}</div>

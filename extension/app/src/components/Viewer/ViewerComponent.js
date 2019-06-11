@@ -36,11 +36,7 @@ class ViewerComponent extends Component {
       dataField: 'description',
       text: 'Bounty',
       formatter: this.getBounty,
-      headerStyle: { width: '60%' }
-    }, {
-      dataField: 'contractAmount',
-      text: 'Amount',
-      formatter: this.getMoney,
+      headerStyle: { width: '100%' }
     }, {
       dataField: 'action',
       text: '',
