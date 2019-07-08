@@ -212,7 +212,7 @@ class ViewerComponent extends Component {
     return (
       <div>
         <div className={styles.action}>
-          <Button variant="primary" className={styles.button} onClick={() => this.props.openBounty(this.props.publicUser.displayName)}>Open Bounty</Button>
+          <Button variant="primary" className={styles.button} onClick={() => this.props.toggleOpenForm(this.props.publicUser.displayName)}>Open Bounty</Button>
           <form className={styles.selectDropdown}>
             <FormGroup controlId="formControlsSelect">
               <FormControl
@@ -248,7 +248,7 @@ ViewerComponent.propTypes = {
   publicBounties: PropTypes.array.isRequired,
   totalPublicBounties: PropTypes.number.isRequired,
   getPublicBounties: PropTypes.func.isRequired,
-  openBounty: PropTypes.func.isRequired,
+  toggleOpenForm: PropTypes.func.isRequired,
   setBountyFilter: PropTypes.func.isRequired
 };
 
