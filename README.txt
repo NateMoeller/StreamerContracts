@@ -1,3 +1,6 @@
+Architecture Diagram
+![Bounty Streamer Architecture](https://s3.amazonaws.com/bountystreamer.gg/bountyStreamer.png)
+
 Setup Instructions
 
 1) Clone repo
