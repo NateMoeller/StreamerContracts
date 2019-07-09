@@ -1,5 +1,6 @@
 Architecture Diagram
-[[https://s3.amazonaws.com/bountystreamer.gg/bountyStreamer.pngt]]
+
+![Architecture Diagram Image](https://s3.amazonaws.com/bountystreamer.gg/bountyStreamer.png)
 
 Setup Instructions
 
