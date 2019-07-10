@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingComponent from '../../../../../web/src/app/common/loading/LoadingComponent';
 import ViewerComponent from './ViewerComponent';
+import DonateContainer from './DonateContainer';
 
 const PAGE_SIZE = 10;
 
@@ -13,11 +14,13 @@ class ViewerContainer extends Component {
       user: null,
       publicBounties: [],
       totalPublicBounties: 0,
-      bountyFilter: 'OPEN' // TODO: duplicate state, should consolidate with ViewerComponent
+      bountyFilter: 'OPEN', // TODO: duplicate state, should consolidate with ViewerComponent
+      showOpenForm: false,
+      viewerUserName: null // if this is null, they do not exist in our db
     }
 
     this.getPublicBounties = this.getPublicBounties.bind(this);
-    this.openBounty = this.openBounty.bind(this);
+    this.toggleOpenForm = this.toggleOpenForm.bind(this);
     this.setBountyFilter = this.setBountyFilter.bind(this);
   }
 
@@ -36,6 +39,19 @@ class ViewerContainer extends Component {
         user: data
       });
     });
+
+    const viewerUserId = this.props.Authentication.state.user_id;
+    if (viewerUserId) {
+      this.props.getViewer(this.props.Authentication.state.user_id, (data) => {
+        this.setState({
+          viewerUserName: data.displayName 
+        });
+      });
+    } else {
+      this.setState({
+        viewerUserName: null
+      });
+    }
   }
 
   getPublicBounties(page, pageSize, twitchUsername, state = null) {
@@ -54,9 +70,17 @@ class ViewerContainer extends Component {
     });
   }
 
-  openBounty(username) {
-    const link = `${process.env.REACT_APP_PUBLIC_URL}user/${username}`;
-    window.open(link, '_blank');
+  toggleOpenForm(username) {
+    if (this.state.viewerUserName) {
+      this.setState({
+        showOpenForm: !this.state.showOpenForm
+      });
+    } else {
+      const link = `${process.env.REACT_APP_PUBLIC_URL}user/${username}`;
+      window.open(link, '_blank');
+    }
+    
+    
   }
 
   setBountyFilter(newFilter) {
@@ -70,13 +94,25 @@ class ViewerContainer extends Component {
       return <LoadingComponent />;
     }
 
+    if (this.state.showOpenForm) {
+      return (
+        <DonateContainer
+          Authentication={this.props.Authentication}
+          toggleOpenForm={this.toggleOpenForm}
+          streamerUsername={this.state.user.displayName}
+          viewerUserName={this.state.viewerUserName}
+        />
+      );
+    }
+
     return (
       <ViewerComponent
         publicUser={this.state.user}
         publicBounties={this.state.publicBounties}
         totalPublicBounties={this.state.totalPublicBounties}
         getPublicBounties={this.getPublicBounties}
-        openBounty={this.openBounty}
+        toggleOpenForm={this.toggleOpenForm}
+        showOpenForm={this.state.showOpenForm}
         setBountyFilter={this.setBountyFilter}
       />
     );
@@ -87,6 +123,7 @@ ViewerContainer.propTypes = {
   Authentication: PropTypes.object.isRequired,
   channelId: PropTypes.string.isRequired,
   getBroadcaster: PropTypes.func.isRequired,
+  getViewer: PropTypes.func.isRequired,
   twitch: PropTypes.object.isRequired
 };
 

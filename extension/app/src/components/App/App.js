@@ -108,6 +108,7 @@ export default class App extends React.Component{
               Authentication={this.Authentication}
               channelId={this.state.channelId}
               getBroadcaster={this.getBroadcaster}
+              getViewer={this.getBroadcaster}
               twitch={this.twitch}
             />
           </div>

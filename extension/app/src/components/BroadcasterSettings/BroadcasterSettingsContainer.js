@@ -66,6 +66,7 @@ class BroadcasterSettingsContainer extends Component {
           user={this.state.user}
           payPalEmail={this.state.paypalEmail}
           updatePayPalEmail={this.updatePayPalEmail}
+          isExtension
         />
       </div>
     );
