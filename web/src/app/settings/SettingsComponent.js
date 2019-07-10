@@ -137,32 +137,36 @@ class SettingsComponent extends Component {
             testAlert={() => console.log('test alert')}
           />
         </div>
-        <Tabs defaultActiveKey={1} id="settings-tabs" className={styles.tabs}>
-          <Tab eventKey={1} title="Payments">
-            <div className={styles.settingsContent}>
-              <Panel>
-                <Panel.Heading className={styles.heading}>
-                  <i className="fa fa-paypal" />
-                  <div className={styles.headingText}>PayPal</div>
-                </Panel.Heading>
-                {this.getPayPalContent()}
-              </Panel>
-            </div>
-          </Tab>
-        </Tabs>
+        {!this.props.isExtension &&
+          <Tabs defaultActiveKey={1} id="settings-tabs" className={styles.tabs}>
+            <Tab eventKey={1} title="Payments">
+              <div className={styles.settingsContent}>
+                <Panel>
+                  <Panel.Heading className={styles.heading}>
+                    <i className="fa fa-paypal" />
+                    <div className={styles.headingText}>PayPal</div>
+                  </Panel.Heading>
+                  {this.getPayPalContent()}
+                </Panel>
+              </div>
+            </Tab>
+          </Tabs>
+        }
       </div>
     );
   }
 }
 
 SettingsComponent.defaultProps = {
-  payPalEmail: null
+  payPalEmail: null,
+  isExtension: false
 };
 
 SettingsComponent.propTypes = {
   user: PropTypes.object.isRequired,
   payPalEmail: PropTypes.string,
   updatePayPalEmail: PropTypes.func.isRequired,
+  isExtension: PropTypes.bool,
 };
 
 export default SettingsComponent;

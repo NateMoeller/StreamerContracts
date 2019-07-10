@@ -12,7 +12,7 @@ class OverlayComponent extends Component {
     return (
       <div>
         <div className={styles.message}>
-          Copy the below url to use in a browser source for a streaming program like OBS or XSplit. Do not share this url with anyone.
+          Copy the below url to use in a browser source for a streaming program like OBS. Do not share this url with anyone.
         </div>
         <Form>
           <FormGroup controlId="formInlineName">
