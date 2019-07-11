@@ -1,12 +1,15 @@
-Architecture Diagram
+# Bounty Streamer 
+https://bountystreamer.gg is a free to use incentivied donations platform built for twitch.tv... Its designed to bring streamers closer to their viewers by building big moments.
 
-![Architecture Diagram Image](https://streamer-contracts-public-assets.s3.us-east-2.amazonaws.com/bountyStreamer.png)
+Incentivized donations are extremely common on streaming platforms. You'll frequently hear "Do 'x' and I'll donate another 'y' dollars". These types of donations are fun! They add stacks to the stream and keep the audience invested. For example, Drake famously told Ninja "I'll give you 5k is you get this win". That was a big moment that had over half a million users watching!
 
-Setup Instructions
+## Can I use this code?
+Absolutly! But please contact nckackerman@gmail.com first.
 
-1) Clone repo
+## Questions? Problems? Suggestions?
+Please reach out to nckackerman@gmail.com for all feedback about bountystreamer.
 
-Front end:
+### Running the Front end:
 
 1) Run `npm install`
 2) Run `npm run start`
@@ -28,7 +31,7 @@ Front end:
 	-linter-ui-default
 
 
-Back end:
+### Running the Back end:
 
 1) Install lombok plugin to IntellIJ (Settings -> Plugins). Enable annotation processing (Settings -> build -> compiler -> annotation processors) 
 2) Set up postgres database (see README in dev_ops/sql)
@@ -44,3 +47,7 @@ Back end:
 5) Setup keystore env variable. This file is available on aws s3. Environment variable should be:
 	`STREAMER_CONTRACTS_KEY_STORE_URL="<path>"`
 
+
+## Architecture Diagram
+
+![Architecture Diagram Image](https://streamer-contracts-public-assets.s3.us-east-2.amazonaws.com/bountyStreamer.png)
