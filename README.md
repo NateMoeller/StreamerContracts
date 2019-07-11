@@ -1,7 +1,7 @@
 # Bounty Streamer 
 https://bountystreamer.gg is a free to use incentivied donations platform built for twitch.tv... Its designed to bring streamers closer to their viewers by building big moments.
 
-Incentivized donations are extremely common on streaming platforms. You'll frequently hear "Do 'x' and I'll donate another 'y' dollars". These types of donations are fun! They add stacks to the stream and keep the audience invested. For example, Drake famously told Ninja "I'll give you 5k is you get this win". That was a big moment that had over half a million users watching!
+Incentivized donations are extremely common on streaming platforms. You'll frequently hear "Do **X** and I'll donate another **Y** dollars". These types of donations are fun! They add stacks to the stream and keep the audience invested. For example, Drake famously told Ninja "I'll give you **5k** is you **get this win**". That was a big moment that had over half a million users watching!
 
 ## Can I use this code?
 Absolutly! But please contact nckackerman@gmail.com first.
@@ -9,7 +9,8 @@ Absolutly! But please contact nckackerman@gmail.com first.
 ## Questions? Problems? Suggestions?
 Please reach out to nckackerman@gmail.com for all feedback about bountystreamer.
 
-### Running the Front end:
+## Dev Setup
+### Front end
 
 1) Run `npm install`
 2) Run `npm run start`
@@ -31,7 +32,7 @@ Please reach out to nckackerman@gmail.com for all feedback about bountystreamer.
 	-linter-ui-default
 
 
-### Running the Back end:
+### Back end
 
 1) Install lombok plugin to IntellIJ (Settings -> Plugins). Enable annotation processing (Settings -> build -> compiler -> annotation processors) 
 2) Set up postgres database (see README in dev_ops/sql)
