@@ -1,5 +1,5 @@
 # Bounty Streamer 
-https://bountystreamer.gg is a free to use incentivied donations platform built for twitch.tv... Its designed to bring streamers closer to their viewers by building big moments.
+https://bountystreamer.gg is a free to use (open source) incentivied donations platform built for twitch.tv... Its designed to bring streamers closer to their viewers by building big moments.
 
 Incentivized donations are extremely common on streaming platforms. You'll frequently hear "Do **X** and I'll donate another **Y** dollars". These types of donations are fun! They add stacks to the stream and keep the audience invested. For example, Drake famously told Ninja "I'll give you **5k** is you **get this win**". That was a big moment that had over half a million users watching!
 
