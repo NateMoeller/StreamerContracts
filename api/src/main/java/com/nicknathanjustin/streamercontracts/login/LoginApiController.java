@@ -46,6 +46,6 @@ public class LoginApiController {
         final String refererHeader = request.getHeader("referer");
         return auth != null &&
                 refererHeader != null &&
-                (refererHeader.contains(frontEndUrl + "/login") || refererHeader.contains("passport.twitch.tv") || refererHeader.contains("id.twitch.tv"));
+                (refererHeader.contains(frontEndUrl + "/login") || refererHeader.contains("passport.twitch.tv") || refererHeader.contains("twitch.tv"));
     }
 }
