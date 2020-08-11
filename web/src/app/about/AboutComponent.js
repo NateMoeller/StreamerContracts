@@ -54,7 +54,9 @@ class AboutComponent extends Component {
       <div>
         <PageHeader>About</PageHeader>
         <div className={styles.aboutContent}>
-          {this.getQuestions()}
+          {/*this.getQuestions()*/}
+          Bounty streamer is a tool that helps broadcasters create interactive streams that allow viewers to challenge the streamer to in game tasks. We have
+          current discontinued development on this project. For more information please checkout the <a href="https://github.com/NateMoeller/BountyStreamer">github project</a>.
         </div>
       </div>
     );

@@ -39,6 +39,9 @@ class NavbarComponent extends Component {
   }
 
   getRightMenu() {
+    return null;
+
+    /*
     const user = JSON.parse(sessionStorage.getItem('user'));
     const userTitle = this.getUserTitle(user);
     const logoutLink = process.env.REACT_APP_API_HOST + 'logout';
@@ -67,6 +70,7 @@ class NavbarComponent extends Component {
         }}>Logout</MenuItem>
       </NavDropdown>
     );
+    */
   }
 
   render() {
@@ -90,9 +94,9 @@ class NavbarComponent extends Component {
               <LinkContainer exact to="/about" className={aboutClassname} onClick={() => this.setActiveItem('about')}>
                 <NavItem>About</NavItem>
               </LinkContainer>
-              <LinkContainer exact to="/profile" className={profileClassname} onClick={() => this.setActiveItem('profile')}>
+              {/*<LinkContainer exact to="/profile" className={profileClassname} onClick={() => this.setActiveItem('profile')}>
                 <NavItem>Profile</NavItem>
-              </LinkContainer>
+              </LinkContainer>*/}
             </Nav>
             <Nav pullRight>
               {user !== null &&

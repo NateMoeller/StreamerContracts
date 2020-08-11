@@ -108,7 +108,8 @@ class HomeComponent extends Component {
               Bounty streamer is a tool that helps broadcasters create interactive streams that allow viewers to challenge the streamer to in game tasks.
             </div>
             <div className={styles.joinButton}>
-              <Button className={styles.button} variant="primary" href="/profile">Start Now</Button>
+              {/*<Button className={styles.button} variant="primary" href="/profile">Start Now</Button>*/}
+              <a href="https://github.com/NateMoeller/BountyStreamer" target="_blank"><i className="fa fa-github fa-5x"></i></a>
             </div>
           </div>
         </div>
@@ -141,7 +142,7 @@ class HomeComponent extends Component {
             </div>
           </div>
         </div>
-        <div className={cx(styles.section, styles.section3)}>
+        {/*<div className={cx(styles.section, styles.section3)}>
           <div className="container">
             <PageHeader className={styles.header}>Bounties</PageHeader>
             <div className={tableStyles.table}>
@@ -155,7 +156,7 @@ class HomeComponent extends Component {
               />
             </div>
           </div>
-        </div>
+        </div>*/}
       </div>
 
     );
