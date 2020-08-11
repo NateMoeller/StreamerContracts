@@ -44,8 +44,7 @@ public class LoginApiController {
 
     private boolean isOauthSuccessRedirect(@Nullable final OAuth2Authentication auth, @NonNull final HttpServletRequest request) {
         final String refererHeader = request.getHeader("referer");
-        return auth != null &&
-                refererHeader != null &&
+        return auth != null && refererHeader != null &&
                 (refererHeader.contains(frontEndUrl + "/login") || refererHeader.contains("passport.twitch.tv") || refererHeader.contains("twitch.tv"));
     }
 }
